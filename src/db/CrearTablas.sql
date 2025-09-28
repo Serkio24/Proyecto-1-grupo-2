@@ -50,7 +50,7 @@ CREATE TABLE Vehiculo(
 
 CREATE TABLE ConductorVehiculo(
     idVehiculo VARCHAR2(10) PRIMARY KEY,
-    idUsuario VARCHAR2(10) UNIQUE,
+    idUsuario VARCHAR2(10),
     FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(idVehiculo),
     FOREIGN KEY (idUsuario) REFERENCES DatosUsuario(idUsuario)
 );
@@ -87,11 +87,11 @@ CREATE TABLE PuntoUbicacion (
 CREATE TABLE Servicio(
     idServicio VARCHAR2(10) PRIMARY KEY,
     idUsuario VARCHAR2(10) NOT NULL,
-    idConductor VARCHAR2(10),
+    idVehiculo VARCHAR2(10),
     puntoPartida VARCHAR2(10) NOT NULL,
     Tarifa VARCHAR2(10) NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES DatosUsuario(idUsuario),
-    FOREIGN KEY (idConductor) REFERENCES DatosUsuario(idUsuario),
+    FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(idVehiculo),
     FOREIGN KEY (puntoPartida) REFERENCES PuntoUbicacion(idPunto),
     FOREIGN KEY (Tarifa) REFERENCES Tarifa(idTarifa)
 );
@@ -109,6 +109,8 @@ CREATE TABLE DetallesServicio (
   nivel VARCHAR2(10) NOT NULL CHECK (nivel IN ('Estandar','Confort','Large')),
   orden NUMBER NULL,
   restaurante VARCHAR2(80) NULL,
+  puntoPartida VARCHAR2(10) NOT NULL,
+  FOREIGN KEY (puntoPartida) REFERENCES PuntoUbicacion(idPunto),
 
   CONSTRAINT FK_DETALLES_SERVICIO FOREIGN KEY (idServicio) REFERENCES Servicio(idServicio)
 );
