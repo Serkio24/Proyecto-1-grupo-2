@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uniandes.edu.co.proyecto.entities.CiudadEntity;
 
-public interface CiudadRepository extends JpaRepository<CiudadEntity, Integer>{
+public interface CiudadRepository extends JpaRepository<CiudadEntity, Long>{
 
     @Query(value= "SELECT * FROM ciudades", nativeQuery=true)
     Collection<CiudadEntity> darCiudades();
