@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="franjas_horarias")
-public class FranjaHorariaActividadEntity {
+public class FranjaHorariaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +22,7 @@ public class FranjaHorariaActividadEntity {
     private String tipoServicio;
 
     // Constructor con parámetros
-    public FranjaHorariaActividadEntity(DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin, String tipoServicio) {
+    public FranjaHorariaEntity(DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin, String tipoServicio) {
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
@@ -30,7 +30,7 @@ public class FranjaHorariaActividadEntity {
     }
 
     // Constructor vacío
-    public FranjaHorariaActividadEntity() {}
+    public FranjaHorariaEntity() {}
 
     // Getters
     public Long getIdFranjaHoraria() {
