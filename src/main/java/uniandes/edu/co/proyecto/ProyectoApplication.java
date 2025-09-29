@@ -15,6 +15,7 @@ import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.entities.ServicioDestinoEntity;
 
 import uniandes.edu.co.proyecto.entities.CiudadEntity;
+import uniandes.edu.co.proyecto.entities.ComisionEntity;
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
 import uniandes.edu.co.proyecto.entities.FranjaHorariaEntity;
 import uniandes.edu.co.proyecto.entities.NivelVehiculoEntity;
@@ -33,6 +34,7 @@ import uniandes.edu.co.proyecto.repositories.ViajeRepository;
 import uniandes.edu.co.proyecto.repositories.ServicioDestinoRepository;
 
 import uniandes.edu.co.proyecto.repositories.CiudadRepository;
+import uniandes.edu.co.proyecto.repositories.ComisionRepository;
 import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
 import uniandes.edu.co.proyecto.repositories.FranjaHorariaRepository;
 import uniandes.edu.co.proyecto.repositories.NivelVehiculoRepository;
