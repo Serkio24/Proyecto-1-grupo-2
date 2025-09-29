@@ -10,33 +10,39 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 
+
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
 
-    //Create, remarcar cada parametro con anotacion param
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO usuarios (nombre, numeroCelular, numeroCedula, correoElectronico) VALUES (:nombre, :numeroCelular, :numeroCedula, :correoElectronico)", nativeQuery=true)
-    void insertarUsuario(@Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correoElectronico") String correoElectronico);
-
-    //Read: Get all
-    //indicar que consulta es y que es nativa
-    @Query(value = "SELECT * FROM usuarios", nativeQuery=true)
+    @Query(value = "SELECT * FROM usuarios", nativeQuery = true)
     Collection<UsuarioEntity> darUsuarios();
 
-    //Read: Get one, le pasamos id por parametro
-    @Query(value = "SELECT * FROM usuarios WHERE idUsuario=:id", nativeQuery=true)
-    UsuarioEntity darUsuario(@Param("id") Long idUsuario);
+    @Query(value = "SELECT * FROM usuarios WHERE idUsuario = :id", nativeQuery = true)
+    UsuarioEntity darUsuario(@Param("id") Long id);
 
-    //Update
+    @Query(value = "SELECT * FROM usuarios u WHERE u.nombre LIKE '%' || :nombre || '%'", nativeQuery = true)
+    Collection<UsuarioEntity> darUsuariosPorNombre(@Param("nombre") String nombre);
+
     @Modifying
     @Transactional
-    @Query(value= "UPDATE usuarios SET nombre=:nombre, numeroCelular=:numeroCelular, numeroCedula=:numeroCedula, correoElectronico=:correoElectronico WHERE idUsuario=:id", nativeQuery=true)
-    void actualizarUsuario(@Param("id") Long idUsuario, @Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correoElectronico") String correoElectronico);
+    @Query(value = "DELETE FROM usuarios WHERE idUsuario = :id", nativeQuery = true)
+    void eliminarUsuario(@Param("id") Long id);
 
-    //Delete
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM usuarios WHERE idUsuario=:id", nativeQuery=true)
-    void eliminarUsuario(@Param("id") Long idUsuario);
+    @Query(value = "UPDATE usuarios SET nombre = :nombre, numeroCelular = :numeroCelular, numeroCedula = :numeroCedula, correoElectronico = :correo, tipo = :tipo WHERE idUsuario = :id", nativeQuery = true)
+    void actualizarUsuario(@Param("id") Long id,
+                           @Param("nombre") String nombre,
+                           @Param("numeroCelular") String numeroCelular,
+                           @Param("numeroCedula") String numeroCedula,
+                           @Param("correo") String correo,
+                           @Param("tipo") String tipo);
 
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO usuarios (nombre, numeroCelular, numeroCedula, correoElectronico, tipo) VALUES (:nombre, :numeroCelular, :numeroCedula, :correo, :tipo)", nativeQuery = true)
+    void insertarUsuario(@Param("nombre") String nombre,
+                         @Param("numeroCelular") String numeroCelular,
+                         @Param("numeroCedula") String numeroCedula,
+                         @Param("correo") String correo,
+                         @Param("tipo") String tipo);
 }

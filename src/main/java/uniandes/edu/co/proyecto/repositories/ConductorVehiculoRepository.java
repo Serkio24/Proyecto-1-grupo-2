@@ -1,32 +1,42 @@
 package uniandes.edu.co.proyecto.repositories;
 
-import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
-import uniandes.edu.co.proyecto.entities.ConductorVehiculoPK;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
+import uniandes.edu.co.proyecto.entities.ConductorVehiculoPK;
 
-@Repository
+import java.util.Collection;
+
 public interface ConductorVehiculoRepository extends JpaRepository<ConductorVehiculoEntity, ConductorVehiculoPK> {
 
-    // Buscar todos los vehículos de un conductor
-    @Query(value = "SELECT * FROM ConductorVehiculo WHERE idConductor = :idConductor", nativeQuery = true)
-    List<ConductorVehiculoEntity> findByConductor(@Param("idConductor") Long idConductor);
+    @Query(value = "SELECT * FROM conductor_vehiculos", nativeQuery = true)
+    Collection<ConductorVehiculoEntity> darConductorVehiculos();
 
-    // Buscar la relación específica por conductor y vehículo
-    @Query(value = "SELECT * FROM ConductorVehiculo WHERE idConductor = :idConductor AND idVehiculo = :idVehiculo", nativeQuery = true)
-    ConductorVehiculoEntity findByConductorAndVehiculo(
-            @Param("idConductor") Long idConductor,
-            @Param("idVehiculo") Long idVehiculo
-    );
+    @Query(value = "SELECT * FROM conductor_vehiculos WHERE idConductor = :idConductor AND idVehiculo = :idVehiculo", nativeQuery = true)
+    ConductorVehiculoEntity darConductorVehiculoPorId(@Param("idConductor") Long idConductor,
+                                                @Param("idVehiculo") Long idVehiculo);
 
-    // Eliminar todas las relaciones de un conductor
-    @Query(value = "DELETE FROM ConductorVehiculo WHERE idConductor = :idConductor", nativeQuery = true)
-    void deleteByConductor(@Param("idConductor") Long idConductor);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM conductor_vehiculos WHERE idConductor = :idConductor AND idVehiculo = :idVehiculo", nativeQuery = true)
+    void eliminarConductorVehiculo(@Param("idConductor") Long idConductor,
+                                   @Param("idVehiculo") Long idVehiculo);
 
-    @Query(value = "SELECT * FROM ConductorVehiculo", nativeQuery = true)
-    List<ConductorVehiculoEntity> findAllNative();
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO conductor_vehiculos (idConductor, idVehiculo) VALUES (:idConductor, :idVehiculo)", nativeQuery = true)
+    void insertarConductorVehiculo(@Param("idConductor") Long idConductor,
+                                   @Param("idVehiculo") Long idVehiculo);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE conductor_vehiculos SET idConductor = :idConductorNuevo, idVehiculo = :idVehiculoNuevo WHERE idConductor = :idConductor AND idVehiculo = :idVehiculo", nativeQuery = true)
+    void actualizarConductorVehiculo(@Param("idConductor") Long idConductor,
+                                     @Param("idVehiculo") Long idVehiculo,
+                                     @Param("idConductorNuevo") Long idConductorNuevo,
+                                     @Param("idVehiculoNuevo") Long idVehiculoNuevo);
 }

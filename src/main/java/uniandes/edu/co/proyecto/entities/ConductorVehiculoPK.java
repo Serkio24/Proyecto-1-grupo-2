@@ -1,41 +1,42 @@
 package uniandes.edu.co.proyecto.entities;
 
-import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
-import java.util.Objects;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class ConductorVehiculoPK implements Serializable {
 
-    private Long idConductor;
-    private Long idVehiculo;
+    @ManyToOne
+    @JoinColumn(name = "idConductor", referencedColumnName = "idUsuario")
+    private UsuarioEntity idConductor;
 
-    public ConductorVehiculoPK() {}
+    @ManyToOne
+    @JoinColumn(name = "idVehiculo", referencedColumnName = "idVehiculo")
+    private VehiculoEntity idVehiculo;
 
-    public ConductorVehiculoPK(Long idConductor, Long idVehiculo) {
+    public ConductorVehiculoPK() { }
+
+    public ConductorVehiculoPK(UsuarioEntity idConductor, VehiculoEntity idVehiculo) {
         this.idConductor = idConductor;
         this.idVehiculo = idVehiculo;
     }
 
-    // equals y hashCode son obligatorios
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ConductorVehiculoPK)) return false;
-        ConductorVehiculoPK that = (ConductorVehiculoPK) o;
-        return Objects.equals(idConductor, that.idConductor) &&
-               Objects.equals(idVehiculo, that.idVehiculo);
+    public UsuarioEntity getIdConductor() {
+        return idConductor;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(idConductor, idVehiculo);
+    public void setIdConductor(UsuarioEntity idConductor) {
+        this.idConductor = idConductor;
     }
 
-    // Getters y setters
-    public Long getIdConductor() { return idConductor; }
-    public void setIdConductor(Long idConductor) { this.idConductor = idConductor; }
+    public VehiculoEntity getIdVehiculo() {
+        return idVehiculo;
+    }
 
-    public Long getIdVehiculo() { return idVehiculo; }
-    public void setIdVehiculo(Long idVehiculo) { this.idVehiculo = idVehiculo; }
+    public void setIdVehiculo(VehiculoEntity idVehiculo) {
+        this.idVehiculo = idVehiculo;
+    }
 }

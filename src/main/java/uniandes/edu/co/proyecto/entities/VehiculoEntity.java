@@ -1,6 +1,5 @@
 package uniandes.edu.co.proyecto.entities;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,22 +7,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="vehiculos")
+@Table(name = "vehiculos")
 public class VehiculoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "idVehiculo")
     private Long idVehiculo;
+
     private String tipo;
+
     private String marca;
+
     private String modelo;
+
     private String color;
+
     private String placa;
+
     private String ciudadExpedicion;
+
     private Integer capacidadPasajeros;
 
-    public VehiculoEntity() {}
+    public VehiculoEntity() { }
 
     public VehiculoEntity(String tipo, String marca, String modelo, String color, String placa, String ciudadExpedicion, Integer capacidadPasajeros) {
         this.tipo = tipo;
@@ -35,28 +40,67 @@ public class VehiculoEntity {
         this.capacidadPasajeros = capacidadPasajeros;
     }
 
-    // Getters y Setters
-    public Long getIdVehiculo() { return idVehiculo; }
-    public void setIdVehiculo(Long idVehiculo) { this.idVehiculo = idVehiculo; }
+    public Long getIdVehiculo() {
+        return idVehiculo;
+    }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setIdVehiculo(Long idVehiculo) {
+        this.idVehiculo = idVehiculo;
+    }
 
-    public String getMarca() { return marca; }
-    public void setMarca(String marca) { this.marca = marca; }
+    public String getTipo() {
+        return tipo;
+    }
 
-    public String getModelo() { return modelo; }
-    public void setModelo(String modelo) { this.modelo = modelo; }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public String getMarca() {
+        return marca;
+    }
 
-    public String getPlaca() { return placa; }
-    public void setPlaca(String placa) { this.placa = placa; }
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
 
-    public String getCiudadExpedicion() { return ciudadExpedicion; }
-    public void setCiudadExpedicion(String ciudadExpedicion) { this.ciudadExpedicion = ciudadExpedicion; }
+    public String getModelo() {
+        return modelo;
+    }
 
-    public Integer getCapacidadPasajeros() { return capacidadPasajeros; }
-    public void setCapacidadPasajeros(Integer capacidadPasajeros) { this.capacidadPasajeros = capacidadPasajeros; }
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getCiudadExpedicion() {
+        return ciudadExpedicion;
+    }
+
+    public void setCiudadExpedicion(String ciudadExpedicion) {
+        this.ciudadExpedicion = ciudadExpedicion;
+    }
+
+    public Integer getCapacidadPasajeros() {
+        return capacidadPasajeros;
+    }
+
+    public void setCapacidadPasajeros(Integer capacidadPasajeros) {
+        this.capacidadPasajeros = capacidadPasajeros;
+    }
 }

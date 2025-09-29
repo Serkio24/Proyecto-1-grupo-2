@@ -8,38 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
-import uniandes.edu.co.proyecto.entities.ServicioEntity;
-import uniandes.edu.co.proyecto.entities.TarifaEntity;
-import uniandes.edu.co.proyecto.entities.ViajeEntity;
-import uniandes.edu.co.proyecto.entities.ServicioDestinoEntity;
-
-import uniandes.edu.co.proyecto.entities.CiudadEntity;
-import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
-import uniandes.edu.co.proyecto.entities.FranjaHorariaEntity;
-import uniandes.edu.co.proyecto.entities.NivelVehiculoEntity;
-import uniandes.edu.co.proyecto.entities.PuntoGeograficoEntity;
-import uniandes.edu.co.proyecto.entities.ReviewEntity;
-import uniandes.edu.co.proyecto.entities.TarjetaCreditoEntity;
-import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
-import uniandes.edu.co.proyecto.entities.UsuarioServiciosEntity;
 import uniandes.edu.co.proyecto.entities.VehiculoEntity;
+import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
 
 import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
-import uniandes.edu.co.proyecto.repositories.ServicioRepository;
-import uniandes.edu.co.proyecto.repositories.TarifaRepository;
-import uniandes.edu.co.proyecto.repositories.ViajeRepository;
-import uniandes.edu.co.proyecto.repositories.ServicioDestinoRepository;
-
-import uniandes.edu.co.proyecto.repositories.CiudadRepository;
-import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
-import uniandes.edu.co.proyecto.repositories.FranjaHorariaRepository;
-import uniandes.edu.co.proyecto.repositories.NivelVehiculoRepository;
-import uniandes.edu.co.proyecto.repositories.PuntoGeograficoRepository;
-import uniandes.edu.co.proyecto.repositories.ReviewRepository;
-import uniandes.edu.co.proyecto.repositories.TarjetaCreditoRepository;
-import uniandes.edu.co.proyecto.repositories.ConductorVehiculoRepository;
-import uniandes.edu.co.proyecto.repositories.UsuarioServiciosRepository;
 import uniandes.edu.co.proyecto.repositories.VehiculoRepository;
+import uniandes.edu.co.proyecto.repositories.ConductorVehiculoRepository;
 
 @SpringBootApplication
 public class ProyectoApplication implements CommandLineRunner {
@@ -48,48 +22,10 @@ public class ProyectoApplication implements CommandLineRunner {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ServicioRepository servicioRepository;
-
-    @Autowired
-    private TarifaRepository tarifaRepository;
-
-    
-
-    @Autowired
-    private ViajeRepository viajeRepository;
-
-    @Autowired
-    private ServicioDestinoRepository servicioDestinoRepository;
-
-    @Autowired
-    private CiudadRepository ciudadRepository;
-
-    @Autowired
-    private DisponibilidadRepository disponibilidadRepository;
-
-    @Autowired
-    private FranjaHorariaRepository franjaHorariaRepository;
-
-    @Autowired
-    private NivelVehiculoRepository nivelVehiculoRepository;
-
-    @Autowired
-    private PuntoGeograficoRepository puntoGeograficoRepository;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
-    private TarjetaCreditoRepository tarjetaCreditoRepository;
+    private VehiculoRepository vehiculoRepository;
 
     @Autowired
     private ConductorVehiculoRepository conductorVehiculoRepository;
-
-    @Autowired
-    private UsuarioServiciosRepository usuarioServiciosRepository;
-
-    @Autowired
-    private VehiculoRepository vehiculoRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(ProyectoApplication.class, args);
@@ -97,79 +33,23 @@ public class ProyectoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+
+        // Mostrar todos los usuarios
         Collection<UsuarioEntity> usuarios = usuarioRepository.darUsuarios();
         for (UsuarioEntity usuario : usuarios) {
             System.out.println(usuario);
         }
 
-        Collection<ServicioEntity> servicios = servicioRepository.darServicios();
-        for (ServicioEntity servicio : servicios) {
-            System.out.println(servicio);
-        }
-
-        Collection<TarifaEntity> tarifas = tarifaRepository.darTarifas();
-        for (TarifaEntity tarifa : tarifas) {
-            System.out.println(tarifa);
-        }
-
-        Collection<ViajeEntity> viajes = viajeRepository.darViajes();
-        for (ViajeEntity viaje : viajes) {
-            System.out.println(viaje);
-        }
-
-        Collection<ServicioDestinoEntity> servicioDestinos = servicioDestinoRepository.darServicioDestinos();
-        for (ServicioDestinoEntity servicioDestino : servicioDestinos) {
-            System.out.println(servicioDestino);
-        }
-
-        Collection<CiudadEntity> ciudades = ciudadRepository.darCiudades();
-        for (CiudadEntity ciudad : ciudades) {
-            System.out.println(ciudad);
-        }
-
-        Collection<DisponibilidadEntity> disponibilidades = disponibilidadRepository.darDisponibilidades();
-        for (DisponibilidadEntity disponibilidad : disponibilidades) {
-            System.out.println(disponibilidad);
-        }
-
-        Collection<FranjaHorariaEntity> franjas = franjaHorariaRepository.darFranjasHorarias();
-        for (FranjaHorariaEntity franja : franjas) {
-            System.out.println(franja);
-        }
-
-        Collection<NivelVehiculoEntity> niveles = nivelVehiculoRepository.darNivelesVehiculo();
-        for (NivelVehiculoEntity nivel : niveles) {
-            System.out.println(nivel);
-        }
-
-        Collection<PuntoGeograficoEntity> puntos = puntoGeograficoRepository.darPuntosGeograficos();
-        for (PuntoGeograficoEntity punto : puntos) {
-            System.out.println(punto);
-        }
-
-        Collection<ReviewEntity> reviews = reviewRepository.darReviews();
-        for (ReviewEntity review : reviews) {
-            System.out.println(review);
-        }
-
-        Collection<TarjetaCreditoEntity> tarjetas = tarjetaCreditoRepository.darTarjetas();
-        for (TarjetaCreditoEntity tarjeta : tarjetas) {
-            System.out.println(tarjeta);
-        }
-
-        Collection<ConductorVehiculoEntity> conductorVehiculos = conductorVehiculoRepository.findAllNative();
-        for (ConductorVehiculoEntity conductorVehiculo : conductorVehiculos) {
-            System.out.println(conductorVehiculo);
-        }
-
-        Collection<UsuarioServiciosEntity> usuarioServicios = usuarioServiciosRepository.darUsuariosServicios();
-        for (UsuarioServiciosEntity usuarioServicio : usuarioServicios) {
-            System.out.println(usuarioServicio);
-        }
-
+        // Mostrar todos los vehículos
         Collection<VehiculoEntity> vehiculos = vehiculoRepository.darVehiculos();
         for (VehiculoEntity vehiculo : vehiculos) {
             System.out.println(vehiculo);
+        }
+
+        // Mostrar todas las relaciones conductor-vehículo
+        Collection<ConductorVehiculoEntity> conductorVehiculos = conductorVehiculoRepository.darConductorVehiculos();
+        for (ConductorVehiculoEntity conductorVehiculo : conductorVehiculos) {
+            System.out.println(conductorVehiculo);
         }
     }
 }

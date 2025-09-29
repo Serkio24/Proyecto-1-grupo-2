@@ -1,39 +1,28 @@
 package uniandes.edu.co.proyecto.entities;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ConductorVehiculo")
+@Table(name = "conductor_vehiculos")
 public class ConductorVehiculoEntity {
 
     @EmbeddedId
-    private ConductorVehiculoPK id;
+    private ConductorVehiculoPK pk;
 
-    @ManyToOne
-    @MapsId("idConductor") // indica que esta columna es parte de la PK
-    @JoinColumn(name = "idConductor", nullable = false)
-    private UsuarioEntity conductor;
+    public ConductorVehiculoEntity() { }
 
-    @ManyToOne
-    @MapsId("idVehiculo") // indica que esta columna es parte de la PK
-    @JoinColumn(name = "idVehiculo", nullable = false)
-    private VehiculoEntity vehiculo;
-
-    public ConductorVehiculoEntity() {}
-
-    public ConductorVehiculoEntity(UsuarioEntity conductor, VehiculoEntity vehiculo) {
-        this.conductor = conductor;
-        this.vehiculo = vehiculo;
-        this.id = new ConductorVehiculoPK(conductor.getIdUsuario(), vehiculo.getIdVehiculo());
+    public ConductorVehiculoEntity(UsuarioEntity idConductor, VehiculoEntity idVehiculo) {
+        this.pk = new ConductorVehiculoPK(idConductor, idVehiculo);
     }
 
-    // Getters y setters
-    public ConductorVehiculoPK getId() { return id; }
-    public void setId(ConductorVehiculoPK id) { this.id = id; }
+    public ConductorVehiculoPK getPk() {
+        return pk;
+    }
 
-    public UsuarioEntity getConductor() { return conductor; }
-    public void setConductor(UsuarioEntity conductor) { this.conductor = conductor; }
-
-    public VehiculoEntity getVehiculo() { return vehiculo; }
-    public void setVehiculo(VehiculoEntity vehiculo) { this.vehiculo = vehiculo; }
+    public void setPk(ConductorVehiculoPK pk) {
+        this.pk = pk;
+    }
 }

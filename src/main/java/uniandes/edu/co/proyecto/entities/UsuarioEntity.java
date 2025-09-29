@@ -1,6 +1,5 @@
 package uniandes.edu.co.proyecto.entities;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,42 +12,73 @@ public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "idUsuario")
     private Long idUsuario;
-    private String nombre;
-    private String numeroCelular;
-    private String numeroCedula;
-    private String correoElectronico;
-    private String tipoUsuario; // "Cliente" o "Conductor"
 
-    // Constructor completo
-    public UsuarioEntity(String nombre, String numeroCelular, String numeroCedula, String correoElectronico, String tipoUsuario) {
+    private String nombre;
+
+    private String numeroCelular;
+
+    private String numeroCedula;
+
+    private String correoElectronico;
+
+    private String tipo;
+
+    public UsuarioEntity() { }
+
+    public UsuarioEntity(String nombre, String numeroCelular, String numeroCedula, String correoElectronico, String tipo) {
         this.nombre = nombre;
         this.numeroCelular = numeroCelular;
         this.numeroCedula = numeroCedula;
         this.correoElectronico = correoElectronico;
-        this.tipoUsuario = tipoUsuario;
+        this.tipo = tipo;
     }
 
-    // Constructor vacío
-    public UsuarioEntity() {}
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
 
-    // Getters y Setters
-    public Long getIdUsuario() { return idUsuario; }
-    public void setIdUsuario(Long idUsuario) { this.idUsuario = idUsuario; }
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getNumeroCelular() { return numeroCelular; }
-    public void setNumeroCelular(String numeroCelular) { this.numeroCelular = numeroCelular; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getNumeroCedula() { return numeroCedula; }
-    public void setNumeroCedula(String numeroCedula) { this.numeroCedula = numeroCedula; }
+    public String getNumeroCelular() {
+        return numeroCelular;
+    }
 
-    public String getCorreoElectronico() { return correoElectronico; }
-    public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
+    public void setNumeroCelular(String numeroCelular) {
+        this.numeroCelular = numeroCelular;
+    }
 
-    public String getTipoUsuario() { return tipoUsuario; }
-    public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+    public String getNumeroCedula() {
+        return numeroCedula;
+    }
+
+    public void setNumeroCedula(String numeroCedula) {
+        this.numeroCedula = numeroCedula;
+    }
+
+    public String getCorreoElectronico() {
+        return correoElectronico;
+    }
+
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }
