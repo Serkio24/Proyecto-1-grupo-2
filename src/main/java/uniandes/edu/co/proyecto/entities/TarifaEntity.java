@@ -13,12 +13,12 @@ public class TarifaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idTarifa;
+    private String tipoServicio; //NN, CK(in "Transporte Pasajeros", "Domicilio Comida", "Transporte Paquete")
+    private String nivel; //CK(in "Estandar", "Confort", "Large")
+    private Double precioPorKm;//NN, CK(precioPorKm > 0)
+    private String vigenciaDesde; //NN, CK(vigenciaDesde<vigenciaHasta)
+    private String vigenciaHasta;//NN, CK(vigenciaHasta>vigenciaDesde)
 
-    private String tipoServicio;
-    private String nivel;
-    private Double precioPorKm;
-    private String vigenciaDesde;
-    private String vigenciaHasta;
 
     // Constructor con parámetros
     public TarifaEntity(String tipoServicio, String nivel, Double precioPorKm,

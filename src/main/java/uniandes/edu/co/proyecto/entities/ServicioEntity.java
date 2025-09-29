@@ -1,11 +1,12 @@
 package uniandes.edu.co.proyecto.entities;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,34 +17,39 @@ public class ServicioEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idServicio;
 
-    private LocalDate fecha;
-    private LocalTime horaInicio;
-    private LocalTime horaFin;
-    private Double longitudTrayecto;
-    private Double costoTotal;
-    private String estado;
-    private Double comision;
+    @ManyToOne
+    @JoinColumn(name="idCliente", referencedColumnName = "idUsuario")
+    private UsuarioServiciosEntity idCliente;
+
+    private LocalDateTime fechaHora;
     private String tipoServicio;
-    private String nivel;      // [0..1]
+    private String nivelRequerido;
+    private String estado; // Pendiente, Asignado, Cancelado
     private String orden;      // [0..1]
     private String restaurante; // [0..1]
 
+    @ManyToOne
+    @JoinColumn(name="idPuntoPartida", referencedColumnName = "idPunto")
+    private PuntoGeograficoEntity idPuntoPartida;
+
+    //------- acá son los atributos viejitos 
+    // private Double longitudTrayecto;
+    // private Double costoTotal;
+    // private Double comision;
+    // private String nivel;      // [0..1]
+
     // Constructor con parámetros
-    public ServicioEntity(LocalDate fecha, LocalTime horaInicio, LocalTime horaFin,
-                          Double longitudTrayecto, Double costoTotal, String estado,
-                          Double comision, String tipoServicio, String nivel,
-                          String orden, String restaurante) {
-        this.fecha = fecha;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.longitudTrayecto = longitudTrayecto;
-        this.costoTotal = costoTotal;
-        this.estado = estado;
-        this.comision = comision;
+    public ServicioEntity(UsuarioServiciosEntity idCliente, LocalDateTime fechaHora, String tipoServicio,
+                          String nivelRequerido, String estado, String orden,
+                          String restaurante, PuntoGeograficoEntity idPuntoPartida) {
+        this.idCliente = idCliente;
+        this.fechaHora = fechaHora;
         this.tipoServicio = tipoServicio;
-        this.nivel = nivel;
+        this.nivelRequerido = nivelRequerido;
+        this.estado = estado;
         this.orden = orden;
         this.restaurante = restaurante;
+        this.idPuntoPartida = idPuntoPartida;
     }
 
     // Constructor vacío
@@ -54,40 +60,24 @@ public class ServicioEntity {
         return idServicio;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public UsuarioServiciosEntity getIdCliente() {
+        return idCliente;
     }
 
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
-
-    public LocalTime getHoraFin() {
-        return horaFin;
-    }
-
-    public Double getLongitudTrayecto() {
-        return longitudTrayecto;
-    }
-
-    public Double getCostoTotal() {
-        return costoTotal;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public Double getComision() {
-        return comision;
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
     }
 
     public String getTipoServicio() {
         return tipoServicio;
     }
 
-    public String getNivel() {
-        return nivel;
+    public String getNivelRequerido() {
+        return nivelRequerido;
+    }
+
+    public String getEstado() {
+        return estado;
     }
 
     public String getOrden() {
@@ -98,45 +88,33 @@ public class ServicioEntity {
         return restaurante;
     }
 
+    public PuntoGeograficoEntity getIdPuntoPartida() {
+        return idPuntoPartida;
+    }
+
     // Setters
     public void setIdServicio(Long idServicio) {
         this.idServicio = idServicio;
     }
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
+    public void setIdCliente(UsuarioServiciosEntity idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-    public void setHoraFin(LocalTime horaFin) {
-        this.horaFin = horaFin;
-    }
-
-    public void setLongitudTrayecto(Double longitudTrayecto) {
-        this.longitudTrayecto = longitudTrayecto;
-    }
-
-    public void setCostoTotal(Double costoTotal) {
-        this.costoTotal = costoTotal;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public void setComision(Double comision) {
-        this.comision = comision;
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
     }
 
     public void setTipoServicio(String tipoServicio) {
         this.tipoServicio = tipoServicio;
     }
 
-    public void setNivel(String nivel) {
-        this.nivel = nivel;
+    public void setNivelRequerido(String nivelRequerido) {
+        this.nivelRequerido = nivelRequerido;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public void setOrden(String orden) {
@@ -145,5 +123,9 @@ public class ServicioEntity {
 
     public void setRestaurante(String restaurante) {
         this.restaurante = restaurante;
+    }
+
+    public void setIdPuntoPartida(PuntoGeograficoEntity idPuntoPartida) {
+        this.idPuntoPartida = idPuntoPartida;
     }
 }
