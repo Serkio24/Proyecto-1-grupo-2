@@ -1,6 +1,5 @@
 package uniandes.edu.co.proyecto.entities;
 
-import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
