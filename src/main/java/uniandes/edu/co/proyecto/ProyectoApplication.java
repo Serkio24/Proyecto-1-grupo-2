@@ -20,7 +20,7 @@ import uniandes.edu.co.proyecto.entities.NivelVehiculoEntity;
 import uniandes.edu.co.proyecto.entities.PuntoGeograficoEntity;
 import uniandes.edu.co.proyecto.entities.ReviewEntity;
 import uniandes.edu.co.proyecto.entities.TarjetaCreditoEntity;
-import uniandes.edu.co.proyecto.entities.UsuarioConductorEntity;
+import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
 import uniandes.edu.co.proyecto.entities.UsuarioServiciosEntity;
 import uniandes.edu.co.proyecto.entities.VehiculoEntity;
 
@@ -37,7 +37,7 @@ import uniandes.edu.co.proyecto.repositories.NivelVehiculoRepository;
 import uniandes.edu.co.proyecto.repositories.PuntoGeograficoRepository;
 import uniandes.edu.co.proyecto.repositories.ReviewRepository;
 import uniandes.edu.co.proyecto.repositories.TarjetaCreditoRepository;
-import uniandes.edu.co.proyecto.repositories.UsuarioConductorRepository;
+import uniandes.edu.co.proyecto.repositories.ConductorVehiculoRepository;
 import uniandes.edu.co.proyecto.repositories.UsuarioServiciosRepository;
 import uniandes.edu.co.proyecto.repositories.VehiculoRepository;
 
@@ -83,7 +83,7 @@ public class ProyectoApplication implements CommandLineRunner {
     private TarjetaCreditoRepository tarjetaCreditoRepository;
 
     @Autowired
-    private UsuarioConductorRepository usuarioConductorRepository;
+    private ConductorVehiculoRepository conductorVehiculoRepository;
 
     @Autowired
     private UsuarioServiciosRepository usuarioServiciosRepository;
@@ -111,8 +111,6 @@ public class ProyectoApplication implements CommandLineRunner {
         for (TarifaEntity tarifa : tarifas) {
             System.out.println(tarifa);
         }
-
-       
 
         Collection<ViajeEntity> viajes = viajeRepository.darViajes();
         for (ViajeEntity viaje : viajes) {
@@ -159,9 +157,9 @@ public class ProyectoApplication implements CommandLineRunner {
             System.out.println(tarjeta);
         }
 
-        Collection<UsuarioConductorEntity> usuarioConductores = usuarioConductorRepository.darUsuariosConductores();
-        for (UsuarioConductorEntity usuarioConductor : usuarioConductores) {
-            System.out.println(usuarioConductor);
+        Collection<ConductorVehiculoEntity> conductorVehiculos = conductorVehiculoRepository.findAllNative();
+        for (ConductorVehiculoEntity conductorVehiculo : conductorVehiculos) {
+            System.out.println(conductorVehiculo);
         }
 
         Collection<UsuarioServiciosEntity> usuarioServicios = usuarioServiciosRepository.darUsuariosServicios();

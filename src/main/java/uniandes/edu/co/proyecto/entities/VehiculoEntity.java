@@ -1,5 +1,6 @@
 package uniandes.edu.co.proyecto.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,6 +13,7 @@ public class VehiculoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idVehiculo")
     private Long idVehiculo;
     private String tipo;
     private String marca;

@@ -1,34 +1,36 @@
 package uniandes.edu.co.proyecto.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="usuarios")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "usuarios")
 public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idUsuario")
     private Long idUsuario;
     private String nombre;
     private String numeroCelular;
     private String numeroCedula;
     private String correoElectronico;
+    private String tipoUsuario; // "Cliente" o "Conductor"
 
-    // Constructor
-    public UsuarioEntity(String nombre, String numeroCelular, String numeroCedula, String correoElectronico) {
+    // Constructor completo
+    public UsuarioEntity(String nombre, String numeroCelular, String numeroCedula, String correoElectronico, String tipoUsuario) {
         this.nombre = nombre;
         this.numeroCelular = numeroCelular;
         this.numeroCedula = numeroCedula;
         this.correoElectronico = correoElectronico;
+        this.tipoUsuario = tipoUsuario;
     }
 
+    // Constructor vacío
     public UsuarioEntity() {}
 
     // Getters y Setters
@@ -46,4 +48,7 @@ public class UsuarioEntity {
 
     public String getCorreoElectronico() { return correoElectronico; }
     public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
+
+    public String getTipoUsuario() { return tipoUsuario; }
+    public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }
 }
