@@ -1,22 +1,27 @@
 package uniandes.edu.co.proyecto.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="servicio_destinos")
 public class ServicioDestinoEntity {
+
     @Id
-    @OneToOne
-    @JoinColumn(name="idServicio", referencedColumnName = "idServicio")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long idDestino;
+
+    @ManyToOne
+    @JoinColumn(name="idServicio", referencedColumnName = "idServicio", nullable = false)
     private ServicioEntity idServicio;
 
     @ManyToOne
-    @JoinColumn(name="idPuntoLlegada", referencedColumnName = "idPunto")
+    @JoinColumn(name="idPuntoLlegada", referencedColumnName = "idPunto", nullable = false)
     private PuntoGeograficoEntity idPuntoLlegada;
 
     // Constructor con parámetros
@@ -29,6 +34,10 @@ public class ServicioDestinoEntity {
     public ServicioDestinoEntity() {}
 
     // Getters
+    public Long getIdDestino() {
+        return idDestino;
+    }
+
     public ServicioEntity getIdServicio() {
         return idServicio;
     }
@@ -38,6 +47,10 @@ public class ServicioDestinoEntity {
     }
 
     // Setters
+    public void setIdDestino(Long idDestino) {
+        this.idDestino = idDestino;
+    }
+
     public void setIdServicio(ServicioEntity idServicio) {
         this.idServicio = idServicio;
     }
