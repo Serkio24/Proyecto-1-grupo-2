@@ -10,26 +10,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uniandes.edu.co.proyecto.entities.CiudadEntity;
 
-public interface CiudadRepository extends JpaRepository<CiudadEntity, Long>{
+public interface CiudadRepository extends JpaRepository<CiudadEntity, Long> {
 
-    @Query(value= "SELECT * FROM ciudades", nativeQuery=true)
+    // Create, remarcar cada parametro con anotacion param
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO ciudades (nombre) VALUES (:nombre)", nativeQuery = true)
+    void insertarCiudad(@Param("nombre") String nombre);
+
+    // Read: Get all
+    // indicar que consulta es y que es nativa
+    @Query(value = "SELECT * FROM ciudades", nativeQuery = true)
     Collection<CiudadEntity> darCiudades();
-    
-    @Query(value= "SELECT * FROM ciudades WHERE id= :id", nativeQuery =true)
-    CiudadEntity darCiudadEntity(@Param("id") int id);
 
+    // Read: Get one, le pasamos id por parametro
+    @Query(value = "SELECT * FROM ciudades WHERE idCiudad = :id", nativeQuery = true)
+    CiudadEntity darCiudad(@Param("id") Long idCiudad);
+
+    // Update
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO ciudades(id, nombre) VALUES (:id, :nombre)", nativeQuery=true)
-    void insertarCiudad(@Param("nombre") String nombre, @Param("id") int id);
+    @Query(value = "UPDATE ciudades SET nombre = :nombre WHERE idCiudad = :id", nativeQuery = true)
+    void actualizarCiudad(@Param("id") Long idCiudad, @Param("nombre") String nombre);
 
+    // Delete
     @Modifying
     @Transactional
-    @Query( value= "UPDATE ciudades SET nombre= :nombre WHERE id= :id", nativeQuery = true)
-    void actualizarCiudad(@Param("id") int id, String nombre);
-
-    @Modifying
-    @Transactional
-    @Query( value="DELETE FROM ciudades WHERE id= :id", nativeQuery=true)
-    void eliminarCiudad(@Param("id") int id);
+    @Query(value = "DELETE FROM ciudades WHERE idCiudad = :id", nativeQuery = true)
+    void eliminarCiudad(@Param("id") Long idCiudad);
 }
