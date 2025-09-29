@@ -18,11 +18,11 @@ public class ReviewEntity {
     private Long idRevision;
 
     @ManyToOne
-    @JoinColumn(name = "idUsuarioCalificador", nullable = false)
+    @JoinColumn(name = "idUsuarioCalificador", referencedColumnName="idUsuario")
     private UsuarioEntity usuarioCalificador;
 
     @ManyToOne
-    @JoinColumn(name = "idUsuarioCalificado", nullable = false)
+    @JoinColumn(name = "idUsuarioCalificado", referencedColumnName="idUsuario")
     private UsuarioEntity usuarioCalificado;
 
     private Double puntuacion;
