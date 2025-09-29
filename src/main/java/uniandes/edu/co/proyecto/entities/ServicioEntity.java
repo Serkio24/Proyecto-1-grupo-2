@@ -1,4 +1,4 @@
-package uniandes.edu.co.proyecto.modelo;
+package uniandes.edu.co.proyecto.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
