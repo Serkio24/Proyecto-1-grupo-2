@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,16 +19,20 @@ public class PuntoGeograficoEntity {
     private Double latitud;
     private Double longitud;
     private String direccionAproximada;
-    private Long idCiudad; // FK hacia Ciudad
+
+
+    // FK hacia Ciudad
+    @ManyToOne
+    @JoinColumn(name="idCiudad", referencedColumnName="idCiudad")
+    private CiudadEntity ciudad;
 
     public PuntoGeograficoEntity() {}
 
-    public PuntoGeograficoEntity(String nombre, Double latitud, Double longitud, String direccionAproximada, Long idCiudad) {
+    public PuntoGeograficoEntity(String nombre, Double latitud, Double longitud, String direccionAproximada) {
         this.nombre = nombre;
         this.latitud = latitud;
         this.longitud = longitud;
         this.direccionAproximada = direccionAproximada;
-        this.idCiudad = idCiudad;
     }
 
     // Getters y Setters
@@ -44,7 +50,4 @@ public class PuntoGeograficoEntity {
 
     public String getDireccionAproximada() { return direccionAproximada; }
     public void setDireccionAproximada(String direccionAproximada) { this.direccionAproximada = direccionAproximada; }
-
-    public Long getIdCiudad() { return idCiudad; }
-    public void setIdCiudad(Long idCiudad) { this.idCiudad = idCiudad; }
 }
