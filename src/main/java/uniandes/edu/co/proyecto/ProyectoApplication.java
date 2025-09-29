@@ -10,12 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
 import uniandes.edu.co.proyecto.entities.TarifaEntity;
-import uniandes.edu.co.proyecto.entities.CostoEntity;
 import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.entities.ServicioDestinoEntity;
 
 import uniandes.edu.co.proyecto.entities.CiudadEntity;
-import uniandes.edu.co.proyecto.entities.ComisionEntity;
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
 import uniandes.edu.co.proyecto.entities.FranjaHorariaEntity;
 import uniandes.edu.co.proyecto.entities.NivelVehiculoEntity;
@@ -29,12 +27,10 @@ import uniandes.edu.co.proyecto.entities.VehiculoEntity;
 import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
 import uniandes.edu.co.proyecto.repositories.ServicioRepository;
 import uniandes.edu.co.proyecto.repositories.TarifaRepository;
-import uniandes.edu.co.proyecto.repositories.CostoRepository;
 import uniandes.edu.co.proyecto.repositories.ViajeRepository;
 import uniandes.edu.co.proyecto.repositories.ServicioDestinoRepository;
 
 import uniandes.edu.co.proyecto.repositories.CiudadRepository;
-import uniandes.edu.co.proyecto.repositories.ComisionRepository;
 import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
 import uniandes.edu.co.proyecto.repositories.FranjaHorariaRepository;
 import uniandes.edu.co.proyecto.repositories.NivelVehiculoRepository;
@@ -57,11 +53,7 @@ public class ProyectoApplication implements CommandLineRunner {
     @Autowired
     private TarifaRepository tarifaRepository;
 
-    @Autowired
-    private CostoRepository costoRepository;
-
-    @Autowired
-    private ComisionRepository comisionRepository;
+    
 
     @Autowired
     private ViajeRepository viajeRepository;
@@ -120,15 +112,7 @@ public class ProyectoApplication implements CommandLineRunner {
             System.out.println(tarifa);
         }
 
-        Collection<CostoEntity> costos = costoRepository.darCostos();
-        for (CostoEntity costo : costos) {
-            System.out.println(costo);
-        }
-
-        Collection<ComisionEntity> comisiones = comisionRepository.darComisiones();
-        for (ComisionEntity comision : comisiones) {
-            System.out.println(comision);
-        }
+       
 
         Collection<ViajeEntity> viajes = viajeRepository.darViajes();
         for (ViajeEntity viaje : viajes) {
