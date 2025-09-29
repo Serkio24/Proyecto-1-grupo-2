@@ -1,4 +1,4 @@
-package uniandes.edu.co.proyecto.repositorio;
+package uniandes.edu.co.proyecto.repositories;
 
 import java.util.Collection;
 
