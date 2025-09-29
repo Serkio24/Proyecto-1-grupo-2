@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -26,16 +27,19 @@ public class ViajeEntity {
     private ServicioEntity idServicio;
 
     @ManyToOne
-    @JoinColumn(name="idConductor", referencedColumnName = "idUsuario")
-    private UsuarioEntity idConductor;
-
+    @JoinColumns({
+        @JoinColumn(name="idConductor", referencedColumnName="idConductor"),
+        @JoinColumn(name="idVehiculoConductor", referencedColumnName="idVehiculo")
+    })
+    private UsuarioConductorEntity idConductor;    
+    
     @ManyToOne
     @JoinColumn(name="idVehiculo", referencedColumnName = "idVehiculo")
     private VehiculoEntity idVehiculo;
 
     // Constructor con parámetros
     public ViajeEntity(LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, Double longitudTrayecto,
-                       ServicioEntity idServicio, UsuarioEntity idConductor, VehiculoEntity idVehiculo) {
+                       ServicioEntity idServicio, UsuarioConductorEntity idConductor, VehiculoEntity idVehiculo) {
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
         this.longitudTrayecto = longitudTrayecto;
@@ -68,7 +72,7 @@ public class ViajeEntity {
         return idServicio;
     }
 
-    public UsuarioEntity getIdConductor() {
+    public UsuarioConductorEntity getIdConductor() {
         return idConductor;
     }
 
@@ -97,7 +101,7 @@ public class ViajeEntity {
         this.idServicio = idServicio;
     }
 
-    public void setIdConductor(UsuarioEntity idConductor) {
+    public void setIdConductor(UsuarioConductorEntity idConductor) {
         this.idConductor = idConductor;
     }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="costos")
 public class CostoEntity {
+    
     @EmbeddedId
     private CostoPK pk;
     private double costoTotal;

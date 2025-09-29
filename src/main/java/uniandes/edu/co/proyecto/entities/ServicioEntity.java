@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -18,8 +19,10 @@ public class ServicioEntity {
     private Long idServicio;
 
     @ManyToOne
-    @JoinColumn(name="idCliente", referencedColumnName = "idUsuario")
-    private UsuarioEntity idCliente;
+    @JoinColumns({
+        @JoinColumn(name="idCliente", referencedColumnName="idUsuario")
+    })
+    private UsuarioServiciosEntity idCliente;
 
     private LocalDateTime fechaHora;
     private String tipoServicio;
@@ -39,7 +42,7 @@ public class ServicioEntity {
     // private String nivel;      // [0..1]
 
     // Constructor con parámetros
-    public ServicioEntity(UsuarioEntity idCliente, LocalDateTime fechaHora, String tipoServicio,
+    public ServicioEntity(UsuarioServiciosEntity idCliente, LocalDateTime fechaHora, String tipoServicio,
                           String nivelRequerido, String estado, String orden,
                           String restaurante, PuntoGeograficoEntity idPuntoPartida) {
         this.idCliente = idCliente;
@@ -60,7 +63,7 @@ public class ServicioEntity {
         return idServicio;
     }
 
-    public UsuarioEntity getIdCliente() {
+    public UsuarioServiciosEntity getIdCliente() {
         return idCliente;
     }
 
@@ -97,7 +100,7 @@ public class ServicioEntity {
         this.idServicio = idServicio;
     }
 
-    public void setIdCliente(UsuarioEntity idCliente) {
+    public void setIdCliente(UsuarioServiciosEntity idCliente) {
         this.idCliente = idCliente;
     }
 

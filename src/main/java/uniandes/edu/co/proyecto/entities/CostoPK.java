@@ -9,7 +9,7 @@ import jakarta.persistence.ManyToOne;
 @Embeddable
 public class CostoPK implements Serializable {
     @ManyToOne
-    @JoinColumn(name="longitudTrayecto", referencedColumnName = "longitudTrayecto")
+    @JoinColumn(name="idViaje", referencedColumnName = "idViaje")
     private ViajeEntity longitudTrayecto;
 
     @ManyToOne
