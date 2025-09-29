@@ -27,7 +27,7 @@ public class ViajeEntity {
 
     @ManyToOne
     @JoinColumn(name="idConductor", referencedColumnName = "idUsuario")
-    private UsuarioConductorEntity idConductor;
+    private UsuarioEntity idConductor;
 
     @ManyToOne
     @JoinColumn(name="idVehiculo", referencedColumnName = "idVehiculo")
@@ -35,7 +35,7 @@ public class ViajeEntity {
 
     // Constructor con parámetros
     public ViajeEntity(LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, Double longitudTrayecto,
-                       ServicioEntity idServicio, UsuarioConductorEntity idConductor, VehiculoEntity idVehiculo) {
+                       ServicioEntity idServicio, UsuarioEntity idConductor, VehiculoEntity idVehiculo) {
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
         this.longitudTrayecto = longitudTrayecto;
@@ -68,7 +68,7 @@ public class ViajeEntity {
         return idServicio;
     }
 
-    public UsuarioConductorEntity getIdConductor() {
+    public UsuarioEntity getIdConductor() {
         return idConductor;
     }
 
@@ -97,7 +97,7 @@ public class ViajeEntity {
         this.idServicio = idServicio;
     }
 
-    public void setIdConductor(UsuarioConductorEntity idConductor) {
+    public void setIdConductor(UsuarioEntity idConductor) {
         this.idConductor = idConductor;
     }
 
