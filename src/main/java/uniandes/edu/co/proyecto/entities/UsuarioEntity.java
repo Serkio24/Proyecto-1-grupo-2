@@ -13,62 +13,34 @@ public class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idUsuario;
-
     private String nombre;
+    private String numeroCelular;
+    private String numeroCedula;
     private String correoElectronico;
-    private Long numeroCelular;
-    private Long numeroCedula;
 
-    // Constructor con parámetros
-    public UsuarioEntity(String nombre, String correoElectronico, Long numeroCelular, Long numeroCedula) {
+    // Constructor
+    public UsuarioEntity(String nombre, String numeroCelular, String numeroCedula, String correoElectronico) {
         this.nombre = nombre;
-        this.correoElectronico = correoElectronico;
         this.numeroCelular = numeroCelular;
         this.numeroCedula = numeroCedula;
+        this.correoElectronico = correoElectronico;
     }
 
-    // Constructor vacío
     public UsuarioEntity() {}
 
-    // Getters
-    public Long getIdUsuario() {
-        return idUsuario;
-    }
+    // Getters y Setters
+    public Long getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Long idUsuario) { this.idUsuario = idUsuario; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getCorreoElectronico() {
-        return correoElectronico;
-    }
+    public String getNumeroCelular() { return numeroCelular; }
+    public void setNumeroCelular(String numeroCelular) { this.numeroCelular = numeroCelular; }
 
-    public Long getNumeroCelular() {
-        return numeroCelular;
-    }
+    public String getNumeroCedula() { return numeroCedula; }
+    public void setNumeroCedula(String numeroCedula) { this.numeroCedula = numeroCedula; }
 
-    public Long getNumeroCedula() {
-        return numeroCedula;
-    }
-
-    // Setters
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setCorreoElectronico(String correoElectronico) {
-        this.correoElectronico = correoElectronico;
-    }
-
-    public void setNumeroCelular(Long numeroCelular) {
-        this.numeroCelular = numeroCelular;
-    }
-
-    public void setNumeroCedula(Long numeroCedula) {
-        this.numeroCedula = numeroCedula;
-    }
+    public String getCorreoElectronico() { return correoElectronico; }
+    public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
 }
