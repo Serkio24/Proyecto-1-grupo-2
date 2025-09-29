@@ -19,6 +19,7 @@ public class DisponibilidadPK implements Serializable {
     public DisponibilidadPK() {}
 
     public DisponibilidadPK(VehiculoEntity vehiculo, FranjaHorariaEntity franja) {
+        super();
         this.vehiculo = vehiculo;
         this.franja = franja;
     }

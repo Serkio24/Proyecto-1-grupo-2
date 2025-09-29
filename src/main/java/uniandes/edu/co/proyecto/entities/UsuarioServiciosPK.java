@@ -4,11 +4,12 @@ import java.io.Serializable;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Embeddable
 public class UsuarioServiciosPK implements Serializable {
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="idUsuario", referencedColumnName="idUsuario")
     private UsuarioEntity usuario;
 
@@ -19,6 +20,7 @@ public class UsuarioServiciosPK implements Serializable {
     public UsuarioServiciosPK() {}
 
     public UsuarioServiciosPK(UsuarioEntity usuario, TarjetaCreditoEntity tarjetaCredito) {
+        super();
         this.usuario = usuario;
         this.tarjetaCredito = tarjetaCredito;
     }

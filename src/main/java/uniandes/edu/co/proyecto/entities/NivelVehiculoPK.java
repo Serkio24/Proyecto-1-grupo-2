@@ -19,6 +19,7 @@ public class NivelVehiculoPK implements Serializable {
     public NivelVehiculoPK() {}
 
     public NivelVehiculoPK(VehiculoEntity vehiculoModelo, VehiculoEntity vehiculoCapacidad) {
+        super();
         this.vehiculoModelo = vehiculoModelo;
         this.vehiculoCapacidad = vehiculoCapacidad;
     }

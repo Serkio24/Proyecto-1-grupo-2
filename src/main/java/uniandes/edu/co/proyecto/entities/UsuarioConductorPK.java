@@ -19,6 +19,7 @@ public class UsuarioConductorPK implements Serializable {
     public UsuarioConductorPK() {}
 
     public UsuarioConductorPK(UsuarioEntity conductor, VehiculoEntity vehiculo) {
+        super();
         this.conductor = conductor;
         this.vehiculo = vehiculo;
     }
