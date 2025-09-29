@@ -13,62 +13,38 @@ public class PuntoGeograficoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idPunto;
-
-    private String nombre;   // puede ser null (0..1)
-    private String direccion;
+    private String nombre;
     private Double latitud;
     private Double longitud;
+    private String direccionAproximada;
+    private Long idCiudad; // FK hacia Ciudad
 
-    // Constructor con parámetros
-    public PuntoGeograficoEntity(String nombre, String direccion, Double latitud, Double longitud) {
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.latitud = latitud;
-        this.longitud = longitud;
-    }
-
-    // Constructor vacío
     public PuntoGeograficoEntity() {}
 
-    // Getters
-    public Long getIdPunto() {
-        return idPunto;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public Double getLatitud() {
-        return latitud;
-    }
-
-    public Double getLongitud() {
-        return longitud;
-    }
-
-    // Setters
-    public void setIdPunto(Long idPunto) {
-        this.idPunto = idPunto;
-    }
-
-    public void setNombre(String nombre) {
+    public PuntoGeograficoEntity(String nombre, Double latitud, Double longitud, String direccionAproximada, Long idCiudad) {
         this.nombre = nombre;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public void setLatitud(Double latitud) {
         this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccionAproximada = direccionAproximada;
+        this.idCiudad = idCiudad;
     }
 
-    public void setLongitud(Double longitud) {
-        this.longitud = longitud;
-    }
+    // Getters y Setters
+    public Long getIdPunto() { return idPunto; }
+    public void setIdPunto(Long idPunto) { this.idPunto = idPunto; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public Double getLatitud() { return latitud; }
+    public void setLatitud(Double latitud) { this.latitud = latitud; }
+
+    public Double getLongitud() { return longitud; }
+    public void setLongitud(Double longitud) { this.longitud = longitud; }
+
+    public String getDireccionAproximada() { return direccionAproximada; }
+    public void setDireccionAproximada(String direccionAproximada) { this.direccionAproximada = direccionAproximada; }
+
+    public Long getIdCiudad() { return idCiudad; }
+    public void setIdCiudad(Long idCiudad) { this.idCiudad = idCiudad; }
 }

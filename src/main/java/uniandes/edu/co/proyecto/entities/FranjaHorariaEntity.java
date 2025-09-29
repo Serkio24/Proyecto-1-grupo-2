@@ -1,7 +1,5 @@
 package uniandes.edu.co.proyecto.entities;
 
-import java.time.LocalTime;
-import java.time.DayOfWeek;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,63 +12,34 @@ public class FranjaHorariaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idFranjaHoraria;
-
-    private DayOfWeek diaSemana;  // Se puede usar String si prefieres
-    private LocalTime horaInicio;
-    private LocalTime horaFin;
+    private Long idFranja;
+    private String diaSemana;
+    private String horaInicio;
+    private String horaFin;
     private String tipoServicio;
 
-    // Constructor con parámetros
-    public FranjaHorariaEntity(DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin, String tipoServicio) {
-        this.diaSemana = diaSemana;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.tipoServicio = tipoServicio;
-    }
-
-    // Constructor vacío
     public FranjaHorariaEntity() {}
 
-    // Getters
-    public Long getIdFranjaHoraria() {
-        return idFranjaHoraria;
-    }
-
-    public DayOfWeek getDiaSemana() {
-        return diaSemana;
-    }
-
-    public LocalTime getHoraInicio() {
-        return horaInicio;
-    }
-
-    public LocalTime getHoraFin() {
-        return horaFin;
-    }
-
-    public String getTipoServicio() {
-        return tipoServicio;
-    }
-
-    // Setters
-    public void setIdFranjaHoraria(Long idFranjaHoraria) {
-        this.idFranjaHoraria = idFranjaHoraria;
-    }
-
-    public void setDiaSemana(DayOfWeek diaSemana) {
+    public FranjaHorariaEntity(String diaSemana, String horaInicio, String horaFin, String tipoServicio) {
         this.diaSemana = diaSemana;
-    }
-
-    public void setHoraInicio(LocalTime horaInicio) {
         this.horaInicio = horaInicio;
-    }
-
-    public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
-    }
-
-    public void setTipoServicio(String tipoServicio) {
         this.tipoServicio = tipoServicio;
     }
+
+    // Getters y Setters
+    public Long getIdFranja() { return idFranja; }
+    public void setIdFranja(Long idFranja) { this.idFranja = idFranja; }
+
+    public String getDiaSemana() { return diaSemana; }
+    public void setDiaSemana(String diaSemana) { this.diaSemana = diaSemana; }
+
+    public String getHoraInicio() { return horaInicio; }
+    public void setHoraInicio(String horaInicio) { this.horaInicio = horaInicio; }
+
+    public String getHoraFin() { return horaFin; }
+    public void setHoraFin(String horaFin) { this.horaFin = horaFin; }
+
+    public String getTipoServicio() { return tipoServicio; }
+    public void setTipoServicio(String tipoServicio) { this.tipoServicio = tipoServicio; }
 }
