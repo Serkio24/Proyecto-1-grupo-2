@@ -43,14 +43,14 @@ public class CiudadController {
         }
     }
 
-    // Crear ciudad
-    @PostMapping("/new/save")
-    public ResponseEntity<String> crearCiudad(@RequestBody CiudadEntity ciudad) {
+    // RF1: Registrar una ciudad
+    @PostMapping("/registrar")
+    public ResponseEntity<String> registrarCiudad(@RequestBody CiudadEntity ciudad) {
         try {
-            ciudadRepository.insertarCiudad(ciudad.getNombre());
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ciudad creada exitosamente");
+            ciudadRepository.save(ciudad);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Ciudad registrada exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la ciudad");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar la ciudad");
         }
     }
 
