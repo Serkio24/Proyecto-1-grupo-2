@@ -95,6 +95,7 @@ public class UsuarioController {
             UsuarioEntity usuario = dto.getUsuario();
             TarjetaCreditoEntity tarjeta = dto.getTarjeta();
 
+            // Insertar usuario
             usuarioRepository.insertarUsuario(
                 usuario.getNombre(),
                 usuario.getNumeroCelular(),
@@ -103,15 +104,19 @@ public class UsuarioController {
                 "Cliente"
             );
 
+            // Recuperar el usuario recién creado
             UsuarioEntity usuarioCreado = usuarioRepository.darUltimoUsuario();
 
+            // Asignar el cliente a la tarjeta
             tarjeta.setCliente(usuarioCreado);
 
+            // Insertar la tarjeta pasando clienteId
             tarjetaCreditoRepository.insertarTarjeta(
                 tarjeta.getTitularDeLaTarjeta(),
                 tarjeta.getNumeroTarjeta(),
                 tarjeta.getFechaExpiracion(),
-                String.valueOf(tarjeta.getCodigoSeguridad())
+                tarjeta.getCodigoSeguridad(),
+                usuarioCreado.getIdUsuario()  // <-- aquí va el FK
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
@@ -121,6 +126,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     //RF3
     @PostMapping("/new/conductor")

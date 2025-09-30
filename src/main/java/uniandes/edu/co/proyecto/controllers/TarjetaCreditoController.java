@@ -47,21 +47,27 @@ public class TarjetaCreditoController {
     @PostMapping("/new/save")
     public ResponseEntity<String> crearTarjeta(@RequestBody TarjetaCreditoEntity tarjeta) {
         try {
-            // ⚠️ Si el cliente es obligatorio, se debe pasar su ID aquí
-            Long clienteId = (tarjeta.getCliente() != null) ? tarjeta.getCliente().getIdUsuario() : null;
+            if (tarjeta.getCliente() == null || tarjeta.getCliente().getIdUsuario() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe especificar un cliente válido para la tarjeta");
+            }
+
+            Long clienteId = tarjeta.getCliente().getIdUsuario();
 
             tarjetaCreditoRepository.insertarTarjeta(
                 tarjeta.getTitularDeLaTarjeta(),
                 tarjeta.getNumeroTarjeta(),
                 tarjeta.getFechaExpiracion(),
-                tarjeta.getCodigoSeguridad().toString()  // OJO: si en el repo cambias a Integer, quita el toString()
-                // ,clienteId   // si agregas el FK en el query
+                tarjeta.getCodigoSeguridad(),
+                clienteId
             );
+
             return ResponseEntity.status(HttpStatus.CREATED).body("Tarjeta de crédito creada exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la tarjeta de crédito");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al crear la tarjeta de crédito: " + e.getMessage());
         }
     }
+
 
     // Actualizar tarjeta
     @PostMapping("/{id}/edit/save")
@@ -72,7 +78,7 @@ public class TarjetaCreditoController {
                 tarjeta.getTitularDeLaTarjeta(),
                 tarjeta.getNumeroTarjeta(),
                 tarjeta.getFechaExpiracion(),
-                tarjeta.getCodigoSeguridad().toString()
+                tarjeta.getCodigoSeguridad()
             );
             return ResponseEntity.ok("Tarjeta de crédito actualizada exitosamente");
         } catch (Exception e) {
