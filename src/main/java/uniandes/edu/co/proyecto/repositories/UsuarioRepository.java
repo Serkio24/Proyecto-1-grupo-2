@@ -33,4 +33,8 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     @Transactional
     @Query(value = "INSERT INTO usuarios (nombre, numeroCelular, numeroCedula, correoElectronico, tipo) VALUES (:nombre, :numeroCelular, :numeroCedula, :correo, :tipo)", nativeQuery = true)
     void insertarUsuario(@Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correo") String correo, @Param("tipo") String tipo);
+
+    @Query(value = "SELECT * FROM usuarios WHERE idUsuario = (SELECT MAX(idUsuario) FROM usuarios)", nativeQuery = true)
+    UsuarioEntity darUltimoUsuario();
+
 }
