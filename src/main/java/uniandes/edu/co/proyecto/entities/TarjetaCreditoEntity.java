@@ -1,6 +1,9 @@
 package uniandes.edu.co.proyecto.entities;
 
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="tarjetas_credito")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TarjetaCreditoEntity {
 
     @Id

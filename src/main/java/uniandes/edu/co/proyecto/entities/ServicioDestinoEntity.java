@@ -1,5 +1,7 @@
 package uniandes.edu.co.proyecto.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="servicios_destinos")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ServicioDestinoEntity {
 
     @Id
@@ -18,10 +21,12 @@ public class ServicioDestinoEntity {
 
     @ManyToOne
     @JoinColumn(name="idServicio", referencedColumnName = "idServicio", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ServicioEntity idServicio;
 
     @ManyToOne
     @JoinColumn(name="idPuntoLlegada", referencedColumnName = "idPunto", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private PuntoGeograficoEntity idPuntoLlegada;
 
     // Constructor con parámetros

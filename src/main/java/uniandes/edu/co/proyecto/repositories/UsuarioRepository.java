@@ -26,11 +26,16 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE usuarios SET nombre = :nombre, numeroCelular = :numeroCelular, numeroCedula = :numeroCedula, correoElectronico = :correo, tipo = :tipo WHERE idUsuario = :id", nativeQuery = true)
+    @Query(value = "UPDATE usuarios SET nombre = :nombre, numeroCelular = :numeroCelular, numeroCedula = :numeroCedula, correoElectronico = :correo, tipoUsuario = :tipo WHERE idUsuario = :id", nativeQuery = true)
     void actualizarUsuario(@Param("id") Long id, @Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correo") String correo, @Param("tipo") String tipo);
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO usuarios (nombre, numeroCelular, numeroCedula, correoElectronico, tipo) VALUES (:nombre, :numeroCelular, :numeroCedula, :correo, :tipo)", nativeQuery = true)
+    @Query(value = "INSERT INTO usuarios (idUsuario, nombre, numeroCelular, numeroCedula, correoElectronico, tipoUsuario) " + "VALUES (usuarios_SEQ.NEXTVAL, :nombre, :numeroCelular, :numeroCedula, :correo, :tipo)", nativeQuery = true)
     void insertarUsuario(@Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correo") String correo, @Param("tipo") String tipo);
+
+
+    @Query(value = "SELECT * FROM usuarios WHERE idUsuario = (SELECT MAX(idUsuario) FROM usuarios)", nativeQuery = true)
+    UsuarioEntity darUltimoUsuario();
+
 }

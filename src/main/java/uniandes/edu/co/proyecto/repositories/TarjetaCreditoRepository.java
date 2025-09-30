@@ -13,8 +13,8 @@ public interface TarjetaCreditoRepository extends JpaRepository<TarjetaCreditoEn
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO tarjetas_credito (titularDeLaTarjeta, numeroTarjeta, fechaExpiracion, codigoSeguridad) VALUES (:titular, :numero, :fecha, :codigo)", nativeQuery = true)
-    void insertarTarjeta(@Param("titular") String titularDeLaTarjeta, @Param("numero") String numeroTarjeta, @Param("fecha") LocalDate fechaExpiracion, @Param("codigo") String codigoSeguridad);
+    @Query(value = "INSERT INTO tarjetas_credito (idTarjetaCredito, titularDeLaTarjeta, numeroTarjeta, fechaExpiracion, codigoSeguridad, clienteId) VALUES (tarjetas_credito_SEQ.NEXTVAL, :titular, :numero, :fecha, :codigo, :clienteId)", nativeQuery = true)
+    void insertarTarjeta(@Param("titular") String titularDeLaTarjeta, @Param("numero") String numeroTarjeta, @Param("fecha") LocalDate fechaExpiracion, @Param("codigo") Integer codigoSeguridad, @Param("clienteId") Long clienteId);
 
     @Query(value = "SELECT * FROM tarjetas_credito", nativeQuery = true)
     Collection<TarjetaCreditoEntity> darTarjetas();
@@ -25,7 +25,7 @@ public interface TarjetaCreditoRepository extends JpaRepository<TarjetaCreditoEn
     @Modifying
     @Transactional
     @Query(value = "UPDATE tarjetas_credito SET titularDeLaTarjeta = :titular, numeroTarjeta = :numero, fechaExpiracion = :fecha, codigoSeguridad = :codigo WHERE idTarjetaCredito = :id", nativeQuery = true)
-    void actualizarTarjeta(@Param("id") Long id, @Param("titular") String titularDeLaTarjeta, @Param("numero") String numeroTarjeta, @Param("fecha") LocalDate fechaExpiracion, @Param("codigo") String codigoSeguridad);
+    void actualizarTarjeta(@Param("id") Long id, @Param("titular") String titularDeLaTarjeta, @Param("numero") String numeroTarjeta, @Param("fecha") LocalDate fechaExpiracion, @Param("codigo") Integer codigoSeguridad);
 
     @Modifying
     @Transactional
