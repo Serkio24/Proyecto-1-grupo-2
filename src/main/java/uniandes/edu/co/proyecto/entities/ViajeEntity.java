@@ -1,6 +1,9 @@
 package uniandes.edu.co.proyecto.entities;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +14,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "viajes")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ViajeEntity {
 
     @Id
@@ -24,16 +28,19 @@ public class ViajeEntity {
     // FK a ServicioEntity
     @ManyToOne
     @JoinColumn(name = "idServicio", referencedColumnName = "idServicio")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ServicioEntity idServicio;
 
     // FK a UsuarioEntity (conductor)
     @ManyToOne
     @JoinColumn(name = "idConductor", referencedColumnName = "idUsuario")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private UsuarioEntity idConductor;
 
     // FK a VehiculoEntity
     @ManyToOne
     @JoinColumn(name = "idVehiculo", referencedColumnName = "idVehiculo")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private VehiculoEntity idVehiculo;
 
     // Constructor vacío

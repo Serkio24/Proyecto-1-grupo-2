@@ -1,5 +1,7 @@
 package uniandes.edu.co.proyecto.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "vehiculos")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class VehiculoEntity {
 
     @Id
