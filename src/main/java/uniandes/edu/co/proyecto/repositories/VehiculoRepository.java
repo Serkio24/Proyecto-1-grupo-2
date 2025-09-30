@@ -28,6 +28,11 @@ public interface VehiculoRepository extends JpaRepository<VehiculoEntity, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO vehiculos (tipo, marca, modelo, color, placa, ciudadExpedicion, capacidadPasajeros) VALUES (:tipo, :marca, :modelo, :color, :placa, :ciudad, :capacidad)", nativeQuery = true)
-    void insertarVehiculo(@Param("tipo") String tipo, @Param("marca") String marca, @Param("modelo") String modelo, @Param("color") String color, @Param("placa") String placa, @Param("ciudad") String ciudad, @Param("capacidad") Long capacidad);
+    @Query(value = "INSERT INTO vehiculos (idVehiculo, tipo, marca, modelo, color, placa, ciudadExpedicion, capacidadPasajeros) VALUES (vehiculos_SEQ.NEXTVAL, :tipo, :marca, :modelo, :color, :placa, :ciudadExpedicion, :capacidad)", nativeQuery = true)
+    void insertarVehiculo(@Param("tipo") String tipo, @Param("marca") String marca, @Param("modelo") String modelo, @Param("color") String color, @Param("placa") String placa, @Param("ciudadExpedicion") String ciudadExpedicion, @Param("capacidad") Integer capacidad);
+
+    @Query(value = "SELECT * FROM vehiculos WHERE idVehiculo = (SELECT MAX(idVehiculo) FROM vehiculos)", nativeQuery = true)
+    VehiculoEntity darUltimoVehiculo();
+
 }
+
