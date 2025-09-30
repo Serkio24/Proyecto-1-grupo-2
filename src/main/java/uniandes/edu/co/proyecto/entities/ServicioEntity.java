@@ -1,6 +1,9 @@
 package uniandes.edu.co.proyecto.entities;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +14,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="servicios")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class ServicioEntity {
 
     @Id
@@ -19,6 +24,7 @@ public class ServicioEntity {
 
     @ManyToOne
     @JoinColumn(name="idCliente", referencedColumnName="idUsuario")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private UsuarioEntity idCliente;
 
     private LocalDateTime fechaHora;
@@ -30,6 +36,7 @@ public class ServicioEntity {
 
     @ManyToOne
     @JoinColumn(name="idPuntoPartida", referencedColumnName = "idPunto")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private PuntoGeograficoEntity idPuntoPartida;
 
     //------- acá son los atributos viejitos 
