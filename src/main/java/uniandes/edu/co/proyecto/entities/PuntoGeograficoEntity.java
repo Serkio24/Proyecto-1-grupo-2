@@ -50,4 +50,7 @@ public class PuntoGeograficoEntity {
 
     public String getDireccionAproximada() { return direccionAproximada; }
     public void setDireccionAproximada(String direccionAproximada) { this.direccionAproximada = direccionAproximada; }
+
+    public CiudadEntity getCiudad() { return ciudad; }
+    public void setCiudad(CiudadEntity ciudad) { this.ciudad = ciudad; }
 }
