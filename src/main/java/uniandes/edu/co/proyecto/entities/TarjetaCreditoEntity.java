@@ -1,9 +1,12 @@
 package uniandes.edu.co.proyecto.entities;
 
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,17 +16,22 @@ public class TarjetaCreditoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idTarjetaCredito;
+
     private String titularDeLaTarjeta;
     private String numeroTarjeta;
-    private String fechaExpiracion;
-    private String codigoSeguridad;
+    private LocalDate fechaExpiracion; // cambiado a LocalDate
+    private Integer codigoSeguridad;
 
-    // Constructor
-    public TarjetaCreditoEntity(String titularDeLaTarjeta, String numeroTarjeta, String fechaExpiracion, String codigoSeguridad) {
+    @ManyToOne
+    @JoinColumn(name="clienteId", referencedColumnName="idUsuario")
+    private UsuarioEntity cliente;
+
+    public TarjetaCreditoEntity(String titularDeLaTarjeta, String numeroTarjeta, LocalDate fechaExpiracion, Integer codigoSeguridad, UsuarioEntity cliente) {
         this.titularDeLaTarjeta = titularDeLaTarjeta;
         this.numeroTarjeta = numeroTarjeta;
         this.fechaExpiracion = fechaExpiracion;
         this.codigoSeguridad = codigoSeguridad;
+        this.cliente = cliente;
     }
 
     public TarjetaCreditoEntity() {}
@@ -38,9 +46,12 @@ public class TarjetaCreditoEntity {
     public String getNumeroTarjeta() { return numeroTarjeta; }
     public void setNumeroTarjeta(String numeroTarjeta) { this.numeroTarjeta = numeroTarjeta; }
 
-    public String getFechaExpiracion() { return fechaExpiracion; }
-    public void setFechaExpiracion(String fechaExpiracion) { this.fechaExpiracion = fechaExpiracion; }
+    public LocalDate getFechaExpiracion() { return fechaExpiracion; }
+    public void setFechaExpiracion(LocalDate fechaExpiracion) { this.fechaExpiracion = fechaExpiracion; }
 
-    public String getCodigoSeguridad() { return codigoSeguridad; }
-    public void setCodigoSeguridad(String codigoSeguridad) { this.codigoSeguridad = codigoSeguridad; }
+    public Integer getCodigoSeguridad() { return codigoSeguridad; }
+    public void setCodigoSeguridad(Integer codigoSeguridad) { this.codigoSeguridad = codigoSeguridad; }
+
+    public UsuarioEntity getCliente() { return cliente; }
+    public void setCliente(UsuarioEntity cliente) { this.cliente = cliente; }
 }

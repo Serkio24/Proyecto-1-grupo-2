@@ -1,6 +1,6 @@
 package uniandes.edu.co.proyecto.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,19 +25,20 @@ public class ReviewEntity {
     @JoinColumn(name = "idUsuarioCalificado", referencedColumnName="idUsuario")
     private UsuarioEntity usuarioCalificado;
 
-    //FK hacia viaje
     @ManyToOne
     @JoinColumn(name = "idViaje", referencedColumnName="idViaje")
     private ViajeEntity viaje;
 
     private Double puntuacion;
     private String comentario;
-    private LocalDate fechaRevision;
+    private LocalDateTime fechaRevision;
 
     // Constructores
     public ReviewEntity() {}
 
-    public ReviewEntity(UsuarioEntity usuarioCalificador, UsuarioEntity usuarioCalificado, ViajeEntity viaje, Double puntuacion, String comentario, LocalDate fechaRevision) {
+    public ReviewEntity(UsuarioEntity usuarioCalificador, UsuarioEntity usuarioCalificado, 
+                        ViajeEntity viaje, Double puntuacion, String comentario, 
+                        LocalDateTime fechaRevision) {
         this.usuarioCalificador = usuarioCalificador;
         this.usuarioCalificado = usuarioCalificado;
         this.viaje = viaje;
@@ -65,6 +66,6 @@ public class ReviewEntity {
     public String getComentario() { return comentario; }
     public void setComentario(String comentario) { this.comentario = comentario; }
 
-    public LocalDate getFechaRevision() { return fechaRevision; }
-    public void setFechaRevision(LocalDate fechaRevision) { this.fechaRevision = fechaRevision; }
+    public LocalDateTime getFechaRevision() { return fechaRevision; }
+    public void setFechaRevision(LocalDateTime fechaRevision) { this.fechaRevision = fechaRevision; }
 }

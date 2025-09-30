@@ -2,32 +2,24 @@ package uniandes.edu.co.proyecto.entities;
 
 import java.io.Serializable;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class NivelVehiculoPK implements Serializable {
 
-    @ManyToOne //para mi que eso seria many to many pero no se como ponerlo
-    @JoinColumn(name="modelo", referencedColumnName="modelo")
-    private VehiculoEntity vehiculoModelo;
-
-    @ManyToOne
-    @JoinColumn(name="capacidadPasajeros", referencedColumnName="capacidadPasajeros")
-    private VehiculoEntity vehiculoCapacidad;
+    private String modelo;
+    private int capacidadPasajeros;
 
     public NivelVehiculoPK() {}
 
-    public NivelVehiculoPK(VehiculoEntity vehiculoModelo, VehiculoEntity vehiculoCapacidad) {
-        super();
-        this.vehiculoModelo = vehiculoModelo;
-        this.vehiculoCapacidad = vehiculoCapacidad;
+    public NivelVehiculoPK(String modelo, int capacidadPasajeros) {
+        this.modelo = modelo;
+        this.capacidadPasajeros = capacidadPasajeros;
     }
 
-    // Getters y Setters
-    public VehiculoEntity getVehiculoModelo() { return vehiculoModelo; }
-    public void setVehiculoModelo(VehiculoEntity vehiculoModelo) { this.vehiculoModelo = vehiculoModelo; }
+    // Getters y setters
+    public String getModelo() { return modelo; }
+    public void setModelo(String modelo) { this.modelo = modelo; }
 
-    public VehiculoEntity getVehiculoCapacidad() { return vehiculoCapacidad; }
-    public void setVehiculoCapacidad(VehiculoEntity vehiculoCapacidad) { this.vehiculoCapacidad = vehiculoCapacidad; }
+    public int getCapacidadPasajeros() { return capacidadPasajeros; }
+    public void setCapacidadPasajeros(int capacidadPasajeros) { this.capacidadPasajeros = capacidadPasajeros; }
 }

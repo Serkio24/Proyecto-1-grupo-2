@@ -40,12 +40,12 @@ CREATE TABLE vehiculos (
 
 -- TABLA NIVELES_VEHICULO
 CREATE TABLE niveles_vehiculo (
-    idVehiculo NUMBER NOT NULL,
     modelo VARCHAR2(50 BYTE) NOT NULL,
     capacidadPasajeros NUMBER NOT NULL CHECK (capacidadPasajeros > 0),
     nivel VARCHAR2(20 BYTE) CHECK (nivel IN ('Estandar','Confort','Large')),
-    CONSTRAINT niveles_vehiculo_pk PRIMARY KEY (idVehiculo)
+    CONSTRAINT niveles_vehiculo_pk PRIMARY KEY (modelo, capacidadPasajeros)
 );
+
 
 -- TABLA CONDUCTOR_VEHICULOS
 CREATE TABLE conductor_vehiculos (
@@ -61,12 +61,13 @@ CREATE TABLE tarjetas_credito (
     idTarjetaCredito NUMBER NOT NULL,
     titularDeLaTarjeta VARCHAR2(100 BYTE) NOT NULL,
     numeroTarjeta VARCHAR2(20 BYTE) NOT NULL,
-    fechaExpiracion VARCHAR2(10 BYTE) NOT NULL,
+    fechaExpiracion DATE NOT NULL,
     codigoSeguridad NUMBER NOT NULL,
     clienteId NUMBER NOT NULL,
     CONSTRAINT tarjetas_credito_pk PRIMARY KEY (idTarjetaCredito),
     CONSTRAINT tarjetas_credito_fk FOREIGN KEY (clienteId) REFERENCES usuarios(idUsuario)
 );
+
 
 -- TABLA FRANJAS_HORARIAS
 CREATE TABLE franjas_horarias (

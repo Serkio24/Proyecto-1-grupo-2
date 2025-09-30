@@ -2,20 +2,18 @@ package uniandes.edu.co.proyecto.repositories;
 
 import java.util.Collection;
 import java.time.LocalDateTime;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
 
 public interface ServicioRepository extends JpaRepository<ServicioEntity, Long> {
 
     @Query(value = "SELECT * FROM servicios", nativeQuery = true)
     Collection<ServicioEntity> darServicios();
-    
+
     @Query(value = "SELECT * FROM servicios WHERE idServicio = :id", nativeQuery = true)
     ServicioEntity darServicio(@Param("id") Long id);
 

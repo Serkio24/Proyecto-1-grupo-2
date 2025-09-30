@@ -26,5 +26,4 @@ public class NivelVehiculoEntity {
 
     public String getNivel() { return nivel; }
     public void setNivel(String nivel) { this.nivel = nivel; }
-
 }
