@@ -12,10 +12,10 @@ import uniandes.edu.co.proyecto.entities.CiudadEntity;
 
 public interface CiudadRepository extends JpaRepository<CiudadEntity, Long> {
 
-    // Create
+    // Create: usar secuencia para generar ID
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO ciudades (nombre) VALUES (:nombre)", nativeQuery = true)
+    @Query(value = "INSERT INTO ciudades (idCiudad, nombre) VALUES (ciudades_SEQ.nextval, :nombre)", nativeQuery = true)
     void insertarCiudad(@Param("nombre") String nombre);
 
     // Read: Get all
@@ -37,4 +37,9 @@ public interface CiudadRepository extends JpaRepository<CiudadEntity, Long> {
     @Transactional
     @Query(value = "DELETE FROM ciudades WHERE idCiudad = :idCiudad", nativeQuery = true)
     void eliminarCiudad(@Param("idCiudad") Long idCiudad);
+
+    // Obtener el siguiente valor de la secuencia
+    @Query(value = "SELECT ciudades_SEQ.nextval FROM dual", nativeQuery = true)
+    Long obtenerNextval();
+
 }

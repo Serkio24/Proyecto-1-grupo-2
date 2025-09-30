@@ -45,14 +45,17 @@ public class CiudadController {
 
     // RF1: Registrar una ciudad
     @PostMapping("/registrar")
-    public ResponseEntity<String> registrarCiudad(@RequestBody CiudadEntity ciudad) {
+    public ResponseEntity<CiudadEntity> registrarCiudad(@RequestBody CiudadEntity ciudad) {
         try {
-            ciudadRepository.save(ciudad);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ciudad registrada exitosamente");
+            // Guardar usando JPA: Hibernate asigna ID automáticamente
+            CiudadEntity ciudadGuardada = ciudadRepository.save(ciudad);
+            // Devuelve la entidad completa como JSON
+            return ResponseEntity.status(HttpStatus.CREATED).body(ciudadGuardada);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar la ciudad");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     // Actualizar ciudad
     @PostMapping("/{id}/edit/save")
@@ -75,5 +78,16 @@ public class CiudadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la ciudad");
         }
     }
+
+    @GetMapping("/next-id")
+    public ResponseEntity<Long> obtenerNextId() {
+        try {
+            Long siguienteId = ciudadRepository.obtenerNextval();
+            return ResponseEntity.ok(siguienteId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
 
