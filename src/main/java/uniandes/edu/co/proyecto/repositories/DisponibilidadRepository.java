@@ -1,6 +1,8 @@
 package uniandes.edu.co.proyecto.repositories;
 
 import java.util.Collection;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -36,4 +38,22 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
     @Transactional
     @Query(value = "DELETE FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
     void eliminarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+
+    @Query(value = """
+        SELECT d.* FROM disponibilidades d
+        INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
+        INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
+        INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
+        WHERE cv.idConductor = :idConductor
+        AND f.diaSemana = :diaSemana
+        AND (
+             (:horaInicio < f.horaFin AND :horaFin > f.horaInicio)
+        )
+        """, nativeQuery = true)
+    List<DisponibilidadEntity> validarTraslape(
+            @Param("idConductor") Long idConductor,
+            @Param("diaSemana") String diaSemana,
+            @Param("horaInicio") String horaInicio,
+            @Param("horaFin") String horaFin
+    );
 }
