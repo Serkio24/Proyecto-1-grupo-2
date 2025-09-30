@@ -2,6 +2,9 @@ package uniandes.edu.co.proyecto.entities;
 
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -11,10 +14,12 @@ public class ConductorVehiculoPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "idConductor", referencedColumnName = "idUsuario")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private UsuarioEntity idConductor;
 
     @ManyToOne
     @JoinColumn(name = "idVehiculo", referencedColumnName = "idVehiculo")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private VehiculoEntity idVehiculo;
 
     public ConductorVehiculoPK() { }

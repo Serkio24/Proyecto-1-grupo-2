@@ -1,5 +1,6 @@
 package uniandes.edu.co.proyecto.repositories;
 
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,21 +40,24 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
     @Query(value = "DELETE FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
     void eliminarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
 
-    @Query(value = """
-        SELECT d.* FROM disponibilidades d
-        INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
-        INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
-        INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
-        WHERE cv.idConductor = :idConductor
-        AND f.diaSemana = :diaSemana
-        AND (
-             (:horaInicio < f.horaFin AND :horaFin > f.horaInicio)
-        )
-        """, nativeQuery = true)
-    List<DisponibilidadEntity> validarTraslape(
-            @Param("idConductor") Long idConductor,
-            @Param("diaSemana") String diaSemana,
-            @Param("horaInicio") String horaInicio,
-            @Param("horaFin") String horaFin
-    );
+    @Query("""
+       SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END
+       FROM DisponibilidadEntity d
+       WHERE d.pk.vehiculo IN (
+            SELECT cv.pk.idVehiculo
+            FROM ConductorVehiculoEntity cv
+            WHERE cv.pk.idConductor.id = :idConductor
+       )
+       AND d.pk.franja.diaSemana = :dia
+       AND (
+            (:horaInicio BETWEEN d.pk.franja.horaInicio AND d.pk.franja.horaFin)
+         OR (:horaFin BETWEEN d.pk.franja.horaInicio AND d.pk.franja.horaFin)
+         OR (d.pk.franja.horaInicio BETWEEN :horaInicio AND :horaFin)
+       )
+       """)
+     boolean existsTraslape(@Param("idConductor") Long idConductor,
+                         @Param("dia") String dia,
+                         @Param("horaInicio") LocalTime horaInicio,
+                         @Param("horaFin") LocalTime horaFin);
+
 }
