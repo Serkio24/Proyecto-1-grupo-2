@@ -22,7 +22,7 @@ public class UsuarioEntity {
 
     private String correoElectronico;
 
-    private String tipo;
+    private String tipoUsuario;
 
     public UsuarioEntity() { }
 
@@ -31,7 +31,7 @@ public class UsuarioEntity {
         this.numeroCelular = numeroCelular;
         this.numeroCedula = numeroCedula;
         this.correoElectronico = correoElectronico;
-        this.tipo = tipo;
+        this.tipoUsuario = tipo;
     }
 
     public Long getIdUsuario() {
@@ -75,10 +75,10 @@ public class UsuarioEntity {
     }
 
     public String getTipo() {
-        return tipo;
+        return tipoUsuario;
     }
 
     public void setTipo(String tipo) {
-        this.tipo = tipo;
+        this.tipoUsuario = tipo;
     }
 }
