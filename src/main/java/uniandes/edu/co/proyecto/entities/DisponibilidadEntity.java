@@ -1,11 +1,14 @@
 package uniandes.edu.co.proyecto.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="disponibilidades")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class DisponibilidadEntity {
 
     @EmbeddedId

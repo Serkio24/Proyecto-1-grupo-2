@@ -11,10 +11,10 @@ import uniandes.edu.co.proyecto.entities.PuntoGeograficoEntity;
 public interface PuntoGeograficoRepository extends JpaRepository<PuntoGeograficoEntity, Long> {
 
     // Create
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO puntos_geograficos (nombre, latitud, longitud, direccionAproximada, idCiudad) VALUES (:nombre, :latitud, :longitud, :direccionAproximada, :idCiudad)", nativeQuery = true)
-    void insertarPuntoGeografico(@Param("nombre") String nombre, @Param("latitud") Double latitud, @Param("longitud") Double longitud, @Param("direccionAproximada") String direccionAproximada, @Param("idCiudad") Long idCiudad);
+    // @Modifying
+    // @Transactional
+    // @Query(value = "INSERT INTO puntos_geograficos (idpunto, nombre, latitud, longitud, direccionAproximada, idCiudad) VALUES (:nombre, :latitud, :longitud, :direccionAproximada, :idCiudad)", nativeQuery = true)
+    // void insertarPuntoGeografico(@Param("nombre") String nombre, @Param("latitud") Double latitud, @Param("longitud") Double longitud, @Param("direccionAproximada") String direccionAproximada, @Param("idCiudad") Long idCiudad);
 
     // Read: Get all
     @Query(value = "SELECT * FROM puntos_geograficos", nativeQuery = true)
@@ -35,4 +35,16 @@ public interface PuntoGeograficoRepository extends JpaRepository<PuntoGeografico
     @Transactional
     @Query(value = "DELETE FROM puntos_geograficos WHERE idPunto = :id", nativeQuery = true)
     void eliminarPuntoGeografico(@Param("id") Long idPunto);
+
+    @Modifying
+@Transactional
+@Query(value = "INSERT INTO puntos_geograficos (idpunto, nombre, latitud, longitud, direccionAproximada, idCiudad) " +
+               "VALUES (puntos_geograficos_SEQ.NEXTVAL, :nombre, :latitud, :longitud, :direccionAproximada, :idCiudad)",
+       nativeQuery = true)
+void insertarPuntoGeografico(@Param("nombre") String nombre,
+                             @Param("latitud") Double latitud,
+                             @Param("longitud") Double longitud,
+                             @Param("direccionAproximada") String direccionAproximada,
+                             @Param("idCiudad") Long idCiudad);
+
 }
