@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uniandes.edu.co.proyecto.dto.ClienteDTO;
 import uniandes.edu.co.proyecto.entities.TarjetaCreditoEntity;
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.repositories.TarjetaCreditoRepository;
@@ -89,11 +90,11 @@ public class UsuarioController {
 
     //RF2
     @PostMapping("/new/cliente")
-    public ResponseEntity<UsuarioEntity> crearCliente(
-            @RequestBody UsuarioEntity usuario,
-            @RequestBody TarjetaCreditoEntity tarjeta
-    ) {
+    public ResponseEntity<UsuarioEntity> crearCliente(@RequestBody ClienteDTO dto) {
         try {
+            UsuarioEntity usuario = dto.getUsuario();
+            TarjetaCreditoEntity tarjeta = dto.getTarjeta();
+
             usuarioRepository.insertarUsuario(
                 usuario.getNombre(),
                 usuario.getNumeroCelular(),
