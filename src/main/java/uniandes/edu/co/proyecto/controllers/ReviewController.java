@@ -90,4 +90,46 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la review");
         }
     }
+
+    
+    // RF10: Pasajero califica conductor
+    @PostMapping("/pasajero")
+    public ResponseEntity<String> crearReviewRF10(@RequestBody ReviewEntity review) {
+        try {
+            review.setFechaRevision(java.time.LocalDateTime.now());
+            reviewRepository.insertarReview(
+                    review.getUsuarioCalificador().getIdUsuario(), // pasajero
+                    review.getUsuarioCalificado().getIdUsuario(),  // conductor
+                    review.getViaje().getIdViaje(),
+                    review.getPuntuacion(),
+                    review.getComentario(),
+                    review.getFechaRevision()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body("Review RF10 creada exitosamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear review RF10");
+        }
+    }
+
+    // RF11: Conductor califica pasajero
+    @PostMapping("/conductor")
+    public ResponseEntity<String> crearReviewRF11(@RequestBody ReviewEntity review) {
+        try {
+            review.setFechaRevision(java.time.LocalDateTime.now());
+            reviewRepository.insertarReview(
+                    review.getUsuarioCalificador().getIdUsuario(), // conductor
+                    review.getUsuarioCalificado().getIdUsuario(),  // pasajero
+                    review.getViaje().getIdViaje(),
+                    review.getPuntuacion(),
+                    review.getComentario(),
+                    review.getFechaRevision()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body("Review RF11 creada exitosamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear review RF11");
+        }
+    }
 }
+

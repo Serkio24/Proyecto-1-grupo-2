@@ -79,4 +79,58 @@ public class DisponibilidadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la disponibilidad");
         }
     }
+
+        // Validar traslape de disponibilidad
+    @GetMapping("/validar-traslape")
+    public ResponseEntity<?> validarTraslape(
+            @RequestParam Long idConductor,
+            @RequestParam String diaSemana,
+            @RequestParam String horaInicio,
+            @RequestParam String horaFin) {
+        try {
+            // Llamar al método del repository
+            var resultados = disponibilidadRepository.validarTraslape(
+                    idConductor, diaSemana, horaInicio, horaFin);
+
+            return ResponseEntity.ok(resultados);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al validar traslape: " + e.getMessage());
+        }
+    }
+
+    // @PostMapping("/registrar")
+    // public ResponseEntity<String> registrarDisponibilidad(
+    //         @RequestParam Long idConductor,
+    //         @RequestParam Long idVehiculo,
+    //         @RequestParam Long idFranja,
+    //         @RequestParam String diaSemana,
+    //         @RequestParam String horaInicio,
+    //         @RequestParam String horaFin) {
+
+    //     try {
+    //         // 1. Validar traslape
+    //         var traslapes = disponibilidadRepository.validarTraslape(
+    //                 idConductor, diaSemana, horaInicio, horaFin);
+
+    //         if (!traslapes.isEmpty()) {
+    //             return ResponseEntity
+    //                     .status(HttpStatus.CONFLICT)
+    //                     .body("Ya existe una disponibilidad que se superpone para este conductor en ese horario.");
+    //         }
+
+    //         // 2. Insertar disponibilidad
+    //         disponibilidadRepository.insertarDisponibilidad(idVehiculo, idFranja);
+
+    //         return ResponseEntity
+    //                 .status(HttpStatus.CREATED)
+    //                 .body("Disponibilidad registrada exitosamente");
+
+    //     } catch (Exception e) {
+    //         return ResponseEntity
+    //                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //                 .body("Error al registrar la disponibilidad: " + e.getMessage());
+    //     }
+    // }
+
 }

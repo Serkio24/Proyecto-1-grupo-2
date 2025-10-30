@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.entities.VehiculoEntity;
+import uniandes.edu.co.proyecto.repositories.ConductorVehiculoRepository;
+import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
 import uniandes.edu.co.proyecto.repositories.VehiculoRepository;
 
 @RestController
@@ -16,6 +19,10 @@ public class VehiculoController {
 
     @Autowired
     private VehiculoRepository vehiculoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private ConductorVehiculoRepository conductorVehiculoRepository;
 
     // ✅ Listar todos los vehículos
     @GetMapping
@@ -43,26 +50,30 @@ public class VehiculoController {
         }
     }
 
-    // ✅ Crear un nuevo vehículo
-    @PostMapping("/new/save")
-    public ResponseEntity<String> crearVehiculo(@RequestBody VehiculoEntity vehiculo) {
+    @PostMapping("/new")
+    public ResponseEntity<String> registrarVehiculo(@RequestBody VehiculoEntity vehiculo, @RequestParam Long conductorId) {
         try {
-            vehiculoRepository.insertarVehiculo(
-                vehiculo.getTipo(),
-                vehiculo.getMarca(),
-                vehiculo.getModelo(),
-                vehiculo.getColor(),
-                vehiculo.getPlaca(),
-                vehiculo.getCiudadExpedicion(),
-                vehiculo.getCapacidadPasajeros() != null ? vehiculo.getCapacidadPasajeros().longValue() : null
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Vehículo creado exitosamente");
+            UsuarioEntity conductor = usuarioRepository.darUsuario(conductorId);
+
+            if (conductor == null || !"Conductor".equals(conductor.getTipo())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El usuario no es un conductor válido");
+            }
+
+            // Ignorar cualquier ID enviado
+            vehiculo.setIdVehiculo(null);
+            VehiculoEntity vehiculoCreado = vehiculoRepository.save(vehiculo);
+
+            conductorVehiculoRepository.insertarConductorVehiculo(conductor.getIdUsuario(), vehiculoCreado.getIdVehiculo());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Vehículo registrado exitosamente");
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el vehículo");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar el vehículo");
         }
     }
 
-    // ✅ Actualizar un vehículo
+
     @PostMapping("/{id}/edit/save")
     public ResponseEntity<String> actualizarVehiculo(@PathVariable Long id, @RequestBody VehiculoEntity vehiculo) {
         try {
