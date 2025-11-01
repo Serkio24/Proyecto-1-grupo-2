@@ -47,17 +47,6 @@ public interface ConductorVehiculoRepository extends JpaRepository<ConductorVehi
             @Param("idVehiculo") Long idVehiculo
     );
 
-    @Query("""
-      SELECT cv.pk.conductor 
-      FROM ConductorVehiculoEntity cv
-      WHERE cv.pk.vehiculo IS NOT NULL
-      AND cv.pk.conductor NOT IN (
-          SELECT s.conductor 
-          FROM ServicioEntity s
-          WHERE s.estado = 'ASIGNADO' AND s.fechaHora BETWEEN :ahora AND :ahoraPlus1h
-      )
-      FETCH FIRST 1 ROWS ONLY
-    """)
-    UsuarioEntity findPrimerConductorDisponible(@Param("ahora") LocalDateTime ahora);
+    
 
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,8 +19,10 @@ import jakarta.persistence.Table;
 public class ViajeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idViaje;
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "viaje_seq")
+@SequenceGenerator(name = "viaje_seq", sequenceName = "VIAJE_SEQ", allocationSize = 1)
+private Long idViaje;
+
 
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
