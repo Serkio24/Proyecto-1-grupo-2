@@ -7,7 +7,7 @@ INNER JOIN servicios s ON s.idCliente = du.idUsuario
 INNER JOIN viajes v ON s.idServicio = v.idServicio
 INNER JOIN tarifas t ON s.tipoServicio = t.tipoServicio AND t.nivel = s.nivelRequerido AND v.fechaHoraInicio 
 BETWEEN t.vigenciaDesde AND t.vigenciaHasta
-WHERE du.idUsuario = 239;
+WHERE du.idUsuario = 3201;
 
 
 ---RFC 2
@@ -39,3 +39,5 @@ GROUP BY c.nombre, s.tipoServicio, s.nivelRequerido
 ORDER BY porcentaje DESC; 
 
 
+SELECT * FROM vehiculos
+WHERE placa = 'ABC123';
