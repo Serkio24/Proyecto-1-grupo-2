@@ -14,6 +14,8 @@ import uniandes.edu.co.proyecto.dto.RFC2DTO;
 import uniandes.edu.co.proyecto.dto.RFC3DTO;
 import uniandes.edu.co.proyecto.dto.RFC4DTO;
 import uniandes.edu.co.proyecto.repositories.RFCRepository;
+import uniandes.edu.co.proyecto.dto.RFC1IsolationResultDTO;
+import uniandes.edu.co.proyecto.services.RFCService;
 
 @RestController
 @RequestMapping("/rfc")
@@ -21,6 +23,8 @@ public class RFCController {
 
     @Autowired
     private RFCRepository rfcRepository;
+    @Autowired
+    private RFCService rfcService;
 
     //RFC1
     @GetMapping("/viajes/cliente/{idUsuario}")
@@ -67,6 +71,34 @@ public class RFCController {
             return ResponseEntity.ok(viajes);
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * RFC1 con aislamiento READ COMMITTED: ejecuta la consulta, espera 30s y vuelve a ejecutar dentro de la MISMA transacción.
+     * GET /rfc/viajes/cliente/read-committed/{idUsuario}
+     */
+    @GetMapping("/viajes/cliente/read-committed/{idUsuario}")
+    public ResponseEntity<RFC1IsolationResultDTO> rfc1ReadCommitted(@PathVariable Long idUsuario) {
+        try {
+            RFC1IsolationResultDTO result = rfcService.rfc1ReadCommitted(idUsuario);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * RFC1 con aislamiento SERIALIZABLE: ejecuta la consulta, espera 30s y vuelve a ejecutar dentro de la MISMA transacción.
+     * GET /rfc/viajes/cliente/serializable/{idUsuario}
+     */
+    @GetMapping("/viajes/cliente/serializable/{idUsuario}")
+    public ResponseEntity<RFC1IsolationResultDTO> rfc1Serializable(@PathVariable Long idUsuario) {
+        try {
+            RFC1IsolationResultDTO result = rfcService.rfc1Serializable(idUsuario);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
