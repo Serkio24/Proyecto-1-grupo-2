@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.entities.CiudadEntity;
 import uniandes.edu.co.proyecto.repositories.CiudadRepository;
+import uniandes.edu.co.proyecto.services.CiudadService;
 
 @RestController
 @RequestMapping("/ciudades")
@@ -16,6 +17,9 @@ public class CiudadController {
 
     @Autowired
     private CiudadRepository ciudadRepository;
+    
+    @Autowired
+    private CiudadService ciudadService;
 
     // Listar todas las ciudades
     @GetMapping
@@ -47,11 +51,11 @@ public class CiudadController {
     @PostMapping("/registrar")
     public ResponseEntity<CiudadEntity> registrarCiudad(@RequestBody CiudadEntity ciudad) {
         try {
-            // Guardar usando JPA: Hibernate asigna ID automáticamente
-            CiudadEntity ciudadGuardada = ciudadRepository.save(ciudad);
-            // Devuelve la entidad completa como JSON
-            return ResponseEntity.status(HttpStatus.CREATED).body(ciudadGuardada);
+            // Usar el servicio transaccional con solo el nombre
+            CiudadEntity ciudadCreada = ciudadService.registrarCiudad(ciudad.getNombre());
+            return ResponseEntity.status(HttpStatus.CREATED).body(ciudadCreada);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -8,10 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.dto.ClienteDTO;
-import uniandes.edu.co.proyecto.entities.TarjetaCreditoEntity;
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
-import uniandes.edu.co.proyecto.repositories.TarjetaCreditoRepository;
 import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
+import uniandes.edu.co.proyecto.services.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -19,8 +18,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
     @Autowired
-    private TarjetaCreditoRepository tarjetaCreditoRepository;
+    private UsuarioService usuarioService;
 
     // Listar todos los usuarios
     @GetMapping
@@ -92,35 +92,11 @@ public class UsuarioController {
     @PostMapping("/new/cliente")
     public ResponseEntity<UsuarioEntity> crearCliente(@RequestBody ClienteDTO dto) {
         try {
-            UsuarioEntity usuario = dto.getUsuario();
-            TarjetaCreditoEntity tarjeta = dto.getTarjeta();
-
-            // Insertar usuario
-            usuarioRepository.insertarUsuario(
-                usuario.getNombre(),
-                usuario.getNumeroCelular(),
-                usuario.getNumeroCedula(),
-                usuario.getCorreoElectronico(),
-                "Cliente"
-            );
-
-            // Recuperar el usuario recién creado
-            UsuarioEntity usuarioCreado = usuarioRepository.darUltimoUsuario();
-
-            // Asignar el cliente a la tarjeta
-            tarjeta.setCliente(usuarioCreado);
-
-            // Insertar la tarjeta pasando clienteId
-            tarjetaCreditoRepository.insertarTarjeta(
-                tarjeta.getTitularDeLaTarjeta(),
-                tarjeta.getNumeroTarjeta(),
-                tarjeta.getFechaExpiracion(),
-                tarjeta.getCodigoSeguridad(),
-                usuarioCreado.getIdUsuario()  // <-- aquí va el FK
-            );
-
+            UsuarioEntity usuarioCreado = usuarioService.crearCliente(dto.getUsuario(), dto.getTarjeta());
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
-
+        } catch (IllegalArgumentException e) {
+            // Tarjeta incompleta
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
