@@ -34,10 +34,7 @@ public class RFCController {
         }
     }
 
-    /**
-     * RFC1 con aislamiento READ COMMITTED: ejecuta la consulta, espera 30s y vuelve a ejecutar dentro de la MISMA transacción.
-     * GET /rfc/viajes/cliente/read-committed/{idUsuario}
-     */
+    //RFC1 READ COMMITTED
     @GetMapping("/viajes/cliente/read-committed/{idUsuario}")
     public ResponseEntity<RFC1IsolationResultDTO> rfc1ReadCommitted(@PathVariable Long idUsuario) {
         try {
@@ -48,10 +45,7 @@ public class RFCController {
         }
     }
 
-    /**
-     * RFC1 con aislamiento SERIALIZABLE: ejecuta la consulta, espera 30s y vuelve a ejecutar dentro de la MISMA transacción.
-     * GET /rfc/viajes/cliente/serializable/{idUsuario}
-     */
+    //RFC1 SERIALIZABLE
     @GetMapping("/viajes/cliente/serializable/{idUsuario}")
     public ResponseEntity<RFC1IsolationResultDTO> rfc1Serializable(@PathVariable Long idUsuario) {
         try {

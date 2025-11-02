@@ -32,7 +32,6 @@ public class UsuarioService {
     //nuevo RF2
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public UsuarioEntity crearCliente(UsuarioEntity usuario, TarjetaCreditoEntity tarjeta) {
-        // Insertar usuario tipo Cliente
         usuarioRepository.insertarUsuario(
             usuario.getNombre(),
             usuario.getNumeroCelular(),

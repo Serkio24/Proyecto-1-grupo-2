@@ -63,7 +63,7 @@ public class RFCService {
         }
         return viajes;
     }
-
+    //RFC1  READ COMMITTED
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public RFC1IsolationResultDTO rfc1ReadCommitted(Long idUsuario) throws InterruptedException {
         List<RFC1DTO> antes = mapRFC1(rfcRepository.consultarViajesCliente(idUsuario));
@@ -71,22 +71,22 @@ public class RFCService {
         List<RFC1DTO> despues = mapRFC1(rfcRepository.consultarViajesCliente(idUsuario));
         return new RFC1IsolationResultDTO(antes, despues);
     }
-
+    //RFC1 SERIALIZABLE
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public RFC1IsolationResultDTO rfc1Serializable(Long idUsuario) throws InterruptedException {
         List<RFC1DTO> antes = mapRFC1(rfcRepository.consultarViajesCliente(idUsuario));
-        Thread.sleep(30_000); // 30 segundos
+        Thread.sleep(30_000); 
         List<RFC1DTO> despues = mapRFC1(rfcRepository.consultarViajesCliente(idUsuario));
         return new RFC1IsolationResultDTO(antes, despues);
     }
-
-    // RFC1 normal (transaccional)
+    
+    // RFC1 
     @Transactional(readOnly = true)
     public List<RFC1DTO> consultarViajesCliente(Long idUsuario) {
         return mapRFC1(rfcRepository.consultarViajesCliente(idUsuario));
     }
 
-    // RFC2 - Top 20 conductores (transaccional)
+    //RFC2
     @Transactional(readOnly = true)
     public List<RFC2DTO> top20Conductores() {
         Collection<Object[]> resultados = rfcRepository.top20Conductores();
@@ -115,7 +115,7 @@ public class RFCService {
         return conductores;
     }
 
-    // RFC3 - Ganancias por vehículo (transaccional)
+    //RFC3
     @Transactional(readOnly = true)
     public List<RFC3DTO> gananciasVehiculoConductor(Long idConductor) {
         Collection<Object[]> resultados = rfcRepository.gananciasVehiculoConductor(idConductor);
@@ -154,7 +154,7 @@ public class RFCService {
         return ganancias;
     }
 
-    // RFC4 - Distribución de servicios (transaccional)
+    //RFC4
     @Transactional(readOnly = true)
     public List<RFC4DTO> distribucionServiciosCiudad(Long idCiudad, String fechaInicio, String fechaFin) {
         Collection<Object[]> resultados = rfcRepository.distribucionServiciosCiudad(idCiudad, fechaInicio, fechaFin);
