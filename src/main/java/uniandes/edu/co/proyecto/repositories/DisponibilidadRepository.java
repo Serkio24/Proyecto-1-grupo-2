@@ -60,4 +60,21 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
                          @Param("horaInicio") LocalTime horaInicio,
                          @Param("horaFin") LocalTime horaFin);
 
+     @Query(value = """
+        SELECT d.* FROM disponibilidades d
+        INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
+        INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
+        INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
+        WHERE cv.idConductor = :idConductor
+        AND f.diaSemana = :diaSemana
+        AND (
+             (:horaInicio < f.horaFin AND :horaFin > f.horaInicio)
+        )
+        """, nativeQuery = true)
+     List<DisponibilidadEntity> validarTraslape(
+               @Param("idConductor") Long idConductor,
+               @Param("diaSemana") String diaSemana,
+               @Param("horaInicio") String horaInicio,
+               @Param("horaFin") String horaFin
+     );
 }
