@@ -61,6 +61,17 @@ public class ServicioEntity {
         this.idPuntoPartida = idPuntoPartida;
     }
 
+    
+
+    public ServicioEntity(UsuarioEntity idCliente, LocalDateTime fechaHora, String tipoServicio,
+                          String nivelRequerido, String estado, PuntoGeograficoEntity idPuntoPartida) {
+        this.idCliente = idCliente;
+        this.fechaHora = fechaHora;
+        this.tipoServicio = tipoServicio;
+        this.nivelRequerido = nivelRequerido;
+        this.estado = estado;
+        this.idPuntoPartida = idPuntoPartida;
+    }
     // Constructor vacío
     public ServicioEntity() {}
 

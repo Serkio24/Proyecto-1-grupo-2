@@ -31,4 +31,7 @@ public interface TarjetaCreditoRepository extends JpaRepository<TarjetaCreditoEn
     @Transactional
     @Query(value = "DELETE FROM tarjetas_credito WHERE idTarjetaCredito = :id", nativeQuery = true)
     void eliminarTarjeta(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM tarjetas_credito WHERE clienteId = :clienteId", nativeQuery = true)
+    TarjetaCreditoEntity findByClienteId(@Param("clienteId") Long clienteId);
 }

@@ -14,6 +14,8 @@ public class DisponibilidadEntity {
     @EmbeddedId
     private DisponibilidadPK pk;
 
+    private boolean disponible = true;
+
     public DisponibilidadEntity() {}
 
     public DisponibilidadEntity(VehiculoEntity vehiculo, FranjaHorariaEntity franja) {
@@ -23,4 +25,8 @@ public class DisponibilidadEntity {
     // Getters y Setters
     public DisponibilidadPK getPk() { return pk; }
     public void setPk(DisponibilidadPK pk) { this.pk = pk; }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
 }

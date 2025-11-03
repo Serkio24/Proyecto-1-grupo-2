@@ -84,6 +84,21 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
           );
 
 
-
+     @Transactional(readOnly = true)
+     @Query(value = """
+          SELECT d.*
+          FROM disponibilidades d
+          JOIN franjas_horarias f ON d.idFranja = f.idFranja
+          WHERE d.disponible = 'Y'
+               AND f.tipoServicio = :tipoServicio
+               AND f.diaSemana = :diaSemana
+               AND TO_NUMBER(SUBSTR(f.horaInicio, 1, 2)) <= :horaActual
+               AND TO_NUMBER(SUBSTR(f.horaFin, 1, 2)) > :horaActual
+          """, nativeQuery = true)
+     List<DisponibilidadEntity> findDisponibilidadesActivas(
+          @Param("tipoServicio") String tipoServicio,
+          @Param("diaSemana") String diaSemana,
+          @Param("horaActual") int horaActual
+     );
 
 }
