@@ -1,15 +1,20 @@
 package uniandes.edu.co.proyecto.controllers;
 
 import java.util.Collection;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uniandes.edu.co.proyecto.dto.ActualizarDisponibilidadDTO;
+import uniandes.edu.co.proyecto.dto.RegistroDisponibilidadDTO;
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
 import uniandes.edu.co.proyecto.entities.DisponibilidadPK;
 import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
+import uniandes.edu.co.proyecto.services.DisponibilidadService;
 
 @RestController
 @RequestMapping("/disponibilidades")
@@ -17,6 +22,9 @@ public class DisponibilidadController {
 
     @Autowired
     private DisponibilidadRepository disponibilidadRepository;
+
+    @Autowired
+    private DisponibilidadService disponibilidadService;
 
     // Listar todas las disponibilidades
     @GetMapping
@@ -45,7 +53,7 @@ public class DisponibilidadController {
     }
 
     // Crear nueva disponibilidad
-    @PostMapping("/new/save")
+    @PostMapping("/new")
     public ResponseEntity<String> crearDisponibilidad(@RequestBody DisponibilidadPK pk) {
         try {
             disponibilidadRepository.insertarDisponibilidad(pk.getVehiculo().getIdVehiculo(), pk.getFranja().getIdFranja());
@@ -79,58 +87,50 @@ public class DisponibilidadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la disponibilidad");
         }
     }
-
-        // Validar traslape de disponibilidad
-    @GetMapping("/validar-traslape")
-    public ResponseEntity<?> validarTraslape(
+    // Validar traslape de disponibilidad
+   @GetMapping("/validar-traslape")
+    public boolean validarTraslape(
             @RequestParam Long idConductor,
             @RequestParam String diaSemana,
             @RequestParam String horaInicio,
             @RequestParam String horaFin) {
-        try {
-            // Llamar al método del repository
-            var resultados = disponibilidadRepository.validarTraslape(
-                    idConductor, diaSemana, horaInicio, horaFin);
+        return disponibilidadRepository.validarTraslape(idConductor, diaSemana, horaInicio, horaFin)>0;
+    }
 
-            return ResponseEntity.ok(resultados);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al validar traslape: " + e.getMessage());
+    
+
+    @PostMapping("/registrar")
+    public ResponseEntity<?> registrarDisponibilidad(@RequestBody RegistroDisponibilidadDTO request) {
+        disponibilidadService.registrarDisponibilidad(
+            request.getIdConductor(),
+            request.getDiaSemana(),
+            request.getHoraInicio(),
+            request.getHoraFin(),
+            request.getTipoServicio()
+        );
+        return ResponseEntity.ok("Disponibilidad registrada correctamente");
+    }
+
+    @PostMapping("/modificar")
+    public ResponseEntity<?> modificarDisponibilidad(@RequestBody ActualizarDisponibilidadDTO request) {
+        try {
+            disponibilidadService.modificarDisponibilidad(
+                request.getIdConductor(),
+                request.getIdVehiculoAnt(),
+                request.getIdFranjaAnt(),
+                request.getDiaSemana(),
+                request.getHoraInicio(),
+                request.getHoraFin(),
+                request.getTipoServicio(),
+                request.getIdVehiculoNuevo()
+            );
+            return ResponseEntity.ok("Disponibilidad modificada correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // @PostMapping("/registrar")
-    // public ResponseEntity<String> registrarDisponibilidad(
-    //         @RequestParam Long idConductor,
-    //         @RequestParam Long idVehiculo,
-    //         @RequestParam Long idFranja,
-    //         @RequestParam String diaSemana,
-    //         @RequestParam String horaInicio,
-    //         @RequestParam String horaFin) {
-
-    //     try {
-    //         // 1. Validar traslape
-    //         var traslapes = disponibilidadRepository.validarTraslape(
-    //                 idConductor, diaSemana, horaInicio, horaFin);
-
-    //         if (!traslapes.isEmpty()) {
-    //             return ResponseEntity
-    //                     .status(HttpStatus.CONFLICT)
-    //                     .body("Ya existe una disponibilidad que se superpone para este conductor en ese horario.");
-    //         }
-
-    //         // 2. Insertar disponibilidad
-    //         disponibilidadRepository.insertarDisponibilidad(idVehiculo, idFranja);
-
-    //         return ResponseEntity
-    //                 .status(HttpStatus.CREATED)
-    //                 .body("Disponibilidad registrada exitosamente");
-
-    //     } catch (Exception e) {
-    //         return ResponseEntity
-    //                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-    //                 .body("Error al registrar la disponibilidad: " + e.getMessage());
-    //     }
-    // }
 
 }
+
+

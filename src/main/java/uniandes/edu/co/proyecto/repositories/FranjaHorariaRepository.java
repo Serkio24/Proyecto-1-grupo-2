@@ -14,8 +14,16 @@ public interface FranjaHorariaRepository extends JpaRepository<FranjaHorariaEnti
     // Create
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO franjas_horarias (diaSemana, horaInicio, horaFin, tipoServicio) VALUES (:diaSemana, :horaInicio, :horaFin, :tipoServicio)", nativeQuery = true)
-    void insertarFranjaHoraria(@Param("diaSemana") String diaSemana, @Param("horaInicio") String horaInicio, @Param("horaFin") String horaFin, @Param("tipoServicio") String tipoServicio);
+    @Query(value = """
+        INSERT INTO franjas_horarias (idFranja, diaSemana, horaInicio, horaFin, tipoServicio)
+        VALUES (franjas_horarias_SEQ.NEXTVAL, :diaSemana, :horaInicio, :horaFin, :tipoServicio)
+    """, nativeQuery = true)
+    void insertarFranjaHoraria(
+        @Param("diaSemana") String diaSemana,
+        @Param("horaInicio") String horaInicio,
+        @Param("horaFin") String horaFin,
+        @Param("tipoServicio") String tipoServicio
+    );
 
     // Read: Get all
     @Query(value = "SELECT * FROM franjas_horarias", nativeQuery = true)
@@ -36,4 +44,32 @@ public interface FranjaHorariaRepository extends JpaRepository<FranjaHorariaEnti
     @Transactional
     @Query(value = "DELETE FROM franjas_horarias WHERE idFranja = :id", nativeQuery = true)
     void eliminarFranjaHoraria(@Param("id") Long idFranja);
+
+    // Verifica si existe una franja con mismo día, horaInicio y horaFin
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM franjas_horarias
+        WHERE diaSemana = :diaSemana
+        AND horaInicio = :horaInicio
+        AND horaFin = :horaFin
+    """, nativeQuery = true)
+    int existeFranja(
+        @Param("diaSemana") String diaSemana,
+        @Param("horaInicio") String horaInicio,
+        @Param("horaFin") String horaFin
+    );
+
+    // Retorna la franja si existe (útil para obtener su ID)
+    @Query(value = """
+        SELECT * FROM franjas_horarias
+        WHERE diaSemana = :diaSemana
+        AND horaInicio = :horaInicio
+        AND horaFin = :horaFin
+    """, nativeQuery = true)
+    FranjaHorariaEntity buscarFranjaExistente(
+        @Param("diaSemana") String diaSemana,
+        @Param("horaInicio") String horaInicio,
+        @Param("horaFin") String horaFin
+    );
+
 }
