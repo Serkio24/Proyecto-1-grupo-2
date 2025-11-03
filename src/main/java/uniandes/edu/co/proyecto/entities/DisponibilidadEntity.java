@@ -13,6 +13,7 @@ public class DisponibilidadEntity {
 
     @EmbeddedId
     private DisponibilidadPK pk;
+    private boolean disponible;
 
     public DisponibilidadEntity() {}
 
@@ -23,4 +24,14 @@ public class DisponibilidadEntity {
     // Getters y Setters
     public DisponibilidadPK getPk() { return pk; }
     public void setPk(DisponibilidadPK pk) { this.pk = pk; }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    
 }

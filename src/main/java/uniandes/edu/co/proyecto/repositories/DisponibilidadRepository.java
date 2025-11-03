@@ -1,8 +1,6 @@
 package uniandes.edu.co.proyecto.repositories;
 
-import java.time.LocalTime;
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,16 +15,25 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
     // Create
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO disponibilidades (idVehiculo, idFranja) VALUES (:idVehiculo, :idFranja)", nativeQuery = true)
+    @Query(value = "INSERT INTO disponibilidades (idVehiculo, idFranja, disponible) VALUES (:idVehiculo, :idFranja, true)", nativeQuery = true)
     void insertarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
 
     // Read: Get all
     @Query(value = "SELECT * FROM disponibilidades", nativeQuery = true)
     Collection<DisponibilidadEntity> darDisponibilidades();
 
+    // Obtener franjas de un vehículo
+    @Query(value = "SELECT * FROM disponibilidades WHERE idVehiculo = :idVehiculo", nativeQuery = true)
+    Collection<DisponibilidadEntity> darDisponibilidadesVehiculo(@Param("idVehiculo") Long idVehiculo);
+
     // Read: Get one
     @Query(value = "SELECT * FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
     DisponibilidadEntity darDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+
+    @Modifying
+     @Transactional
+     @Query(value = "UPDATE disponibilidades SET disponible = :disponible WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
+     void actualizarDisponibilidadFranja(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja, @Param("disponible") boolean disponible);
 
     // Update
     @Modifying
