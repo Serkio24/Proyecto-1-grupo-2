@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
-import uniandes.edu.co.proyecto.entities.ServicioDestinoEntity;
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
 import uniandes.edu.co.proyecto.entities.TarjetaCreditoEntity;
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
