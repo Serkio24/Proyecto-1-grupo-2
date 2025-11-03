@@ -117,23 +117,58 @@ END;
 /
 COMMIT;
 
--- Servicios y Viajes
+-- Servicios y Viajes con idTarifa y costo
 DECLARE
     v_servicio_id NUMBER;
     v_viaje_id NUMBER;
+    v_tarifa_id NUMBER;
+    v_precio_por_km NUMBER;
+    v_costo NUMBER;
 BEGIN
     FOR pasajero_id IN 151..400 LOOP
         FOR j IN 1..5 LOOP
+            -- Generar IDs de secuencia
             v_servicio_id := servicios_SEQ.NEXTVAL;
             v_viaje_id := viajes_SEQ.NEXTVAL;
 
+            -- Insertar servicio
             INSERT INTO servicios(idServicio, idCliente, fechaHora, tipoServicio, nivelRequerido, estado, idPuntoPartida)
-            VALUES (v_servicio_id, pasajero_id, SYSTIMESTAMP - DBMS_RANDOM.VALUE(1,100), 'Transporte Pasajeros', 'Estandar', 'Pendiente', MOD(pasajero_id,100)+1);
+            VALUES (
+                v_servicio_id,
+                pasajero_id,
+                SYSTIMESTAMP - DBMS_RANDOM.VALUE(1,100),
+                'Transporte Pasajeros',
+                'Estandar',
+                'Pendiente',
+                MOD(pasajero_id,100)+1
+            );
 
-            INSERT INTO viajes(idViaje, fechaHoraInicio, fechaHoraFin, longitudTrayecto, idServicio, idConductor, idVehiculo)
-            VALUES (v_viaje_id, SYSTIMESTAMP - DBMS_RANDOM.VALUE(1,100), SYSTIMESTAMP - DBMS_RANDOM.VALUE(0,99),
-                    DBMS_RANDOM.VALUE(2,20), v_servicio_id, MOD(v_viaje_id,150)+1, MOD(v_viaje_id,150)+1);
+            -- Obtener tarifa válida usando TIMESTAMP
+            SELECT idTarifa, precioPorKm INTO v_tarifa_id, v_precio_por_km
+            FROM tarifas
+            WHERE tipoServicio = 'Transporte Pasajeros'
+              AND nivel = 'Estandar'
+              AND SYSTIMESTAMP BETWEEN vigenciaDesde AND vigenciaHasta
+            FETCH FIRST 1 ROWS ONLY;
 
+            -- Calcular longitud aleatoria y costo
+            v_costo := v_precio_por_km * DBMS_RANDOM.VALUE(2,20);
+
+            -- Insertar viaje con idTarifa y costo
+            INSERT INTO viajes(idViaje, fechaHoraInicio, fechaHoraFin, longitudTrayecto, idServicio, idConductor, idVehiculo, idTarifa, costo)
+            VALUES (
+                v_viaje_id,
+                SYSTIMESTAMP - DBMS_RANDOM.VALUE(1,100),
+                SYSTIMESTAMP - DBMS_RANDOM.VALUE(0,99),
+                v_costo / v_precio_por_km, -- longitudTrayecto = costo / precioPorKm
+                v_servicio_id,
+                MOD(v_viaje_id,150)+1,
+                MOD(v_viaje_id,150)+1,
+                v_tarifa_id,
+                v_costo
+            );
+
+            -- Insertar destino
             INSERT INTO servicios_destinos(idDestino, idServicio, idPuntoLlegada)
             VALUES (servicios_destinos_SEQ.NEXTVAL, v_servicio_id, MOD(pasajero_id,100)+1);
 
@@ -142,6 +177,7 @@ BEGIN
 END;
 /
 COMMIT;
+
 
 -- Reviews
 DECLARE

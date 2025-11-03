@@ -140,24 +140,28 @@ CREATE TABLE tarifas (
     tipoServicio VARCHAR2(50 BYTE) CHECK (tipoServicio IN ('Transporte Pasajeros','Domicilio Comida','Transporte Paquete')),
     nivel VARCHAR2(20 BYTE) CHECK (nivel IN ('Estandar','Confort','Large')),
     precioPorKm NUMBER NOT NULL CHECK (precioPorKm > 0),
-    vigenciaDesde DATE NOT NULL,
-    vigenciaHasta DATE NOT NULL,
+    vigenciaDesde TIMESTAMP NOT NULL,
+    vigenciaHasta TIMESTAMP NOT NULL,
     CONSTRAINT tarifas_pk PRIMARY KEY (idTarifa)
 );
+
 
 -- TABLA VIAJES
 CREATE TABLE viajes (
     idViaje NUMBER NOT NULL,
     fechaHoraInicio TIMESTAMP NOT NULL,
-    fechaHoraFin TIMESTAMP NOT NULL,
-    longitudTrayecto NUMBER NOT NULL,
+    fechaHoraFin TIMESTAMP,
+    longitudTrayecto NUMBER,
     idServicio NUMBER NOT NULL,
     idConductor NUMBER NOT NULL,
     idVehiculo NUMBER NOT NULL,
+    idTarifa NUMBER, -- nuevo atributo: FK a tarifas
+    costo NUMBER,    -- nuevo atributo: costo calculado
     CONSTRAINT viajes_pk PRIMARY KEY (idViaje),
     CONSTRAINT viajes_fk_servicio FOREIGN KEY (idServicio) REFERENCES servicios(idServicio),
     CONSTRAINT viajes_fk_conductor FOREIGN KEY (idConductor) REFERENCES usuarios(idUsuario),
-    CONSTRAINT viajes_fk_vehiculo FOREIGN KEY (idVehiculo) REFERENCES vehiculos(idVehiculo)
+    CONSTRAINT viajes_fk_vehiculo FOREIGN KEY (idVehiculo) REFERENCES vehiculos(idVehiculo),
+    CONSTRAINT viajes_fk_tarifa FOREIGN KEY (idTarifa) REFERENCES tarifas(idTarifa)
 );
 
 -- TABLA REVIEWS

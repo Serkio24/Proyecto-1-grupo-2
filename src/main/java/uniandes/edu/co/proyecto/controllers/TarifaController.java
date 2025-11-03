@@ -1,6 +1,5 @@
 package uniandes.edu.co.proyecto.controllers;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ public class TarifaController {
 
     @Autowired
     private TarifaRepository tarifaRepository;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // Listar todas las tarifas
     @GetMapping
@@ -56,12 +53,13 @@ public class TarifaController {
         try {
             // Insertar la tarifa usando el repository
             tarifaRepository.insertarTarifa(
-                tarifa.getTipoServicio(),
-                tarifa.getNivel(),
-                tarifa.getPrecioPorKm(),
-                tarifa.getVigenciaDesde(),
-                tarifa.getVigenciaHasta()
-            );
+            tarifa.getTipoServicio(),
+            tarifa.getNivel(),
+            tarifa.getPrecioPorKm(),
+            tarifa.getVigenciaDesde(),
+            tarifa.getVigenciaHasta()
+        );
+
 
             // Obtener la última tarifa insertada
             TarifaEntity tarifaGuardada = tarifaRepository.darUltimaTarifa(); // Método que retorna la última tarifa
@@ -79,13 +77,14 @@ public class TarifaController {
     @PostMapping("/{id}/edit/save")
     public ResponseEntity<String> actualizarTarifa(@PathVariable Long id, @RequestBody TarifaEntity tarifa) {
         try {
+
             tarifaRepository.actualizarTarifa(
                 id,
                 tarifa.getTipoServicio(),
                 tarifa.getNivel(),
                 tarifa.getPrecioPorKm(),
-                tarifa.getVigenciaDesde() != null ? tarifa.getVigenciaDesde().format(FORMATTER) : null,
-                tarifa.getVigenciaHasta() != null ? tarifa.getVigenciaHasta().format(FORMATTER) : null
+                tarifa.getVigenciaDesde(),
+                tarifa.getVigenciaHasta()
             );
             return ResponseEntity.ok("Tarifa actualizada exitosamente");
         } catch (Exception e) {

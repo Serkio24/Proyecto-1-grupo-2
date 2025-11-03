@@ -1,6 +1,5 @@
 package uniandes.edu.co.proyecto.services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,8 +70,7 @@ public class ServicioService {
         servicio.setEstado("Asignado");
         servicioRepository.actualizarServicio(servicio.getIdServicio(), servicio.getIdCliente().getIdUsuario(), servicio.getFechaHora(), servicio.getTipoServicio(), servicio.getNivelRequerido(), "Asignado", servicio.getOrden(), servicio.getRestaurante(), servicio.getIdPuntoPartida().getIdPunto());
 
-        LocalDate fechaSolicitud = fechaHoraSolicitud.toLocalDate();
-        TarifaEntity tarifa = tarifaRepository.encontrarTarifa(tipoServicio, nivelRequerido, fechaSolicitud);
+        TarifaEntity tarifa = tarifaRepository.encontrarTarifa(tipoServicio, nivelRequerido, fechaHoraSolicitud);
 
         viajeRepository.insertarViaje(
                 fechaHoraAsignacion,

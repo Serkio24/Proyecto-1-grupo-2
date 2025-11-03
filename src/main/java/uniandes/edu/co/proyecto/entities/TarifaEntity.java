@@ -1,9 +1,11 @@
 package uniandes.edu.co.proyecto.entities;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +16,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="tarifas")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class TarifaEntity {
+public class TarifaEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tarifas_seq_gen")
@@ -23,11 +25,15 @@ public class TarifaEntity {
     private String tipoServicio;
     private String nivel;
     private Double precioPorKm;
-    private LocalDate vigenciaDesde;
-    private LocalDate vigenciaHasta;
+    @Column(name = "VIGENCIADESDE", columnDefinition = "TIMESTAMP")
+    private LocalDateTime vigenciaDesde;
+
+    @Column(name = "VIGENCIAHASTA", columnDefinition = "TIMESTAMP")
+    private LocalDateTime vigenciaHasta;
+
 
     public TarifaEntity(String tipoServicio, String nivel, Double precioPorKm,
-                        LocalDate vigenciaDesde, LocalDate vigenciaHasta) {
+                        LocalDateTime vigenciaDesde, LocalDateTime vigenciaHasta) {
         this.tipoServicio = tipoServicio;
         this.nivel = nivel;
         this.precioPorKm = precioPorKm;
@@ -50,9 +56,9 @@ public class TarifaEntity {
     public Double getPrecioPorKm() { return precioPorKm; }
     public void setPrecioPorKm(Double precioPorKm) { this.precioPorKm = precioPorKm; }
 
-    public LocalDate getVigenciaDesde() { return vigenciaDesde; }
-    public void setVigenciaDesde(LocalDate vigenciaDesde) { this.vigenciaDesde = vigenciaDesde; }
+    public LocalDateTime getVigenciaDesde() { return vigenciaDesde; }
+    public void setVigenciaDesde(LocalDateTime vigenciaDesde) { this.vigenciaDesde = vigenciaDesde; }
 
-    public LocalDate getVigenciaHasta() { return vigenciaHasta; }
-    public void setVigenciaHasta(LocalDate vigenciaHasta) { this.vigenciaHasta = vigenciaHasta; }
+    public LocalDateTime getVigenciaHasta() { return vigenciaHasta; }
+    public void setVigenciaHasta(LocalDateTime vigenciaHasta) { this.vigenciaHasta = vigenciaHasta; }
 }
