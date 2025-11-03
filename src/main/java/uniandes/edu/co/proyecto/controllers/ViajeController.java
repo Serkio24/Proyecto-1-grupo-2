@@ -154,7 +154,7 @@ public class ViajeController {
 
             for (DisponibilidadEntity disponibilidad : disponibilidadRepository.darDisponibilidadesVehiculo(vehiculo.getIdVehiculo())){
                 if(!disponibilidad.isDisponible()){
-                    disponibilidad.setDisponible(true);
+                    disponibilidad.setDisponible("Y");
                     Long idVehiculo = disponibilidad.getPk().getVehiculo().getIdVehiculo();
                     Long idFranja = disponibilidad.getPk().getFranja().getIdFranja();
                     disponibilidadRepository.actualizarDisponibilidadFranja(idVehiculo, idFranja, true);
