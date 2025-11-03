@@ -48,15 +48,16 @@ public class CiudadController {
     }
 
     // RF1: Registrar una ciudad
-    @PostMapping("/registrar")
-    public ResponseEntity<CiudadEntity> registrarCiudad(@RequestBody CiudadEntity ciudad) {
+    @PostMapping("/new/save")
+    public ResponseEntity<CiudadResponse> registrarCiudad(@RequestBody CiudadEntity ciudad) {
         try {
-            // Usar el servicio transaccional con solo el nombre
-            CiudadEntity ciudadCreada = ciudadService.registrarCiudad(ciudad.getNombre());
-            return ResponseEntity.status(HttpStatus.CREATED).body(ciudadCreada);
+            ciudadRepository.insertarCiudad(ciudad.getNombre());
+            CiudadEntity ciudadGuardada = ciudadRepository.darUltimaCiudad();
+            CiudadResponse respuesta = new CiudadResponse("Ciudad creada exitosamente", ciudadGuardada);
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            CiudadResponse error = new CiudadResponse("Error al crear la ciudad: ", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -92,6 +93,35 @@ public class CiudadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    public class CiudadResponse {
+        private String mensaje;
+        private CiudadEntity ciudad;
+
+        // Constructor
+        public CiudadResponse(String mensaje, CiudadEntity ciudad) {
+            this.mensaje = mensaje;
+            this.ciudad = ciudad;
+        }
+
+        // Getters y setters
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public CiudadEntity getCiudad() {
+            return ciudad;
+        }
+
+        public void setCiudad(CiudadEntity ciudad) {
+            this.ciudad = ciudad;
+        }
+    }
+
 
 }
 

@@ -19,9 +19,9 @@ import jakarta.persistence.Table;
 public class ViajeEntity {
 
     @Id
-@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "viaje_seq")
-@SequenceGenerator(name = "viaje_seq", sequenceName = "VIAJE_SEQ", allocationSize = 1)
-private Long idViaje;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "viajes_seq_gen")
+    @SequenceGenerator(name = "viajes_seq_gen", sequenceName = "viajes_SEQ", allocationSize = 1)
+    private Long idViaje;
 
 
     private LocalDateTime fechaHoraInicio;

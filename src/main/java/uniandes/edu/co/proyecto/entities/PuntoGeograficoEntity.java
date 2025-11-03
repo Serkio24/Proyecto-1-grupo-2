@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,7 +14,8 @@ import jakarta.persistence.Table;
 public class PuntoGeograficoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "puntos_geograficos_seq_gen")
+    @SequenceGenerator(name = "puntos_geograficos_seq_gen", sequenceName = "puntos_geograficos_SEQ", allocationSize = 1)
     private Long idPunto;
     private String nombre;
     private Double latitud;

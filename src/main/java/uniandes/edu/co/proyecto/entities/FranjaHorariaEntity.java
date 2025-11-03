@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -11,7 +12,8 @@ import jakarta.persistence.Table;
 public class FranjaHorariaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "franjas_horarias_seq_gen")
+    @SequenceGenerator(name = "franjas_horarias_seq_gen", sequenceName = "franjas_horarias_SEQ", allocationSize = 1)
     private Long idFranja;
     private String diaSemana;
     private String horaInicio;

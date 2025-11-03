@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -11,7 +12,8 @@ import jakarta.persistence.Table;
 public class CiudadEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ciudades_seq_gen")
+    @SequenceGenerator(name = "ciudades_seq_gen", sequenceName = "ciudades_SEQ", allocationSize = 1)
     private Long idCiudad;
     private String nombre;
 
