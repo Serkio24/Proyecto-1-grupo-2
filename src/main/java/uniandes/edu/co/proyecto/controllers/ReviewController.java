@@ -1,5 +1,6 @@
 package uniandes.edu.co.proyecto.controllers;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uniandes.edu.co.proyecto.dto.ReviewDTO;
 import uniandes.edu.co.proyecto.entities.ReviewEntity;
+import uniandes.edu.co.proyecto.entities.UsuarioEntity;
+import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.repositories.ReviewRepository;
+import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
+import uniandes.edu.co.proyecto.repositories.ViajeRepository;
 
 @RestController
 @RequestMapping("/reviews")
@@ -16,6 +22,12 @@ public class ReviewController {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ViajeRepository viajeRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // Listar todas las reviews
     @GetMapping
@@ -43,23 +55,36 @@ public class ReviewController {
         }
     }
 
-    // Crear nueva review
+    //Crear un review
     @PostMapping("/new/save")
-    public ResponseEntity<String> crearReview(@RequestBody ReviewEntity review) {
+    public ResponseEntity<ReviewResponse> crearReview(@RequestBody ReviewEntity review) {
         try {
+            if (review.getUsuarioCalificador().getTipo().equals(review.getUsuarioCalificado().getTipo())) {
+                ReviewResponse error = new ReviewResponse("El calificador y calificado deben ser de tipos diferentes", null);
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+            }
+
+            // Insertar review usando repository
             reviewRepository.insertarReview(
-                    review.getUsuarioCalificador().getIdUsuario(),
-                    review.getUsuarioCalificado().getIdUsuario(),
-                    review.getViaje().getIdViaje(),
-                    review.getPuntuacion(),
-                    review.getComentario(),
-                    review.getFechaRevision()
+                review.getUsuarioCalificador().getIdUsuario(),
+                review.getUsuarioCalificado().getIdUsuario(),
+                review.getViaje().getIdViaje(),
+                review.getPuntuacion(),
+                review.getComentario(),
+                review.getFecha()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Review creada exitosamente");
+
+            // Obtener la última review insertada
+            ReviewEntity reviewGuardada = reviewRepository.darUltimaReview();
+            ReviewResponse exito = new ReviewResponse("Review creada exitosamente", reviewGuardada);
+            return new ResponseEntity<>(exito, HttpStatus.CREATED);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la review");
+            ReviewResponse error = new ReviewResponse("Error al crear la review", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Actualizar review
     @PostMapping("/{id}/edit/save")
@@ -72,7 +97,7 @@ public class ReviewController {
                     review.getViaje().getIdViaje(),
                     review.getPuntuacion(),
                     review.getComentario(),
-                    review.getFechaRevision()
+                    review.getFecha()
             );
             return ResponseEntity.ok("Review actualizada exitosamente");
         } catch (Exception e) {
@@ -91,45 +116,69 @@ public class ReviewController {
         }
     }
 
-    
-    // RF10: Pasajero califica conductor
-    @PostMapping("/pasajero")
-    public ResponseEntity<String> crearReviewRF10(@RequestBody ReviewEntity review) {
+    // Requerimientos RF10 y RF11
+    @PostMapping("/registrar")
+    public ResponseEntity<ReviewResponse> crearReview(@RequestBody ReviewDTO reviewDTO) {
         try {
-            review.setFechaRevision(java.time.LocalDateTime.now());
+            // Obtener viaje y usuarios
+            ViajeEntity viaje = viajeRepository.darViaje(reviewDTO.getIdViaje());
+            UsuarioEntity calificador = usuarioRepository.darUsuario(reviewDTO.getIdUsuario());
+            UsuarioEntity calificado = null;
+            if (calificador.getTipo().equals("Conductor")){
+                calificado = viaje.getIdServicio().getIdCliente();
+            }else if (calificador.getTipo().equals("Cliente")){
+                calificado = viaje.getIdConductor();
+            }
+            else{
+                ReviewResponse error = new ReviewResponse("No se encuentra el usuario calificado", null);
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+            }
+
+            // Validar que el calificador participe en el viaje
+            boolean esConductorDelViaje = calificador.getIdUsuario().equals(viaje.getIdConductor().getIdUsuario());
+            boolean esClienteDelViaje = calificador.getIdUsuario().equals(viaje.getIdServicio().getIdCliente().getIdUsuario());
+
+            if (!esConductorDelViaje && !esClienteDelViaje) {
+                ReviewResponse error = new ReviewResponse("El usuario calificador no está asociado a este viaje", null);
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+            }
+            
+            // Insertar review
             reviewRepository.insertarReview(
-                    review.getUsuarioCalificador().getIdUsuario(), // pasajero
-                    review.getUsuarioCalificado().getIdUsuario(),  // conductor
-                    review.getViaje().getIdViaje(),
-                    review.getPuntuacion(),
-                    review.getComentario(),
-                    review.getFechaRevision()
+                calificador.getIdUsuario(),
+                calificado.getIdUsuario(),
+                viaje.getIdViaje(),
+                reviewDTO.getPuntuacion(),
+                reviewDTO.getComentario(),
+                LocalDateTime.now()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Review RF10 creada exitosamente");
+
+            ReviewEntity reviewGuardada = reviewRepository.darUltimaReview();
+            ReviewResponse exito = new ReviewResponse("Review creada exitosamente", reviewGuardada);
+            return new ResponseEntity<>(exito, HttpStatus.CREATED);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear review RF10");
+            ReviewResponse error = new ReviewResponse("Error al crear la review", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // RF11: Conductor califica pasajero
-    @PostMapping("/conductor")
-    public ResponseEntity<String> crearReviewRF11(@RequestBody ReviewEntity review) {
-        try {
-            review.setFechaRevision(java.time.LocalDateTime.now());
-            reviewRepository.insertarReview(
-                    review.getUsuarioCalificador().getIdUsuario(), // conductor
-                    review.getUsuarioCalificado().getIdUsuario(),  // pasajero
-                    review.getViaje().getIdViaje(),
-                    review.getPuntuacion(),
-                    review.getComentario(),
-                    review.getFechaRevision()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Review RF11 creada exitosamente");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear review RF11");
+    public class ReviewResponse {
+        private String mensaje;
+        private ReviewEntity review;
+
+        public ReviewResponse(String mensaje, ReviewEntity review) {
+            this.mensaje = mensaje;
+            this.review = review;
         }
+
+        public String getMensaje() { return mensaje; }
+        public void setMensaje(String mensaje) { this.mensaje = mensaje; }
+
+        public ReviewEntity getReview() { return review; }
+        public void setReview(ReviewEntity review) { this.review = review; }
     }
+
 }
 

@@ -19,7 +19,7 @@ public interface ServicioRepository extends JpaRepository<ServicioEntity, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO servicios(idCliente, fechaHora, tipoServicio, nivelRequerido, estado, orden, restaurante, idPuntoPartida) VALUES (:idCliente, :fechaHora, :tipoServicio, :nivelRequerido, :estado, :orden, :restaurante, :idPuntoPartida)", nativeQuery = true)
+    @Query(value = "INSERT INTO servicios(idServicio, idCliente, fechaHora, tipoServicio, nivelRequerido, estado, orden, restaurante, idPuntoPartida) VALUES (servicios_SEQ.nextval, :idCliente, :fechaHora, :tipoServicio, :nivelRequerido, :estado, :orden, :restaurante, :idPuntoPartida)", nativeQuery = true)
     void insertarServicio(@Param("idCliente") Long idCliente, @Param("fechaHora") LocalDateTime fechaHora, @Param("tipoServicio") String tipoServicio, @Param("nivelRequerido") String nivelRequerido, @Param("estado") String estado, @Param("orden") String orden, @Param("restaurante") String restaurante, @Param("idPuntoPartida") Long idPuntoPartida);
 
     @Modifying
@@ -31,4 +31,9 @@ public interface ServicioRepository extends JpaRepository<ServicioEntity, Long> 
     @Transactional
     @Query(value = "DELETE FROM servicios WHERE idServicio = :id", nativeQuery = true)
     void eliminarServicio(@Param("id") Long id);
+
+    // Obtener el último servicio insertado
+    @Query(value = "SELECT * FROM servicios WHERE idServicio = (SELECT MAX(idServicio) FROM servicios)", nativeQuery = true)
+    ServicioEntity darUltimoServicio();
+
 }

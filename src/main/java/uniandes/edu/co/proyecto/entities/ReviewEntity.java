@@ -33,20 +33,20 @@ public class ReviewEntity {
 
     private Double puntuacion;
     private String comentario;
-    private LocalDateTime fechaRevision;
+    private LocalDateTime fecha;
 
     // Constructores
     public ReviewEntity() {}
 
     public ReviewEntity(UsuarioEntity usuarioCalificador, UsuarioEntity usuarioCalificado, 
                         ViajeEntity viaje, Double puntuacion, String comentario, 
-                        LocalDateTime fechaRevision) {
+                        LocalDateTime fecha) {
         this.usuarioCalificador = usuarioCalificador;
         this.usuarioCalificado = usuarioCalificado;
         this.viaje = viaje;
         this.puntuacion = puntuacion;
         this.comentario = comentario;
-        this.fechaRevision = fechaRevision;
+        this.fecha = fecha;
     }
 
     // Getters y Setters
@@ -68,6 +68,6 @@ public class ReviewEntity {
     public String getComentario() { return comentario; }
     public void setComentario(String comentario) { this.comentario = comentario; }
 
-    public LocalDateTime getFechaRevision() { return fechaRevision; }
-    public void setFechaRevision(LocalDateTime fechaRevision) { this.fechaRevision = fechaRevision; }
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 }

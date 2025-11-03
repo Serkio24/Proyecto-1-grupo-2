@@ -66,9 +66,9 @@ public class ServicioController {
         }
     }
 
-    // ✅ Crear un nuevo servicio
+    // Crear servicio
     @PostMapping("/new/save")
-    public ResponseEntity<String> crearServicio(@RequestBody ServicioEntity servicio) {
+    public ResponseEntity<ServicioResponse> crearServicio(@RequestBody ServicioEntity servicio) {
         try {
             servicioRepository.insertarServicio(
                 servicio.getIdCliente().getIdUsuario(),
@@ -80,14 +80,19 @@ public class ServicioController {
                 servicio.getRestaurante(),
                 servicio.getIdPuntoPartida().getIdPunto()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Servicio creado exitosamente");
+
+            // Recuperar el servicio recién creado
+            ServicioEntity servicioGuardado = servicioRepository.darUltimoServicio();
+            ServicioResponse respuesta = new ServicioResponse("Servicio creado exitosamente", servicioGuardado);
+
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al crear el servicio: " + e.getMessage());
+            ServicioResponse error = new ServicioResponse("Error al crear el servicio", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // ✅ Actualizar un servicio existente
     @PostMapping("/{id}/edit/save")
     public ResponseEntity<String> actualizarServicio(@PathVariable Long id,
                                                      @RequestBody ServicioEntity servicio) {
@@ -110,7 +115,6 @@ public class ServicioController {
         }
     }
 
-    // ✅ Eliminar un servicio
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarServicio(@PathVariable Long id) {
         try {
@@ -122,5 +126,20 @@ public class ServicioController {
         }
     }
 
-    
+    public class ServicioResponse {
+        private String mensaje;
+        private ServicioEntity servicio;
+
+        public ServicioResponse(String mensaje, ServicioEntity servicio) {
+            this.mensaje = mensaje;
+            this.servicio = servicio;
+        }
+
+        // Getters y setters
+        public String getMensaje() { return mensaje; }
+        public void setMensaje(String mensaje) { this.mensaje = mensaje; }
+
+        public ServicioEntity getServicio() { return servicio; }
+        public void setServicio(ServicioEntity servicio) { this.servicio = servicio; }
+    }
 }
