@@ -1,0 +1,60 @@
+{
+	"info": {
+		"_postman_id": "b832851b-36d0-4015-81e4-b70249e558d3",
+		"name": "RF4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48434843"
+	},
+	"item": [
+		{
+			"name": "RF4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"tipo\": \"Carro\",\r\n  \"marca\": \"Toyota\",\r\n  \"modelo\": \"Corolla\",\r\n  \"color\": \"Rojo\",\r\n  \"placa\": \"ABC123\",\r\n  \"ciudadExpedicion\": \"Bogotá\",\r\n  \"capacidadPasajeros\": 4\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/vehiculos/new?conductorId=402",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"vehiculos",
+						"new"
+					],
+					"query": [
+						{
+							"key": "conductorId",
+							"value": "402"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

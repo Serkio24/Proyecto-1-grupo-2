@@ -88,7 +88,7 @@ public class UsuarioController {
         }
     }
 
-    //RF2
+    // Registrar usuario de servicios (RF2)
     @PostMapping("/new/cliente")
     public ResponseEntity<UsuarioEntity> crearCliente(@RequestBody ClienteDTO dto) {
         try {
@@ -104,26 +104,57 @@ public class UsuarioController {
     }
 
 
-    //RF3
+    // Registrar usuario conductor (RF3)
     @PostMapping("/new/conductor")
-    public ResponseEntity<UsuarioEntity> crearConductor(@RequestBody UsuarioEntity usuario) {
+    public ResponseEntity<UsuarioResponse> registrarConductor(@RequestBody UsuarioEntity usuario) {
         try {
+            // Insertar usuario con rol "Conductor"
             usuarioRepository.insertarUsuario(
                 usuario.getNombre(),
                 usuario.getNumeroCelular(),
                 usuario.getNumeroCedula(),
                 usuario.getCorreoElectronico(),
-                "Conductor"
-            );
+                "Conductor");
 
+            // Obtener el último usuario insertado
             UsuarioEntity usuarioCreado = usuarioRepository.darUltimoUsuario();
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
+            // Construir respuesta
+            UsuarioResponse respuesta = new UsuarioResponse("Conductor creado exitosamente", usuarioCreado);
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            UsuarioResponse error = new UsuarioResponse("Error al crear el conductor: " + e.getMessage(), null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    public class UsuarioResponse {
+        private String mensaje;
+        private UsuarioEntity usuario;
+
+        // Constructor completo
+        public UsuarioResponse(String mensaje, UsuarioEntity usuario) {
+            this.mensaje = mensaje;
+            this.usuario = usuario;
+        }
+
+        // Getters y setters
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public UsuarioEntity getUsuario() {
+            return usuario;
+        }
+
+        public void setUsuario(UsuarioEntity usuario) {
+            this.usuario = usuario;
+        }
+    }
 }

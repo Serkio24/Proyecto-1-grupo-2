@@ -24,7 +24,6 @@ public class VehiculoController {
     @Autowired
     private ConductorVehiculoRepository conductorVehiculoRepository;
 
-    // ✅ Listar todos los vehículos
     @GetMapping
     public ResponseEntity<Collection<VehiculoEntity>> listarVehiculos() {
         try {
@@ -35,7 +34,6 @@ public class VehiculoController {
         }
     }
 
-    // ✅ Obtener un vehículo por ID
     @GetMapping("/{id}")
     public ResponseEntity<VehiculoEntity> obtenerVehiculo(@PathVariable Long id) {
         try {
@@ -50,14 +48,14 @@ public class VehiculoController {
         }
     }
 
-    // RF1: Registrar un vehículo
-    @PostMapping("/vehiculos/new")
+    // Registrar un vehículo para un usuario conductor (RF4)
+    @PostMapping("/new")
     public ResponseEntity<VehiculoResponse> registrarVehiculo(@RequestBody VehiculoEntity vehiculo, @RequestParam Long conductorId) {
         try {
             // Validar que el conductor exista y sea del tipo correcto
             UsuarioEntity conductor = usuarioRepository.darUsuario(conductorId);
             if (conductor == null || !"Conductor".equals(conductor.getTipo())) {
-                VehiculoResponse error = new VehiculoResponse("El usuario no es un conductor válido", null);
+                VehiculoResponse error = new VehiculoResponse("El usuario no es un conductor", null);
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
             }
 
@@ -72,7 +70,7 @@ public class VehiculoController {
                     vehiculo.getCapacidadPasajeros()
             );
 
-            // Obtener el último vehículo insertado para obtener su ID
+            // Obtener el último vehículo insertado
             VehiculoEntity vehiculoCreado = vehiculoRepository.darUltimoVehiculo();
 
             // Registrar la relación conductor-vehículo
@@ -82,7 +80,6 @@ public class VehiculoController {
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            e.printStackTrace();
             VehiculoResponse error = new VehiculoResponse("Error al registrar el vehículo", null);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
