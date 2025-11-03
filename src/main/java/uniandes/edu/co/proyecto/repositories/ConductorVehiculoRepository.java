@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
 import uniandes.edu.co.proyecto.entities.ConductorVehiculoPK;
-import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface ConductorVehiculoRepository extends JpaRepository<ConductorVehiculoEntity, ConductorVehiculoPK> {
