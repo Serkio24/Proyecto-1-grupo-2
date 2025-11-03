@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "7502a575-d5d0-40b2-9d65-8c89d46e7abf",
+		"name": "Requerimientos Funcionales 5-8",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42820724",
+		"_collection_link": "https://hardcore-softies.postman.co/workspace/sistrans~9ea19033-64cf-43e8-810e-5a4e82f5c5d7/collection/42820724-7502a575-d5d0-40b2-9d65-8c89d46e7abf?action=share&source=collection_link&creator=42820724"
+	},
+	"item": [
+		{
+			"name": "creo dispn",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"vehiculo\": { \"idVehiculo\": 2 },\n  \"franja\": { \"idFranja\": 1 }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/disponibilidades/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"disponibilidades",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF5/validar-traslape",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idConductor\": 2,\n    \"diaSemana\": \"Lunes\",\n    \"horaInicio\": \"09:00\",\n    \"horaFin\": \"09:30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/disponibilidades/validar-traslape?idConductor=2&diaSemana=Lunes&horaInicio=09:00&horaFin=09:30",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"disponibilidades",
+						"validar-traslape"
+					],
+					"query": [
+						{
+							"key": "idConductor",
+							"value": "2"
+						},
+						{
+							"key": "diaSemana",
+							"value": "Lunes"
+						},
+						{
+							"key": "horaInicio",
+							"value": "09:00"
+						},
+						{
+							"key": "horaFin",
+							"value": "09:30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF5",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idConductor\": 2,\n    \"diaSemana\": \"Lunes\",\n    \"horaInicio\": \"08:00\",\n    \"horaFin\": \"10:00\",\n    \"tipoServicio\": \"Transporte\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/disponibilidades/registrar",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"disponibilidades",
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF6",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"idConductor\": 2,\n  \"idVehiculoAnt\": 1,\n  \"idFranjaAnt\": 3,\n  \"diaSemana\": \"Lunes\",\n  \"horaInicio\": \"06:00\",\n  \"horaFin\": \"07:00\",\n  \"tipoServicio\": \"Transporte Pasajeros\",\n  \"idVehiculoNuevo\": 1\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/disponibilidades/modificar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"disponibilidades",
+						"modificar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF7",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"Parque Central\",\n    \"direccionAproximada\": \"Calle 10 #20-30\",\n    \"latitud\": 4.65,\n    \"longitud\": -74.05,\n    \"ciudad\": {\n        \"idCiudad\": 1\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/puntos-geograficos/new/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"puntos-geograficos",
+						"new",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pruebitas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF8",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"idUsuario\": 251,\n  \"tipoServicio\": \"DOMICILIO\",\n  \"nivelRequerido\": \"ALTO\",\n  \"idPuntoPartida\": 10,\n  \"idPuntoDestino\": 12\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/servicios/acciones/solicitar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"servicios",
+						"acciones",
+						"solicitar"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
