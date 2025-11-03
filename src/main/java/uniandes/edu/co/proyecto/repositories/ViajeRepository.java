@@ -19,21 +19,19 @@ public interface ViajeRepository extends JpaRepository<ViajeEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO viajes(idViaje, fechaHoraInicio, fechaHoraFin, longitudTrayecto, idServicio, idConductor, idVehiculo) VALUES (viajes_SEQ.NEXTVAL, :fechaHoraInicio, :fechaHoraFin, :longitudTrayecto, :idServicio, :idConductor, :idVehiculo)", nativeQuery = true)
-    void insertarViaje(@Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFin") LocalDateTime fechaHoraFin, @Param("longitudTrayecto") Double longitudTrayecto, @Param("idServicio") Long idServicio, @Param("idConductor") Long idConductor, @Param("idVehiculo") Long idVehiculo);
+    @Query(value = "INSERT INTO viajes(idViaje, fechaHoraInicio, fechaHoraFin, longitudTrayecto, idServicio, idConductor, idVehiculo, idTarifa, costo) VALUES (viajes_SEQ.NEXTVAL, :fechaHoraInicio, :fechaHoraFin, :longitudTrayecto, :idServicio, :idConductor, :idVehiculo, :idTarifa, :costo)", nativeQuery = true)
+    void insertarViaje(@Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFin") LocalDateTime fechaHoraFin, @Param("longitudTrayecto") Double longitudTrayecto, @Param("idServicio") Long idServicio, @Param("idConductor") Long idConductor, @Param("idVehiculo") Long idVehiculo, @Param("idTarifa") Long idTarifa, @Param("costo") Double costo);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE viajes SET fechaHoraInicio = :fechaHoraInicio, fechaHoraFin = :fechaHoraFin, longitudTrayecto = :longitudTrayecto, idServicio = :idServicio, idConductor = :idConductor, idVehiculo = :idVehiculo WHERE idViaje = :id", nativeQuery = true)
-    void actualizarViaje(@Param("id") Long id, @Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFin") LocalDateTime fechaHoraFin, @Param("longitudTrayecto") Double longitudTrayecto, @Param("idServicio") Long idServicio, @Param("idConductor") Long idConductor, @Param("idVehiculo") Long idVehiculo);
+    @Query(value = "UPDATE viajes SET fechaHoraInicio = :fechaHoraInicio, fechaHoraFin = :fechaHoraFin, longitudTrayecto = :longitudTrayecto, idServicio = :idServicio, idConductor = :idConductor, idVehiculo = :idVehiculo, idTarifa = :idTarifa, costo = :costo WHERE idViaje = :id", nativeQuery = true)
+    void actualizarViaje(@Param("id") Long id, @Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFin") LocalDateTime fechaHoraFin, @Param("longitudTrayecto") Double longitudTrayecto, @Param("idServicio") Long idServicio, @Param("idConductor") Long idConductor, @Param("idVehiculo") Long idVehiculo, @Param("idTarifa") Long idTarifa, @Param("costo") Double costo);
 
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM viajes WHERE idViaje = :id", nativeQuery = true)
     void eliminarViaje(@Param("id") Long id);
 
-    // Obtener el último viaje insertado
     @Query(value = "SELECT * FROM viajes WHERE idViaje = (SELECT MAX(idViaje) FROM viajes)", nativeQuery = true)
     ViajeEntity darUltimoViaje();
-
 }

@@ -71,14 +71,15 @@ public class ViajeController {
     @PostMapping("/new/save")
     public ResponseEntity<ViajeResponse> crearViaje(@RequestBody ViajeEntity viaje) {
         try {
-            // Insertar el viaje usando el repository (suponiendo que usa secuencia para ID)
             viajeRepository.insertarViaje(
                 viaje.getFechaHoraInicio(),
                 viaje.getFechaHoraFin(),
                 viaje.getLongitudTrayecto(),
                 viaje.getIdServicio().getIdServicio(),
                 viaje.getIdConductor().getIdUsuario(),
-                viaje.getIdVehiculo().getIdVehiculo()
+                viaje.getIdVehiculo().getIdVehiculo(),
+                viaje.getIdTarifa().getIdTarifa(),
+                viaje.getCosto()
             );
 
             // Obtener el último viaje insertado
@@ -102,7 +103,9 @@ public class ViajeController {
                 viaje.getLongitudTrayecto(),
                 viaje.getIdServicio().getIdServicio(),
                 viaje.getIdConductor().getIdUsuario(),
-                viaje.getIdVehiculo().getIdVehiculo()
+                viaje.getIdVehiculo().getIdVehiculo(),
+                viaje.getIdTarifa().getIdTarifa(),
+                viaje.getCosto()
             );
             return ResponseEntity.ok("Viaje actualizado exitosamente");
         } catch (Exception e) {
@@ -150,16 +153,18 @@ public class ViajeController {
 
             viaje.setLongitudTrayecto(longitud);
 
-            viajeRepository.actualizarViaje(viaje.getIdViaje(), viaje.getFechaHoraInicio(), fin, longitud, viaje.getIdServicio().getIdServicio(), viaje.getIdConductor().getIdUsuario(), viaje.getIdVehiculo().getIdVehiculo());
+            viajeRepository.actualizarViaje(viaje.getIdViaje(), viaje.getFechaHoraInicio(), fin, longitud, viaje.getIdServicio().getIdServicio(), viaje.getIdConductor().getIdUsuario(), viaje.getIdVehiculo().getIdVehiculo(), viaje.getIdTarifa().getIdTarifa(), viaje.getCosto());
 
             for (DisponibilidadEntity disponibilidad : disponibilidadRepository.darDisponibilidadesVehiculo(vehiculo.getIdVehiculo())){
                 if(!disponibilidad.isDisponible()){
                     disponibilidad.setDisponible("Y");
                     Long idVehiculo = disponibilidad.getPk().getVehiculo().getIdVehiculo();
                     Long idFranja = disponibilidad.getPk().getFranja().getIdFranja();
-                    disponibilidadRepository.actualizarDisponibilidadFranja(idVehiculo, idFranja, true);
+                    disponibilidadRepository.actualizarDisponibilidadFranja(idVehiculo, idFranja, "Y");
                 }
             }
+
+
             ViajeResponse exito = new ViajeResponse("Viaje finalizado correctamente", viaje);
             return new ResponseEntity<>(exito, HttpStatus.OK);
         } catch (Exception e){

@@ -52,21 +52,28 @@ public class TarifaController {
 
     // Crear nueva tarifa
     @PostMapping("/new/save")
-    public ResponseEntity<String> crearTarifa(@RequestBody TarifaEntity tarifa) {
+    public ResponseEntity<TarifaResponse> crearTarifa(@RequestBody TarifaEntity tarifa) {
         try {
+            // Insertar la tarifa usando el repository
             tarifaRepository.insertarTarifa(
                 tarifa.getTipoServicio(),
                 tarifa.getNivel(),
                 tarifa.getPrecioPorKm(),
-                tarifa.getVigenciaDesde() != null ? tarifa.getVigenciaDesde().format(FORMATTER) : null,
-                tarifa.getVigenciaHasta() != null ? tarifa.getVigenciaHasta().format(FORMATTER) : null
+                tarifa.getVigenciaDesde(),
+                tarifa.getVigenciaHasta()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Tarifa creada exitosamente");
+
+            // Obtener la última tarifa insertada
+            TarifaEntity tarifaGuardada = tarifaRepository.darUltimaTarifa(); // Método que retorna la última tarifa
+            TarifaResponse respuesta = new TarifaResponse("Tarifa creada exitosamente", tarifaGuardada);
+
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al crear la tarifa");
+            TarifaResponse error = new TarifaResponse("Error al crear la tarifa", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Actualizar una tarifa existente
     @PostMapping("/{id}/edit/save")
@@ -96,6 +103,32 @@ public class TarifaController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Error al eliminar la tarifa");
+        }
+    }
+
+    public class TarifaResponse {
+        private String mensaje;
+        private TarifaEntity tarifa;
+
+        public TarifaResponse(String mensaje, TarifaEntity tarifa) {
+            this.mensaje = mensaje;
+            this.tarifa = tarifa;
+        }
+
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public TarifaEntity getTarifa() {
+            return tarifa;
+        }
+
+        public void setTarifa(TarifaEntity tarifa) {
+            this.tarifa = tarifa;
         }
     }
 }

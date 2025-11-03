@@ -46,12 +46,14 @@ public class ViajeEntity {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private VehiculoEntity idVehiculo;
 
+    private TarifaEntity idTarifa;
+    private Double costo;
+
     // Constructor vacío
     public ViajeEntity() {}
 
     // Constructor con parámetros
-    public ViajeEntity(LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, double longitudTrayecto,
-                       ServicioEntity idServicio, UsuarioEntity idConductor, VehiculoEntity idVehiculo) {
+    public ViajeEntity(LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, double longitudTrayecto, ServicioEntity idServicio, UsuarioEntity idConductor, VehiculoEntity idVehiculo) {
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
         this.longitudTrayecto = longitudTrayecto;
@@ -116,4 +118,22 @@ public class ViajeEntity {
     public void setIdVehiculo(VehiculoEntity idVehiculo) {
         this.idVehiculo = idVehiculo;
     }
+
+    public TarifaEntity getIdTarifa() {
+        return idTarifa;
+    }
+
+    public void setIdTarifa(TarifaEntity idTarifa) {
+        this.idTarifa = idTarifa;
+    }
+
+    public Double getCosto() {
+        return costo;
+    }
+
+    public void setCosto(Double costo) {
+        this.costo = costo;
+    }
+
+    
 }

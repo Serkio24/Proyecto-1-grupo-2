@@ -34,7 +34,7 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
     @Modifying
      @Transactional
      @Query(value = "UPDATE disponibilidades SET disponible = :disponible WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
-     void actualizarDisponibilidadFranja(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja, @Param("disponible") boolean disponible);
+     void actualizarDisponibilidadFranja(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja, @Param("disponible") String disponible);
 
     // Update
     @Modifying

@@ -2,6 +2,8 @@ package uniandes.edu.co.proyecto.repositories;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,5 +35,5 @@ public interface TarjetaCreditoRepository extends JpaRepository<TarjetaCreditoEn
     void eliminarTarjeta(@Param("id") Long id);
 
     @Query(value = "SELECT * FROM tarjetas_credito WHERE clienteId = :clienteId", nativeQuery = true)
-    TarjetaCreditoEntity findByClienteId(@Param("clienteId") Long clienteId);
+    List<TarjetaCreditoEntity> encontrarTarjetas(@Param("clienteId") Long clienteId);
 }

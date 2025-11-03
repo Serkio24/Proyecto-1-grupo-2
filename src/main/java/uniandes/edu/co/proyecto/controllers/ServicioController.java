@@ -42,7 +42,9 @@ public class ServicioController {
                 solicitud.getTipoServicio(),
                 solicitud.getNivelRequerido(),
                 solicitud.getIdPuntoPartida(),
-                solicitud.getIdPuntoDestino()
+                solicitud.getDestinos(),
+                solicitud.getOrden(),
+                solicitud.getRestaurante()
             );
             return ResponseEntity.ok("✅ Servicio solicitado exitosamente");
         } catch (Exception e) {

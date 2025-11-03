@@ -1,5 +1,6 @@
 package uniandes.edu.co.proyecto.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,15 @@ import jakarta.transaction.Transactional;
 import uniandes.edu.co.proyecto.entities.ConductorVehiculoEntity;
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
+import uniandes.edu.co.proyecto.entities.TarifaEntity;
 import uniandes.edu.co.proyecto.entities.TarjetaCreditoEntity;
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.repositories.ConductorVehiculoRepository;
 import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
-import uniandes.edu.co.proyecto.repositories.PuntoGeograficoRepository;
 import uniandes.edu.co.proyecto.repositories.ServicioDestinoRepository;
 import uniandes.edu.co.proyecto.repositories.ServicioRepository;
+import uniandes.edu.co.proyecto.repositories.TarifaRepository;
 import uniandes.edu.co.proyecto.repositories.TarjetaCreditoRepository;
-import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
 import uniandes.edu.co.proyecto.repositories.ViajeRepository;
 
 @Service
@@ -36,62 +37,56 @@ public class ServicioService {
     private ServicioRepository servicioRepository;
 
     @Autowired
-    private PuntoGeograficoRepository puntoGeograficoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private ServicioDestinoRepository servicioDestinoRepository;
 
     @Autowired
     private ViajeRepository viajeRepository;
 
-    @Transactional
-    public void solicitarServicio(Long idUsuario, String tipoServicio, String nivelRequerido, Long idPuntoPartida, Long idPuntoDestino) {
-        UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+    @Autowired
+    private TarifaRepository tarifaRepository;
 
-        TarjetaCreditoEntity infoMedioPago = tarjetaCreditoRepository.findByClienteId(idUsuario);
-        if (infoMedioPago == null) {
+    @Transactional
+    public void solicitarServicio(Long idUsuario, String tipoServicio, String nivelRequerido, Long idPuntoPartida, List<Long> destinos, String orden, String restaurante) {
+        LocalDateTime fechaHoraSolicitud = LocalDateTime.now();
+
+        //Inicializar el servicio
+        servicioRepository.insertarServicio(idUsuario, fechaHoraSolicitud, tipoServicio, nivelRequerido, "Pendiente", orden, restaurante, idPuntoPartida);
+        ServicioEntity servicio = servicioRepository.darUltimoServicio();
+        for (Long idDestino : destinos){
+            servicioDestinoRepository.insertarServicioDestino(servicio.getIdServicio(), idDestino);
+        }
+
+        //validar que tenga medio de pago
+        List<TarjetaCreditoEntity> tarjetas = tarjetaCreditoRepository.encontrarTarjetas(idUsuario);
+        if (tarjetas.isEmpty()) {
             throw new IllegalArgumentException("El usuario no tiene un medio de pago registrado disponible.");
         }
 
         ConductorAsignado asignado = buscarConductorDisponible(tipoServicio);
+        LocalDateTime fechaHoraAsignacion = LocalDateTime.now();
         UsuarioEntity conductor = asignado.conductor();
         Long idVehiculo = asignado.idVehiculo();
         System.out.println("Conductor asignado: " + conductor.getNombre());
-        LocalDateTime fechaHoraActual = LocalDateTime.now();
-        ServicioEntity nuevoServicio = new ServicioEntity(
-                usuario,
-                fechaHoraActual,
-                tipoServicio,
-                nivelRequerido,
-                "Asignado",
-                "",
-                "",
-                puntoGeograficoRepository.findById(idPuntoPartida)
-                        .orElseThrow(() -> new IllegalArgumentException("Punto de partida no encontrado."))
-        );
 
-        nuevoServicio = servicioRepository.saveAndFlush(nuevoServicio);
+        servicio.setEstado("Asignado");
+        servicioRepository.actualizarServicio(servicio.getIdServicio(), servicio.getIdCliente().getIdUsuario(), servicio.getFechaHora(), servicio.getTipoServicio(), servicio.getNivelRequerido(), "Asignado", servicio.getOrden(), servicio.getRestaurante(), servicio.getIdPuntoPartida().getIdPunto());
 
-        if (!puntoGeograficoRepository.existsById(idPuntoDestino)) {
-            throw new IllegalArgumentException("Punto destino no encontrado.");
-        }
+        LocalDate fechaSolicitud = fechaHoraSolicitud.toLocalDate();
+        TarifaEntity tarifa = tarifaRepository.encontrarTarifa(tipoServicio, nivelRequerido, fechaSolicitud);
 
-        servicioDestinoRepository.insertarServicioDestino(nuevoServicio.getIdServicio(), idPuntoDestino);
-        Double longi=0.0;
         viajeRepository.insertarViaje(
-                fechaHoraActual,
-                fechaHoraActual.plusHours(1),
-                longi,
-                nuevoServicio.getIdServicio(),
+                fechaHoraAsignacion,
+                null, 
+                null,
+                servicio.getIdServicio(),
                 conductor.getIdUsuario(),
-                idVehiculo
+                idVehiculo,
+                tarifa.getIdTarifa(),
+                null
         );
     }   
 
+    //no sabia que esto existia xd
     public record ConductorAsignado(UsuarioEntity conductor, Long idVehiculo) {}
 
     @Transactional
@@ -104,9 +99,7 @@ public class ServicioService {
         System.out.println("diaSemana = " + diaSemana);
         System.out.println("horaActual = " + horaActual);
 
-        List<DisponibilidadEntity> disponibles = disponibilidadRepository.findDisponibilidadesActivas(
-            tipoServicio, diaSemana, horaActual
-        );
+        List<DisponibilidadEntity> disponibles = disponibilidadRepository.findDisponibilidadesActivas(tipoServicio, diaSemana, horaActual);
 
         if (disponibles.isEmpty()) {
             throw new IllegalStateException("No hay conductores disponibles para el servicio solicitado.");
@@ -114,6 +107,7 @@ public class ServicioService {
 
         DisponibilidadEntity disp = disponibles.get(0);
         Long idVehiculo = disp.getPk().getVehiculo().getIdVehiculo();
+        Long idFranja = disp.getPk().getFranja().getIdFranja();
 
         ConductorVehiculoEntity relacion = conductorVehiculoRepository.findByVehiculo(idVehiculo);
         if (relacion == null) {
@@ -122,7 +116,8 @@ public class ServicioService {
 
         // Marcar como no disponible
         disp.setDisponible("N");
-        disponibilidadRepository.save(disp);
+        disponibilidadRepository.actualizarDisponibilidadFranja(idVehiculo, idFranja, "N");
+        disponibilidadRepository.save(disp); //esto toca cambiarlo
 
         return new ConductorAsignado(relacion.getPk().getIdConductor(), idVehiculo);
     }
