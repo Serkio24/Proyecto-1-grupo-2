@@ -51,8 +51,7 @@ public class CiudadController {
     @PostMapping("/new/save")
     public ResponseEntity<CiudadResponse> registrarCiudad(@RequestBody CiudadEntity ciudad) {
         try {
-            ciudadRepository.insertarCiudad(ciudad.getNombre());
-            CiudadEntity ciudadGuardada = ciudadRepository.darUltimaCiudad();
+            CiudadEntity ciudadGuardada = ciudadService.registrarCiudad(ciudad.getNombre());
             CiudadResponse respuesta = new CiudadResponse("Ciudad creada exitosamente", ciudadGuardada);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
         } catch (Exception e) {
