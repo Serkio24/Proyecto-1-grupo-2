@@ -45,6 +45,11 @@ public interface ConductorVehiculoRepository extends JpaRepository<ConductorVehi
             @Param("idVehiculo") Long idVehiculo
     );
 
-    
+    @Query(value = """
+        SELECT cv.*
+        FROM conductor_vehiculos cv
+        WHERE cv.idVehiculo = :idVehiculo
+        """, nativeQuery = true)
+    ConductorVehiculoEntity findByVehiculo(@Param("idVehiculo") Long idVehiculo);
 
 }

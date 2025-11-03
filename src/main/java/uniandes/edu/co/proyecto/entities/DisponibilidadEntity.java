@@ -13,7 +13,8 @@ public class DisponibilidadEntity {
 
     @EmbeddedId
     private DisponibilidadPK pk;
-    private boolean disponible;
+
+    private boolean disponible = true;
 
     public DisponibilidadEntity() {}
 
@@ -33,5 +34,5 @@ public class DisponibilidadEntity {
         this.disponible = disponible;
     }
 
-    
+
 }

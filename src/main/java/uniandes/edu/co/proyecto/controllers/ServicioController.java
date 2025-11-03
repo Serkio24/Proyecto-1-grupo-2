@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uniandes.edu.co.proyecto.dto.SolicitudServicioDTO;
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
 import uniandes.edu.co.proyecto.repositories.ServicioRepository;
+import uniandes.edu.co.proyecto.services.ServicioService;
 
 @RestController
 @RequestMapping("/servicios")
@@ -17,6 +19,10 @@ public class ServicioController {
     @Autowired
     private ServicioRepository servicioRepository;
 
+    @Autowired
+    private ServicioService servicioService;
+
+    // ✅ Listar todos los servicios
     @GetMapping
     public ResponseEntity<Collection<ServicioEntity>> listarServicios() {
         try {
@@ -27,6 +33,25 @@ public class ServicioController {
         }
     }
 
+    // ✅ Solicitar un servicio (usa el Service)
+    @PostMapping("/acciones/solicitar")
+    public ResponseEntity<String> solicitarServicio(@RequestBody SolicitudServicioDTO solicitud) {
+        try {
+            servicioService.solicitarServicio(
+                solicitud.getIdUsuario(),
+                solicitud.getTipoServicio(),
+                solicitud.getNivelRequerido(),
+                solicitud.getIdPuntoPartida(),
+                solicitud.getIdPuntoDestino()
+            );
+            return ResponseEntity.ok("✅ Servicio solicitado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("❌ Error al solicitar el servicio: " + e.getMessage());
+        }
+    }
+
+    // ✅ Obtener un servicio por ID
     @GetMapping("/{id}")
     public ResponseEntity<ServicioEntity> obtenerServicio(@PathVariable Long id) {
         try {
@@ -47,7 +72,7 @@ public class ServicioController {
         try {
             servicioRepository.insertarServicio(
                 servicio.getIdCliente().getIdUsuario(),
-                servicio.getFechaHora(),
+                servicio.getFechaHora(),  // ← si es String, se mantiene así
                 servicio.getTipoServicio(),
                 servicio.getNivelRequerido(),
                 servicio.getEstado(),
@@ -86,7 +111,7 @@ public class ServicioController {
             return ResponseEntity.ok("Servicio actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al actualizar el servicio");
+                                 .body("Error al actualizar el servicio: " + e.getMessage());
         }
     }
 
@@ -97,7 +122,7 @@ public class ServicioController {
             return ResponseEntity.ok("Servicio eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al eliminar el servicio");
+                                 .body("Error al eliminar el servicio: " + e.getMessage());
         }
     }
 
