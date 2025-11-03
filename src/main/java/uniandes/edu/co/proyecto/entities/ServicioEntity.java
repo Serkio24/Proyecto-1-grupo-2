@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,7 +20,8 @@ import jakarta.persistence.Table;
 public class ServicioEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "servicios_seq_gen")
+    @SequenceGenerator(name = "servicios_seq_gen", sequenceName = "servicios_SEQ", allocationSize = 1)
     private Long idServicio;
 
     @ManyToOne

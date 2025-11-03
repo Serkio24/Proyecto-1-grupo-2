@@ -42,4 +42,6 @@ public interface CiudadRepository extends JpaRepository<CiudadEntity, Long> {
     @Query(value = "SELECT ciudades_SEQ.nextval FROM dual", nativeQuery = true)
     Long obtenerNextval();
 
+    @Query(value = "SELECT * FROM ciudades WHERE idCiudad = (SELECT MAX(idCiudad) FROM ciudades)", nativeQuery = true)
+    CiudadEntity darUltimaCiudad();
 }

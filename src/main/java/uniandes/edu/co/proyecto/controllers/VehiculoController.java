@@ -50,26 +50,41 @@ public class VehiculoController {
         }
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<String> registrarVehiculo(@RequestBody VehiculoEntity vehiculo, @RequestParam Long conductorId) {
+    // RF1: Registrar un vehículo
+    @PostMapping("/vehiculos/new")
+    public ResponseEntity<VehiculoResponse> registrarVehiculo(@RequestBody VehiculoEntity vehiculo, @RequestParam Long conductorId) {
         try {
+            // Validar que el conductor exista y sea del tipo correcto
             UsuarioEntity conductor = usuarioRepository.darUsuario(conductorId);
-
             if (conductor == null || !"Conductor".equals(conductor.getTipo())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El usuario no es un conductor válido");
+                VehiculoResponse error = new VehiculoResponse("El usuario no es un conductor válido", null);
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
             }
 
-            // Ignorar cualquier ID enviado
-            vehiculo.setIdVehiculo(null);
-            VehiculoEntity vehiculoCreado = vehiculoRepository.save(vehiculo);
+            // Insertar vehículo usando el método nativo del repository
+            vehiculoRepository.insertarVehiculo(
+                    vehiculo.getTipo(),
+                    vehiculo.getMarca(),
+                    vehiculo.getModelo(),
+                    vehiculo.getColor(),
+                    vehiculo.getPlaca(),
+                    vehiculo.getCiudadExpedicion(),
+                    vehiculo.getCapacidadPasajeros()
+            );
 
+            // Obtener el último vehículo insertado para obtener su ID
+            VehiculoEntity vehiculoCreado = vehiculoRepository.darUltimoVehiculo();
+
+            // Registrar la relación conductor-vehículo
             conductorVehiculoRepository.insertarConductorVehiculo(conductor.getIdUsuario(), vehiculoCreado.getIdVehiculo());
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("Vehículo registrado exitosamente");
+            VehiculoResponse respuesta = new VehiculoResponse("Vehículo registrado exitosamente", vehiculoCreado);
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar el vehículo");
+            VehiculoResponse error = new VehiculoResponse("Error al registrar el vehículo", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,7 +108,6 @@ public class VehiculoController {
         }
     }
 
-    // ✅ Eliminar un vehículo
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarVehiculo(@PathVariable Long id) {
         try {
@@ -103,4 +117,32 @@ public class VehiculoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el vehículo");
         }
     }
+
+    public class VehiculoResponse {
+        private String mensaje;
+        private VehiculoEntity vehiculo;
+
+        public VehiculoResponse(String mensaje, VehiculoEntity vehiculo) {
+            this.mensaje = mensaje;
+            this.vehiculo = vehiculo;
+        }
+
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public VehiculoEntity getVehiculo() {
+            return vehiculo;
+        }
+
+        public void setVehiculo(VehiculoEntity vehiculo) {
+            this.vehiculo = vehiculo;
+        }
+    }
+
 }
+

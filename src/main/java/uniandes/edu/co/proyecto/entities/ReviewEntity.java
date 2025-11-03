@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.JoinColumn;
 
 @Entity
@@ -14,7 +15,8 @@ import jakarta.persistence.JoinColumn;
 public class ReviewEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reviews_seq_gen")
+    @SequenceGenerator(name = "reviews_seq_gen", sequenceName = "reviews_SEQ", allocationSize = 1)
     private Long idRevision;
 
     @ManyToOne
