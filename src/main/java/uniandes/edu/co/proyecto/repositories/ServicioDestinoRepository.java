@@ -1,6 +1,8 @@
 package uniandes.edu.co.proyecto.repositories;
 
 import java.util.Collection;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,10 @@ public interface ServicioDestinoRepository extends JpaRepository<ServicioDestino
     @Transactional
     @Query(value = "INSERT INTO servicios_destinos(idServicio, idPuntoLlegada) VALUES (:idServicio, :idPuntoLlegada)", nativeQuery = true)
     void insertarServicioDestino(@Param("idServicio") Long idServicio, @Param("idPuntoLlegada") Long idPuntoLlegada);
+
+    // Obtener todos los destinos de un servicio específico
+    @Query(value = "SELECT * FROM servicios_destinos WHERE idServicio = :idServicio", nativeQuery = true)
+    List<ServicioDestinoEntity> darDestinosServicio(@Param("idServicio") Long idServicio);
 
     @Modifying
     @Transactional

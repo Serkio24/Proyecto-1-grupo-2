@@ -2,6 +2,7 @@ package uniandes.edu.co.proyecto.controllers;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,10 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
+import uniandes.edu.co.proyecto.entities.PuntoGeograficoEntity;
+import uniandes.edu.co.proyecto.entities.ServicioDestinoEntity;
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
 import uniandes.edu.co.proyecto.entities.VehiculoEntity;
 import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
+import uniandes.edu.co.proyecto.repositories.ServicioDestinoRepository;
 import uniandes.edu.co.proyecto.repositories.ServicioRepository;
 import uniandes.edu.co.proyecto.repositories.ViajeRepository;
 
@@ -29,6 +33,9 @@ public class ViajeController {
 
     @Autowired
     private ServicioRepository servicioRepository;
+
+    @Autowired
+    private ServicioDestinoRepository servicioDestinoRepository;
 
     ViajeController(ServicioRepository servicioRepository) {
         this.servicioRepository = servicioRepository;
@@ -61,10 +68,10 @@ public class ViajeController {
         }
     }
 
-    // Crear nuevo viaje
     @PostMapping("/new/save")
-    public ResponseEntity<String> crearViaje(@RequestBody ViajeEntity viaje) {
+    public ResponseEntity<ViajeResponse> crearViaje(@RequestBody ViajeEntity viaje) {
         try {
+            // Insertar el viaje usando el repository (suponiendo que usa secuencia para ID)
             viajeRepository.insertarViaje(
                 viaje.getFechaHoraInicio(),
                 viaje.getFechaHoraFin(),
@@ -73,9 +80,14 @@ public class ViajeController {
                 viaje.getIdConductor().getIdUsuario(),
                 viaje.getIdVehiculo().getIdVehiculo()
             );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Viaje creado exitosamente");
+
+            // Obtener el último viaje insertado
+            ViajeEntity viajeGuardado = viajeRepository.darUltimoViaje();
+            ViajeResponse respuesta = new ViajeResponse("Viaje creado exitosamente", viajeGuardado);
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el viaje");
+            ViajeResponse error = new ViajeResponse("Error al crear el viaje", null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -111,19 +123,31 @@ public class ViajeController {
 
     // Terminar un viaje (RF9)
     @PutMapping("/{id}/finalizar")
-    public ResponseEntity<ViajeResponse> terminarViaje(@PathVariable Long id, @RequestParam Double longitud){
+    public ResponseEntity<ViajeResponse> terminarViaje(@PathVariable Long id){
         try {
+            LocalDateTime fin = LocalDateTime.now();
             ViajeEntity viaje = viajeRepository.darViaje(id);
             ServicioEntity servicio = viaje.getIdServicio();
             VehiculoEntity vehiculo = viaje.getIdVehiculo();
+            PuntoGeograficoEntity origen = servicio.getIdPuntoPartida();
+            List<ServicioDestinoEntity> destinos = servicioDestinoRepository.darDestinosServicio(servicio.getIdServicio());
             if (!"Asignado".equals(servicio.getEstado())){
                 ViajeResponse error = new ViajeResponse("El servicio no ha sido asignado, no puede finalizar", null);
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
             }
             servicio.setEstado("Finalizado");
             servicioRepository.actualizarServicio(servicio.getIdServicio(), servicio.getIdCliente().getIdUsuario(), servicio.getFechaHora(), servicio.getTipoServicio(), servicio.getNivelRequerido(), "Finalizado", servicio.getOrden(), servicio.getRestaurante(), servicio.getIdPuntoPartida().getIdPunto());
-            LocalDateTime fin = LocalDateTime.now();
+
             viaje.setFechaHoraFin(fin);
+            double longitud = 0;
+            PuntoGeograficoEntity puntoAnterior = origen;
+
+            for (ServicioDestinoEntity destino : destinos){
+                PuntoGeograficoEntity puntoActual = destino.getIdPuntoLlegada();
+                longitud += calcularDistancia(puntoAnterior, puntoActual);
+                puntoAnterior = puntoActual;
+            }
+
             viaje.setLongitudTrayecto(longitud);
 
             viajeRepository.actualizarViaje(viaje.getIdViaje(), viaje.getFechaHoraInicio(), fin, longitud, viaje.getIdServicio().getIdServicio(), viaje.getIdConductor().getIdUsuario(), viaje.getIdVehiculo().getIdVehiculo());
@@ -142,6 +166,22 @@ public class ViajeController {
             ViajeResponse error = new ViajeResponse("Error al finalizar viaje", null);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public double calcularDistancia(PuntoGeograficoEntity p1, PuntoGeograficoEntity p2){
+        final int R = 6371; // Radio de la Tierra en km
+        double lat1 = Math.toRadians(p1.getLatitud());
+        double lon1 = Math.toRadians(p1.getLongitud());
+        double lat2 = Math.toRadians(p2.getLatitud());
+        double lon2 = Math.toRadians(p2.getLongitud());
+
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // distancia en km
     }
     public class ViajeResponse {
 

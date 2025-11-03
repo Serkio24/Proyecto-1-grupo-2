@@ -31,4 +31,9 @@ public interface ViajeRepository extends JpaRepository<ViajeEntity, Long> {
     @Transactional
     @Query(value = "DELETE FROM viajes WHERE idViaje = :id", nativeQuery = true)
     void eliminarViaje(@Param("id") Long id);
+
+    // Obtener el último viaje insertado
+    @Query(value = "SELECT * FROM viajes WHERE idViaje = (SELECT MAX(idViaje) FROM viajes)", nativeQuery = true)
+    ViajeEntity darUltimoViaje();
+
 }
