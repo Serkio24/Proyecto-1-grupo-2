@@ -14,7 +14,7 @@ public class DisponibilidadEntity {
     @EmbeddedId
     private DisponibilidadPK pk;
 
-    private boolean disponible = true;
+    private String disponible = "Y";
 
     public DisponibilidadEntity() {}
 
@@ -27,10 +27,10 @@ public class DisponibilidadEntity {
     public void setPk(DisponibilidadPK pk) { this.pk = pk; }
 
     public boolean isDisponible() {
-        return disponible;
+        return disponible.equals("Y");
     }
 
-    public void setDisponible(boolean disponible) {
+    public void setDisponible(String disponible) {
         this.disponible = disponible;
     }
 

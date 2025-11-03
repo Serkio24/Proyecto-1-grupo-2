@@ -19,7 +19,7 @@ public interface ViajeRepository extends JpaRepository<ViajeEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO viajes(fechaHoraInicio, fechaHoraFin, longitudTrayecto, idServicio, idConductor, idVehiculo) VALUES (:fechaHoraInicio, :fechaHoraFin, :longitudTrayecto, :idServicio, :idConductor, :idVehiculo)", nativeQuery = true)
+    @Query(value = "INSERT INTO viajes(idViaje, fechaHoraInicio, fechaHoraFin, longitudTrayecto, idServicio, idConductor, idVehiculo) VALUES (viajes_SEQ.NEXTVAL, :fechaHoraInicio, :fechaHoraFin, :longitudTrayecto, :idServicio, :idConductor, :idVehiculo)", nativeQuery = true)
     void insertarViaje(@Param("fechaHoraInicio") LocalDateTime fechaHoraInicio, @Param("fechaHoraFin") LocalDateTime fechaHoraFin, @Param("longitudTrayecto") Double longitudTrayecto, @Param("idServicio") Long idServicio, @Param("idConductor") Long idConductor, @Param("idVehiculo") Long idVehiculo);
 
     @Modifying
