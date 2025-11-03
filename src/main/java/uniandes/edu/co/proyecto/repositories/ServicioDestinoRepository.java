@@ -20,7 +20,7 @@ public interface ServicioDestinoRepository extends JpaRepository<ServicioDestino
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO servicios_destinos(idServicio, idPuntoLlegada) VALUES (:idServicio, :idPuntoLlegada)", nativeQuery = true)
+    @Query(value = "INSERT INTO servicios_destinos(idDestino, idServicio, idPuntoLlegada) VALUES (servicios_destinos_SEQ.nextval, :idServicio, :idPuntoLlegada)", nativeQuery = true)
     void insertarServicioDestino(@Param("idServicio") Long idServicio, @Param("idPuntoLlegada") Long idPuntoLlegada);
 
     // Obtener todos los destinos de un servicio específico
