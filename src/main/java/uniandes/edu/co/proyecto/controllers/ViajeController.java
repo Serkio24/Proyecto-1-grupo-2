@@ -164,8 +164,10 @@ public class ViajeController {
             }
 
             viaje.setLongitudTrayecto(longitud);
+            Double costo = viaje.getIdTarifa().getPrecioPorKm()*longitud;
+            viaje.setCosto(costo);
 
-            viajeRepository.actualizarViaje(viaje.getIdViaje(), viaje.getFechaHoraInicio(), fin, longitud, viaje.getIdServicio().getIdServicio(), viaje.getIdConductor().getIdUsuario(), viaje.getIdVehiculo().getIdVehiculo(), viaje.getIdTarifa().getIdTarifa(), viaje.getCosto());
+            viajeRepository.actualizarViaje(viaje.getIdViaje(), viaje.getFechaHoraInicio(), fin, longitud, viaje.getIdServicio().getIdServicio(), viaje.getIdConductor().getIdUsuario(), viaje.getIdVehiculo().getIdVehiculo(), viaje.getIdTarifa().getIdTarifa(), costo);
 
             for (DisponibilidadEntity disponibilidad : disponibilidadRepository.darDisponibilidadesVehiculo(vehiculo.getIdVehiculo())){
                 if(!disponibilidad.isDisponible()){
