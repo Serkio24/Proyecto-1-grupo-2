@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.dto.SolicitudServicioDTO;
 import uniandes.edu.co.proyecto.entities.ServicioEntity;
+import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.repositories.ServicioRepository;
+import uniandes.edu.co.proyecto.repositories.ViajeRepository;
 import uniandes.edu.co.proyecto.services.ServicioService;
 
 @RestController
@@ -22,6 +24,9 @@ public class ServicioController {
     @Autowired
     private ServicioService servicioService;
 
+    @Autowired
+    private ViajeRepository viajeRepository;
+
     // ✅ Listar todos los servicios
     @GetMapping
     public ResponseEntity<Collection<ServicioEntity>> listarServicios() {
@@ -33,10 +38,10 @@ public class ServicioController {
         }
     }
 
-    // ✅ Solicitar un servicio (usa el Service)
     @PostMapping("/acciones/solicitar")
-    public ResponseEntity<String> solicitarServicio(@RequestBody SolicitudServicioDTO solicitud) {
+    public ResponseEntity<ServicioResponse2> solicitarServicio(@RequestBody SolicitudServicioDTO solicitud) {
         try {
+            // Llamada al servicio que inserta servicio y viaje
             servicioService.solicitarServicio(
                 solicitud.getIdUsuario(),
                 solicitud.getTipoServicio(),
@@ -46,12 +51,19 @@ public class ServicioController {
                 solicitud.getOrden(),
                 solicitud.getRestaurante()
             );
-            return ResponseEntity.ok("✅ Servicio solicitado exitosamente");
+
+            Long servicioId = servicioRepository.darUltimoServicioId();
+            Long viajeId = viajeRepository.darUltimoViajeId();
+
+            ServicioResponse2 respuesta = new ServicioResponse2("Servicio solicitado exitosamente", servicioId, viajeId);
+            return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("❌ Error al solicitar el servicio: " + e.getMessage());
+            ServicioResponse2 error = new ServicioResponse2("Error al solicitar el servicio: " + e.getMessage(), null, null);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // ✅ Obtener un servicio por ID
     @GetMapping("/{id}")
@@ -144,4 +156,67 @@ public class ServicioController {
         public ServicioEntity getServicio() { return servicio; }
         public void setServicio(ServicioEntity servicio) { this.servicio = servicio; }
     }
+    public class ServicioResponse3 {
+        private String mensaje;
+        private ServicioEntity servicio;
+        private ViajeEntity viaje; // opcional, puede ser null si no se genera viaje todavía
+
+        public ServicioResponse3(String mensaje, ServicioEntity servicio, ViajeEntity viaje) {
+            this.mensaje = mensaje;
+            this.servicio = servicio;
+            this.viaje = viaje;
+        }
+        public ServicioResponse3() {
+        }
+        // Getters y setters
+        public String getMensaje() { return mensaje; }
+        public void setMensaje(String mensaje) { this.mensaje = mensaje; }
+
+        public ServicioEntity getServicio() { return servicio; }
+        public void setServicio(ServicioEntity servicio) { this.servicio = servicio; }
+
+        public ViajeEntity getViaje() { return viaje; }
+        public void setViaje(ViajeEntity viaje) { this.viaje = viaje; }
+    }
+
+    public class ServicioResponse2 {
+        private String mensaje;
+        private Long servicioId;
+        private Long viajeId;
+
+        public ServicioResponse2(String mensaje, Long servicioId, Long viajeId) {
+            this.mensaje = mensaje;
+            this.servicioId = servicioId;
+            this.viajeId = viajeId;
+        }
+
+        public ServicioResponse2() {
+            // Constructor vacío requerido por frameworks como Jackson
+        }
+
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public Long getServicioId() {
+            return servicioId;
+        }
+
+        public void setServicioId(Long servicioId) {
+            this.servicioId = servicioId;
+        }
+
+        public Long getViajeId() {
+            return viajeId;
+        }
+
+        public void setViajeId(Long viajeId) {
+            this.viajeId = viajeId;
+        }
+    }
+
 }

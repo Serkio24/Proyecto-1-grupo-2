@@ -26,7 +26,7 @@ public class ViajeEntity {
 
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
-    private double longitudTrayecto;
+    private Double longitudTrayecto;
 
     // FK a ServicioEntity
     @ManyToOne
@@ -46,6 +46,8 @@ public class ViajeEntity {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private VehiculoEntity idVehiculo;
 
+    @ManyToOne
+    @JoinColumn(name = "idTarifa", referencedColumnName = "IdTarifa")
     private TarifaEntity idTarifa;
     private Double costo;
 
@@ -87,11 +89,11 @@ public class ViajeEntity {
         this.fechaHoraFin = fechaHoraFin;
     }
 
-    public double getLongitudTrayecto() {
+    public Double getLongitudTrayecto() {
         return longitudTrayecto;
     }
 
-    public void setLongitudTrayecto(double longitudTrayecto) {
+    public void setLongitudTrayecto(Double longitudTrayecto) {
         this.longitudTrayecto = longitudTrayecto;
     }
 

@@ -34,4 +34,9 @@ public interface ViajeRepository extends JpaRepository<ViajeEntity, Long> {
 
     @Query(value = "SELECT * FROM viajes WHERE idViaje = (SELECT MAX(idViaje) FROM viajes)", nativeQuery = true)
     ViajeEntity darUltimoViaje();
+
+    // Repositorio de viajes
+    @Query(value = "SELECT MAX(idViaje) FROM viajes", nativeQuery = true)
+    Long darUltimoViajeId();
+
 }

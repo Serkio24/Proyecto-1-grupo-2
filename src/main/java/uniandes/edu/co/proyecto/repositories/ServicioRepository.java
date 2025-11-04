@@ -31,9 +31,13 @@ public interface ServicioRepository extends JpaRepository<ServicioEntity, Long> 
     @Transactional
     @Query(value = "DELETE FROM servicios WHERE idServicio = :id", nativeQuery = true)
     void eliminarServicio(@Param("id") Long id);
+    
+    @Query(value = "SELECT MAX(idServicio) FROM servicios", nativeQuery = true)
+    Long darUltimoServicioId();
 
-    // Obtener el último servicio insertado
-    @Query(value = "SELECT * FROM servicios WHERE idServicio = (SELECT MAX(idServicio) FROM servicios)", nativeQuery = true)
+    // Obtener el último servicio insertado 
+    @Query(value = "SELECT * FROM servicios WHERE idServicio = (SELECT MAX(idServicio) FROM servicios)", nativeQuery = true) 
     ServicioEntity darUltimoServicio();
+
 
 }

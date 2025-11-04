@@ -129,11 +129,23 @@ public class ViajeController {
     public ResponseEntity<ViajeResponse> terminarViaje(@PathVariable Long id){
         try {
             LocalDateTime fin = LocalDateTime.now();
+            System.out.println("Buscando viaje con ID: " + id);
             ViajeEntity viaje = viajeRepository.darViaje(id);
+            System.out.println("Viaje obtenido: " + viaje);
+
             ServicioEntity servicio = viaje.getIdServicio();
+            System.out.println("Servicio asociado: " + servicio);
+
             VehiculoEntity vehiculo = viaje.getIdVehiculo();
+            System.out.println("Vehículo asociado: " + vehiculo);
+
             PuntoGeograficoEntity origen = servicio.getIdPuntoPartida();
-            List<ServicioDestinoEntity> destinos = servicioDestinoRepository.darDestinosServicio(servicio.getIdServicio());
+            System.out.println("Punto de partida: " + origen);
+
+            List<ServicioDestinoEntity> destinos =
+                servicioDestinoRepository.darDestinosServicio(servicio.getIdServicio());
+            System.out.println("Destinos encontrados: " + destinos.size());
+
             if (!"Asignado".equals(servicio.getEstado())){
                 ViajeResponse error = new ViajeResponse("El servicio no ha sido asignado, no puede finalizar", null);
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -168,6 +180,7 @@ public class ViajeController {
             ViajeResponse exito = new ViajeResponse("Viaje finalizado correctamente", viaje);
             return new ResponseEntity<>(exito, HttpStatus.OK);
         } catch (Exception e){
+            e.printStackTrace();
             ViajeResponse error = new ViajeResponse("Error al finalizar viaje", null);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
