@@ -8,7 +8,7 @@ public class SolicitudServicioDTO {
     private String nivelRequerido;
     private Long idPuntoPartida;
     private List<Long> destinos;
-    private String orden;
+    private Integer orden;
     private String restaurante;
 
     // Getters y setters
@@ -29,10 +29,10 @@ public class SolicitudServicioDTO {
     public void setDestinos(List<Long> destinos) {
         this.destinos = destinos;
     }
-    public String getOrden() {
+    public Integer getOrden() {
         return orden;
     }
-    public void setOrden(String orden) {
+    public void setOrden(Integer orden) {
         this.orden = orden;
     }
     public String getRestaurante() {

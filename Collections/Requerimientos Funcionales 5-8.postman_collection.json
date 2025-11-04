@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "7502a575-d5d0-40b2-9d65-8c89d46e7abf",
+		"_postman_id": "fa7d1b6d-f9f8-4947-85c4-abade8c36be2",
 		"name": "Requerimientos Funcionales 5-8",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "42820724",
-		"_collection_link": "https://hardcore-softies.postman.co/workspace/sistrans~9ea19033-64cf-43e8-810e-5a4e82f5c5d7/collection/42820724-7502a575-d5d0-40b2-9d65-8c89d46e7abf?action=share&source=collection_link&creator=42820724"
+		"_exporter_id": "48434843"
 	},
 	"item": [
 		{
@@ -191,7 +190,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"idUsuario\": 251,\n  \"tipoServicio\": \"DOMICILIO\",\n  \"nivelRequerido\": \"ALTO\",\n  \"idPuntoPartida\": 10,\n  \"idPuntoDestino\": 12\n}\n",
+					"raw": "{\n  \"idUsuario\": 251,\n  \"tipoServicio\": \"Transporte Pasajeros\",\n  \"nivelRequerido\": \"Estandar\",\n  \"idPuntoPartida\": 10,\n  \"destinos\": [12],\n  \"orden\": null,\n  \"restaurante\": null\n}\n\n",
 					"options": {
 						"raw": {
 							"language": "json"

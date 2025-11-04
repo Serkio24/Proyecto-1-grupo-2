@@ -50,9 +50,9 @@ public interface TarifaRepository extends JpaRepository<TarifaEntity, Long> {
 
     // Encontrar tarifa por tipo de servicio, nivel y fecha de solicitud
     @Query(value = "SELECT * FROM tarifas " +
-                   "WHERE tipo_servicio = :tipoServicio " +
+                   "WHERE tipoServicio = :tipoServicio " +
                    "AND nivel = :nivel " +
-                   "AND :fechaSolicitud BETWEEN vigencia_desde AND vigencia_hasta", nativeQuery = true)
+                   "AND :fechaSolicitud BETWEEN vigenciaDesde AND vigenciaHasta", nativeQuery = true)
     TarifaEntity encontrarTarifa(@Param("tipoServicio") String tipoServicio, 
                                 @Param("nivel") String nivel, 
                                 @Param("fechaSolicitud") LocalDateTime fechaSolicitud);

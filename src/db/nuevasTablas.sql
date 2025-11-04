@@ -115,7 +115,7 @@ CREATE TABLE servicios (
     fechaHora TIMESTAMP NOT NULL,
     tipoServicio VARCHAR2(50 BYTE) CHECK (tipoServicio IN ('Transporte Pasajeros','Domicilio Comida','Transporte Paquete')),
     nivelRequerido VARCHAR2(20 BYTE) CHECK (nivelRequerido IN ('Estandar','Confort','Large')),
-    estado VARCHAR2(20 BYTE) CHECK (estado IN ('Pendiente','Asignado','Cancelado')),
+    estado VARCHAR2(20 BYTE) CHECK (estado IN ('Pendiente','Asignado','Cancelado', 'Finalizado')),
     orden NUMBER,
     restaurante VARCHAR2(100 BYTE),
     idPuntoPartida NUMBER NOT NULL,

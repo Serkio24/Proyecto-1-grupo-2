@@ -33,7 +33,7 @@ public class ServicioEntity {
     private String tipoServicio;
     private String nivelRequerido;
     private String estado; // Pendiente, Asignado, Cancelado
-    private String orden;      // [0..1]
+    private Integer orden;      // [0..1]
     private String restaurante; // [0..1]
 
     @ManyToOne
@@ -49,7 +49,7 @@ public class ServicioEntity {
 
     // Constructor con parámetros
     public ServicioEntity(UsuarioEntity idCliente, LocalDateTime fechaHora, String tipoServicio,
-                          String nivelRequerido, String estado, String orden,
+                          String nivelRequerido, String estado, Integer orden,
                           String restaurante, PuntoGeograficoEntity idPuntoPartida) {
         this.idCliente = idCliente;
         this.fechaHora = fechaHora;
@@ -100,7 +100,7 @@ public class ServicioEntity {
         return estado;
     }
 
-    public String getOrden() {
+    public Integer getOrden() {
         return orden;
     }
 
@@ -137,7 +137,7 @@ public class ServicioEntity {
         this.estado = estado;
     }
 
-    public void setOrden(String orden) {
+    public void setOrden(Integer orden) {
         this.orden = orden;
     }
 

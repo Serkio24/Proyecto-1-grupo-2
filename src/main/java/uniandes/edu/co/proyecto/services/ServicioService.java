@@ -45,7 +45,7 @@ public class ServicioService {
     private TarifaRepository tarifaRepository;
 
     @Transactional
-    public void solicitarServicio(Long idUsuario, String tipoServicio, String nivelRequerido, Long idPuntoPartida, List<Long> destinos, String orden, String restaurante) {
+    public void solicitarServicio(Long idUsuario, String tipoServicio, String nivelRequerido, Long idPuntoPartida, List<Long> destinos, Integer orden, String restaurante) {
         LocalDateTime fechaHoraSolicitud = LocalDateTime.now();
 
         //Inicializar el servicio
