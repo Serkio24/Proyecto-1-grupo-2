@@ -87,7 +87,6 @@ public class ServicioService {
     //no sabia que esto existia xd
     public record ConductorAsignado(UsuarioEntity conductor, Long idVehiculo) {}
 
-    @Transactional
     public ConductorAsignado buscarConductorDisponible(String tipoServicio) {
         LocalDateTime ahora = LocalDateTime.now();
         String diaSemana = obtenerNombreDia(ahora.getDayOfWeek());
@@ -98,7 +97,8 @@ public class ServicioService {
         System.out.println("horaActual = " + horaActual);
 
         List<DisponibilidadEntity> disponibles = disponibilidadRepository.findDisponibilidadesActivas(tipoServicio, diaSemana, horaActual);
-
+        System.out.println("AQUIIII");
+        System.out.println(disponibles);
         if (disponibles.isEmpty()) {
             throw new IllegalStateException("No hay conductores disponibles para el servicio solicitado.");
         }
@@ -115,7 +115,6 @@ public class ServicioService {
         // Marcar como no disponible
         disp.setDisponible("N");
         disponibilidadRepository.actualizarDisponibilidadFranja(idVehiculo, idFranja, "N");
-        disponibilidadRepository.save(disp); //esto toca cambiarlo
 
         return new ConductorAsignado(relacion.getPk().getIdConductor(), idVehiculo);
     }

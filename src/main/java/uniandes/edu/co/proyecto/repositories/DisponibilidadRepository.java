@@ -100,6 +100,7 @@ public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEn
           WHERE f.tipoServicio = :tipoServicio
                AND f.diaSemana = :diaSemana
                AND TO_NUMBER(SUBSTR(f.horaInicio, 1, 2)) <= :horaActual
+               AND d.disponible = 'Y'
           """, nativeQuery = true)
      List<DisponibilidadEntity> findDisponibilidadesActivas(
           @Param("tipoServicio") String tipoServicio,
