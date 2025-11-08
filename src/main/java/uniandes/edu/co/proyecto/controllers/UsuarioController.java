@@ -108,16 +108,8 @@ public class UsuarioController {
     @PostMapping("/new/conductor")
     public ResponseEntity<UsuarioResponse> registrarConductor(@RequestBody UsuarioEntity usuario) {
         try {
-            // Insertar usuario con rol "Conductor"
-            usuarioRepository.insertarUsuario(
-                usuario.getNombre(),
-                usuario.getNumeroCelular(),
-                usuario.getNumeroCedula(),
-                usuario.getCorreoElectronico(),
-                "Conductor");
-
-            // Obtener el último usuario insertado
-            UsuarioEntity usuarioCreado = usuarioRepository.darUltimoUsuario();
+            // Llamar al servicio transaccional
+            UsuarioEntity usuarioCreado = usuarioService.registrarConductor(usuario);
 
             // Construir respuesta
             UsuarioResponse respuesta = new UsuarioResponse("Conductor creado exitosamente", usuarioCreado);

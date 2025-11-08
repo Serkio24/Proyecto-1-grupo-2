@@ -66,4 +66,23 @@ public class UsuarioService {
         return usuarioCreado;
     }
 
+    // RF3 - Registrar usuario conductor con transaccionalidad
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public UsuarioEntity registrarConductor(UsuarioEntity usuario) {
+        // Insertar usuario con rol "Conductor"
+        usuarioRepository.insertarUsuario(
+            usuario.getNombre(),
+            usuario.getNumeroCelular(),
+            usuario.getNumeroCedula(),
+            usuario.getCorreoElectronico(),
+            "Conductor"
+        );
+
+        // Obtener el último usuario insertado
+        UsuarioEntity usuarioCreado = usuarioRepository.darUltimoUsuario();
+
+        // Retornar el usuario creado (la transacción se confirma aquí si no hubo error)
+        return usuarioCreado;
+    }
+
 }

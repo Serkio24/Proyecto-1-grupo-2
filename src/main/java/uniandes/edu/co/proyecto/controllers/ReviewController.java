@@ -1,6 +1,5 @@
 package uniandes.edu.co.proyecto.controllers;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.dto.ReviewDTO;
 import uniandes.edu.co.proyecto.entities.ReviewEntity;
-import uniandes.edu.co.proyecto.entities.UsuarioEntity;
-import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.repositories.ReviewRepository;
-import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
-import uniandes.edu.co.proyecto.repositories.ViajeRepository;
+import uniandes.edu.co.proyecto.services.ReviewService;
 
 @RestController
 @RequestMapping("/reviews")
@@ -24,10 +20,7 @@ public class ReviewController {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private ViajeRepository viajeRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private ReviewService reviewService;
 
     // Listar todas las reviews
     @GetMapping
@@ -118,51 +111,19 @@ public class ReviewController {
 
     // Requerimientos RF10 y RF11
     @PostMapping("/registrar")
-    public ResponseEntity<ReviewResponse> crearReview(@RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<ReviewResponse> registrarReview(@RequestBody ReviewDTO reviewDTO) {
         try {
-            // Obtener viaje y usuarios
-            ViajeEntity viaje = viajeRepository.darViaje(reviewDTO.getIdViaje());
-            UsuarioEntity calificador = usuarioRepository.darUsuario(reviewDTO.getIdUsuario());
-            UsuarioEntity calificado = null;
-            if (calificador.getTipo().equals("Conductor")){
-                calificado = viaje.getIdServicio().getIdCliente();
-            }else if (calificador.getTipo().equals("Cliente")){
-                calificado = viaje.getIdConductor();
-            }
-            else{
-                ReviewResponse error = new ReviewResponse("No se encuentra el usuario calificado", null);
-                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-            }
-
-            // Validar que el calificador participe en el viaje
-            boolean esConductorDelViaje = calificador.getIdUsuario().equals(viaje.getIdConductor().getIdUsuario());
-            boolean esClienteDelViaje = calificador.getIdUsuario().equals(viaje.getIdServicio().getIdCliente().getIdUsuario());
-
-            if (!esConductorDelViaje && !esClienteDelViaje) {
-                ReviewResponse error = new ReviewResponse("El usuario calificador no está asociado a este viaje", null);
-                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-            }
-            
-            // Insertar review
-            reviewRepository.insertarReview(
-                calificador.getIdUsuario(),
-                calificado.getIdUsuario(),
-                viaje.getIdViaje(),
-                reviewDTO.getPuntuacion(),
-                reviewDTO.getComentario(),
-                LocalDateTime.now()
-            );
-
-            ReviewEntity reviewGuardada = reviewRepository.darUltimaReview();
+            ReviewEntity reviewGuardada = reviewService.registrarReview(reviewDTO);
             ReviewResponse exito = new ReviewResponse("Review creada exitosamente", reviewGuardada);
             return new ResponseEntity<>(exito, HttpStatus.CREATED);
-
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new ReviewResponse(e.getMessage(), null), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            ReviewResponse error = new ReviewResponse("Error al crear la review", null);
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ReviewResponse("Error al crear la review", null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public class ReviewResponse {
         private String mensaje;
