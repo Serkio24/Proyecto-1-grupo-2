@@ -1,38 +1,37 @@
 package uniandes.edu.co.proyecto.repositories;
 
-import java.util.Collection;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
+
 import uniandes.edu.co.proyecto.entities.VehiculoEntity;
 
-public interface VehiculoRepository extends JpaRepository<VehiculoEntity, Long> {
+public interface VehiculoRepository extends MongoRepository<VehiculoEntity, Long> {
 
-    @Query(value = "SELECT * FROM vehiculos", nativeQuery = true)
-    Collection<VehiculoEntity> darVehiculos();
+    // create
+    @Query("{ $insert: { _id: ?0, idConductor: ?1, tipo: ?2, marca: ?3, modelo: ?4, color: ?5, placa: ?6, ciudadExpedicion: ?7, capacidadPasajeros: ?8, nivel: ?9 } }")
+    void insertarVehiculo(Long id, Long idConductor, String tipo, String marca, String modelo, String color, String placa, String ciudadExpedicion, Integer capacidadPasajeros, String nivel);
 
-    @Query(value = "SELECT * FROM vehiculos WHERE idVehiculo = :id", nativeQuery = true)
-    VehiculoEntity darVehiculo(@Param("id") Long id);
+    // read
+    @Query(value = "{}")
+    List<VehiculoEntity> buscarTodosLosVehiculos();
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM vehiculos WHERE idVehiculo = :id", nativeQuery = true)
-    void eliminarVehiculo(@Param("id") Long id);
+    // read
+    @Query("{ _id: ?0 }")
+    VehiculoEntity buscarPorId(Long id);
 
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE vehiculos SET tipo = :tipo, marca = :marca, modelo = :modelo, color = :color, placa = :placa, ciudadExpedicion = :ciudad, capacidadPasajeros = :capacidad WHERE idVehiculo = :id", nativeQuery = true)
-    void actualizarVehiculo(@Param("id") Long id, @Param("tipo") String tipo, @Param("marca") String marca, @Param("modelo") String modelo, @Param("color") String color, @Param("placa") String placa, @Param("ciudad") String ciudad, @Param("capacidad") Long capacidad);
+    // read
+    @Query("{ idConductor: ?0 }")
+    List<VehiculoEntity> buscarPorIdConductor(Long idConductor);
 
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO vehiculos (idVehiculo, tipo, marca, modelo, color, placa, ciudadExpedicion, capacidadPasajeros) VALUES (vehiculos_SEQ.NEXTVAL, :tipo, :marca, :modelo, :color, :placa, :ciudadExpedicion, :capacidad)", nativeQuery = true)
-    void insertarVehiculo(@Param("tipo") String tipo, @Param("marca") String marca, @Param("modelo") String modelo, @Param("color") String color, @Param("placa") String placa, @Param("ciudadExpedicion") String ciudadExpedicion, @Param("capacidad") Integer capacidad);
+    // update
+    @Query("{ _id: ?0 }")
+    @Update("{ $set: { idConductor: ?1, tipo: ?2, marca: ?3, modelo: ?4, color: ?5, placa: ?6, ciudadExpedicion: ?7, capacidadPasajeros: ?8, nivel: ?9 } }")
+    void actualizarVehiculo(Long id, Long idConductor, String tipo, String marca, String modelo, String color, String placa, String ciudadExpedicion, Integer capacidadPasajeros, String nivel);
 
-    @Query(value = "SELECT * FROM vehiculos WHERE idVehiculo = (SELECT MAX(idVehiculo) FROM vehiculos)", nativeQuery = true)
-    VehiculoEntity darUltimoVehiculo();
-
+    // delete
+    @Query(value = "{ _id: ?0 }", delete = true)
+    void eliminarVehiculo(Long id);
 }
-

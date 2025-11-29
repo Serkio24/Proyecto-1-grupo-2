@@ -1,41 +1,37 @@
 package uniandes.edu.co.proyecto.repositories;
 
-import java.util.Collection;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
+
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 
-public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
+public interface UsuarioRepository extends MongoRepository<UsuarioEntity, Long> {
 
-    @Query(value = "SELECT * FROM usuarios", nativeQuery = true)
-    Collection<UsuarioEntity> darUsuarios();
+    // create
+    @Query("{ $insert: { _id: ?0, nombre: ?1, numeroCelular: ?2, numeroCedula: ?3, correoElectronico: ?4, tipoUsuario: ?5 } }")
+    void insertarUsuario(Long id, String nombre, String numeroCelular, String numeroCedula, String correoElectronico, String tipoUsuario);
 
-    @Query(value = "SELECT * FROM usuarios WHERE idUsuario = :id", nativeQuery = true)
-    UsuarioEntity darUsuario(@Param("id") Long id);
+    // read
+    @Query(value = "{}")
+    List<UsuarioEntity> buscarTodosLosUsuarios();
 
-    @Query(value = "SELECT * FROM usuarios u WHERE u.nombre LIKE '%' || :nombre || '%'", nativeQuery = true)
-    Collection<UsuarioEntity> darUsuariosPorNombre(@Param("nombre") String nombre);
+    // read
+    @Query("{ _id: ?0 }")
+    UsuarioEntity buscarPorId(Long id);
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM usuarios WHERE idUsuario = :id", nativeQuery = true)
-    void eliminarUsuario(@Param("id") Long id);
+    // read
+    @Query("{ 'nombre': { $regex: ?0, $options: 'i' } }")
+    List<UsuarioEntity> buscarPorNombre(String nombre);
 
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE usuarios SET nombre = :nombre, numeroCelular = :numeroCelular, numeroCedula = :numeroCedula, correoElectronico = :correo, tipoUsuario = :tipo WHERE idUsuario = :id", nativeQuery = true)
-    void actualizarUsuario(@Param("id") Long id, @Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correo") String correo, @Param("tipo") String tipo);
+    // update
+    @Query("{ _id: ?0 }")
+    @Update("{ $set: { nombre: ?1, numeroCelular: ?2, numeroCedula: ?3, correoElectronico: ?4, tipoUsuario: ?5 } }")
+    void actualizarUsuario(Long id, String nombre, String numeroCelular, String numeroCedula, String correoElectronico, String tipoUsuario);
 
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO usuarios (idUsuario, nombre, numeroCelular, numeroCedula, correoElectronico, tipoUsuario) " + "VALUES (usuarios_SEQ.NEXTVAL, :nombre, :numeroCelular, :numeroCedula, :correo, :tipo)", nativeQuery = true)
-    void insertarUsuario(@Param("nombre") String nombre, @Param("numeroCelular") String numeroCelular, @Param("numeroCedula") String numeroCedula, @Param("correo") String correo, @Param("tipo") String tipo);
-
-
-    @Query(value = "SELECT * FROM usuarios WHERE idUsuario = (SELECT MAX(idUsuario) FROM usuarios)", nativeQuery = true)
-    UsuarioEntity darUltimoUsuario();
-
+    // delete
+    @Query(value = "{ _id: ?0 }", delete = true)
+    void eliminarUsuarioPorId(Long id);
 }

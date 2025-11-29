@@ -1,120 +1,42 @@
 package uniandes.edu.co.proyecto.repositories;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
+
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
-import uniandes.edu.co.proyecto.entities.DisponibilidadPK;
+import uniandes.edu.co.proyecto.entities.FranjaHorariaEntity;
 
-public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEntity, DisponibilidadPK> {
+public interface DisponibilidadRepository extends MongoRepository<DisponibilidadEntity, Long> {
 
-    // Create
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO disponibilidades (idVehiculo, idFranja, disponible) VALUES (:idVehiculo, :idFranja, true)", nativeQuery = true)
-    void insertarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+    // create
+    @Query("{ $insert: { _id: ?0, idConductor: ?1, idVehiculo: ?2, franjasHorarias: ?3 } }")
+    void insertarDisponibilidad(Long id, Long idConductor, Long idVehiculo, List<FranjaHorariaEntity> franjasHorarias);
 
-    // Read: Get all
-    @Query(value = "SELECT * FROM disponibilidades", nativeQuery = true)
-    Collection<DisponibilidadEntity> darDisponibilidades();
+    // read
+    @Query(value = "{}")
+    List<DisponibilidadEntity> buscarTodasLasDisponibilidades();
 
-    // Obtener franjas de un vehículo
-    @Query(value = "SELECT * FROM disponibilidades WHERE idVehiculo = :idVehiculo", nativeQuery = true)
-    Collection<DisponibilidadEntity> darDisponibilidadesVehiculo(@Param("idVehiculo") Long idVehiculo);
+    // read
+    @Query("{ _id: ?0 }")
+    DisponibilidadEntity buscarPorId(Long id);
 
-    // Read: Get one
-    @Query(value = "SELECT * FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
-    DisponibilidadEntity darDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+    // read
+    @Query("{ idVehiculo: ?0 }")
+    List<DisponibilidadEntity> buscarPorIdVehiculo(Long idVehiculo);
 
-    @Modifying
-     @Transactional
-     @Query(value = "UPDATE disponibilidades SET disponible = :disponible WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
-     void actualizarDisponibilidadFranja(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja, @Param("disponible") String disponible);
+    // read
+    @Query("{ idConductor: ?0 }")
+    List<DisponibilidadEntity> buscarPorIdConductor(Long idConductor);
 
-    // Update
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE disponibilidades SET idVehiculo = :idVehiculo, idFranja = :idFranja WHERE idVehiculo = :idVehiculoAnt AND idFranja = :idFranjaAnt", nativeQuery = true)
-    void actualizarDisponibilidad(@Param("idVehiculoAnt") Long idVehiculoAnt, @Param("idFranjaAnt") Long idFranjaAnt, @Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+    // update
+    @Query("{ _id: ?0 }")
+    @Update("{ $set: { idConductor: ?1, idVehiculo: ?2, franjasHorarias: ?3 } }")
+    void actualizarDisponibilidad(Long id, Long idConductor, Long idVehiculo, List<FranjaHorariaEntity> franjasHorarias);
 
-    // Delete
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
-    void eliminarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
-
-    
-     @Query(value = """
-          SELECT CASE WHEN EXISTS (
-               SELECT 1
-               FROM disponibilidades d
-               INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
-               INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
-               INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
-               WHERE cv.idConductor = :idConductor
-                    AND f.diaSemana = :diaSemana
-                    AND (:horaInicio < f.horaFin AND :horaFin > f.horaInicio)
-          ) THEN 1 ELSE 0 END
-          FROM dual
-          """, nativeQuery = true)
-          int validarTraslape(
-               @Param("idConductor") Long idConductor,
-               @Param("diaSemana") String diaSemana,
-               @Param("horaInicio") String horaInicio,
-               @Param("horaFin") String horaFin
-          );
-
-
-     @Query(value = """
-          SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
-          FROM disponibilidades d
-          INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
-          INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
-          INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
-          WHERE cv.idConductor = :idConductor
-               AND f.diaSemana = :diaSemana
-               AND (TO_DATE(:horaInicio, 'HH24:MI:SS') < TO_DATE(f.horaFin, 'HH24:MI:SS')
-                    AND TO_DATE(:horaFin, 'HH24:MI:SS') > TO_DATE(f.horaInicio, 'HH24:MI:SS'))
-               AND NOT (d.idVehiculo = :idVehiculoAnt AND d.idFranja = :idFranjaAnt)
-          """, nativeQuery = true)
-          int validarTraslapeExcluyendoActual(
-          @Param("idConductor") Long idConductor,
-          @Param("diaSemana") String diaSemana,
-          @Param("horaInicio") String horaInicio,
-          @Param("horaFin") String horaFin,
-          @Param("idVehiculoAnt") Long idVehiculoAnt,
-          @Param("idFranjaAnt") Long idFranjaAnt
-          );
-
-
-     @Transactional(readOnly = true)
-     @Query(value = """
-          SELECT d.*
-          FROM disponibilidades d
-          JOIN franjas_horarias f ON d.idFranja = f.idFranja
-          WHERE f.tipoServicio = :tipoServicio
-               AND f.diaSemana = :diaSemana
-               AND TO_NUMBER(SUBSTR(f.horaInicio, 1, 2)) <= :horaActual
-               AND d.disponible = 'Y'
-          """, nativeQuery = true)
-     List<DisponibilidadEntity> findDisponibilidadesActivas(
-          @Param("tipoServicio") String tipoServicio,
-          @Param("diaSemana") String diaSemana,
-          @Param("horaActual") int horaActual
-     );
-     @Transactional(readOnly = true)
-     @Query(value = """
-          SELECT d.*
-          FROM disponibilidades d
-          JOIN franjas_horarias f ON d.idFranja = f.idFranja
-          WHERE f.tipoServicio = :tipoServicio
-          """, nativeQuery = true)
-     List<DisponibilidadEntity> findDisponibilidadesTipo(
-          @Param("tipoServicio") String tipoServicio
-     );
+    // delete
+    @Query(value = "{ _id: ?0 }", delete = true)
+    void eliminarDisponibilidadPorId(Long id);
 }
