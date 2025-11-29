@@ -21,13 +21,11 @@ public class UsuarioEntity {
     private String correoElectronico;
     private String tipoUsuario;
 
-    // Subdocumentos embebidos
     private List<Servicio> servicios = new ArrayList<>();
     private List<Viaje> viajes = new ArrayList<>();
     private List<TarjetaCredito> tarjetasCredito = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
 
-    // Constructores
     public UsuarioEntity() {}
 
     public UsuarioEntity(String nombre, String numeroCelular, String numeroCedula,
@@ -39,7 +37,6 @@ public class UsuarioEntity {
         this.tipoUsuario = tipoUsuario;
     }
 
-    // Subdocumento: Servicio
     public static class Servicio {
         private String tipoServicio;
         private String nivelRequerido;
@@ -61,7 +58,6 @@ public class UsuarioEntity {
             this.fechaHora = fechaHora;
         }
 
-        // Getters y Setters
         public String getTipoServicio() { return tipoServicio; }
         public void setTipoServicio(String tipoServicio) { this.tipoServicio = tipoServicio; }
 
@@ -87,7 +83,6 @@ public class UsuarioEntity {
         public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
     }
 
-    // Subdocumento: Viaje
     public static class Viaje {
         private String idConductor;
         private String nivelRequerido;
@@ -101,7 +96,6 @@ public class UsuarioEntity {
 
         public Viaje() {}
 
-        // Getters y Setters
         public String getIdConductor() { return idConductor; }
         public void setIdConductor(String idConductor) { this.idConductor = idConductor; }
 
@@ -130,7 +124,6 @@ public class UsuarioEntity {
         public void setCosto(Double costo) { this.costo = costo; }
     }
 
-    // Subdocumento: TarjetaCredito
     public static class TarjetaCredito {
         private String titularDeLaTarjeta;
         private String numeroTarjeta;
@@ -147,7 +140,6 @@ public class UsuarioEntity {
             this.codigoSeguridad = codigoSeguridad;
         }
 
-        // Getters y Setters
         public String getTitularDeLaTarjeta() { return titularDeLaTarjeta; }
         public void setTitularDeLaTarjeta(String titularDeLaTarjeta) { this.titularDeLaTarjeta = titularDeLaTarjeta; }
 
@@ -161,7 +153,6 @@ public class UsuarioEntity {
         public void setCodigoSeguridad(Integer codigoSeguridad) { this.codigoSeguridad = codigoSeguridad; }
     }
 
-    // Subdocumento: Review
     public static class Review {
         private Double puntuacion;
         private String comentario;
@@ -177,7 +168,6 @@ public class UsuarioEntity {
             this.idUsuarioPublicado = idUsuarioPublicado;
         }
 
-        // Getters y Setters
         public Double getPuntuacion() { return puntuacion; }
         public void setPuntuacion(Double puntuacion) { this.puntuacion = puntuacion; }
 
@@ -191,7 +181,6 @@ public class UsuarioEntity {
         public void setIdUsuarioPublicado(String idUsuarioPublicado) { this.idUsuarioPublicado = idUsuarioPublicado; }
     }
 
-    // Getters y Setters principales
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

@@ -13,7 +13,6 @@ public class TarifaEntity {
     private String nivel;
     private Double precioPorKM;
 
-    // Constructores
     public TarifaEntity() {}
 
     public TarifaEntity(String tipoServicio, String nivel, Double precioPorKM) {
@@ -22,7 +21,6 @@ public class TarifaEntity {
         this.precioPorKM = precioPorKM;
     }
 
-    // Getters y Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

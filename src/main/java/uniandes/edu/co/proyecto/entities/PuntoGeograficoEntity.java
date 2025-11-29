@@ -15,7 +15,6 @@ public class PuntoGeograficoEntity {
     private String direccionAproximada;
     private String ciudad;
 
-    // Constructores
     public PuntoGeograficoEntity() {}
 
     public PuntoGeograficoEntity(String nombre, Double latitud, Double longitud,
@@ -27,7 +26,6 @@ public class PuntoGeograficoEntity {
         this.ciudad = ciudad;
     }
 
-    // Getters y Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

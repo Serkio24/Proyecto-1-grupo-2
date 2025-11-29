@@ -12,7 +12,7 @@ public class VehiculoEntity {
     @Id
     private String id;
 
-    private String idConductor; // Referencia al ID del usuario conductor
+    private String idConductor;
     private String nivelVehiculo;
     private String tipo;
     private String marca;
@@ -22,13 +22,9 @@ public class VehiculoEntity {
     private String ciudadExpedicion;
     private Integer capacidadPasajeros;
 
-    // Subdocumento: Disponibilidad
     private Disponibilidad disponibilidad;
-
-    // Subdocumento: Franjas Horarias
     private List<FranjaHoraria> franjasHorarias = new ArrayList<>();
 
-    // Constructores
     public VehiculoEntity() {}
 
     public VehiculoEntity(String idConductor, String nivelVehiculo, String tipo, String marca,
@@ -45,7 +41,6 @@ public class VehiculoEntity {
         this.capacidadPasajeros = capacidadPasajeros;
     }
 
-    // Subdocumento: Disponibilidad
     public static class Disponibilidad {
         private String disponible;
 
@@ -65,7 +60,6 @@ public class VehiculoEntity {
         }
     }
 
-    // Subdocumento: FranjaHoraria
     public static class FranjaHoraria {
         private Integer diaSemana;
         private String horaInicio;
@@ -81,7 +75,6 @@ public class VehiculoEntity {
             this.tipoServicio = tipoServicio;
         }
 
-        // Getters y Setters
         public Integer getDiaSemana() { return diaSemana; }
         public void setDiaSemana(Integer diaSemana) { this.diaSemana = diaSemana; }
 
@@ -95,7 +88,6 @@ public class VehiculoEntity {
         public void setTipoServicio(String tipoServicio) { this.tipoServicio = tipoServicio; }
     }
 
-    // Getters y Setters principales
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
