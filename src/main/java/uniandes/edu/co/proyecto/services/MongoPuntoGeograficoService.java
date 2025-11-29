@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uniandes.edu.co.proyecto.entities.PuntoGeografico;
+import uniandes.edu.co.proyecto.entities.PuntoGeograficoEntity;
 import uniandes.edu.co.proyecto.repositories.MongoPuntoGeograficoRepository;
 
 import java.util.List;
@@ -18,36 +18,36 @@ public class MongoPuntoGeograficoService {
 
     // Crear punto geográfico
     @Transactional
-    public PuntoGeografico crearPuntoGeografico(PuntoGeografico punto) {
+    public PuntoGeograficoEntity crearPuntoGeografico(PuntoGeograficoEntity punto) {
         return puntoRepository.save(punto);
     }
 
     // Obtener todos los puntos geográficos
-    public List<PuntoGeografico> obtenerTodosLosPuntos() {
+    public List<PuntoGeograficoEntity> obtenerTodosLosPuntos() {
         return puntoRepository.findAll();
     }
 
     // Obtener punto geográfico por ID
-    public Optional<PuntoGeografico> obtenerPuntoPorId(String id) {
+    public Optional<PuntoGeograficoEntity> obtenerPuntoPorId(String id) {
         return puntoRepository.findById(id);
     }
 
     // Buscar puntos por ciudad
-    public List<PuntoGeografico> buscarPuntosPorCiudad(String ciudad) {
+    public List<PuntoGeograficoEntity> buscarPuntosPorCiudad(String ciudad) {
         return puntoRepository.findByCiudad(ciudad);
     }
 
     // Buscar puntos por nombre
-    public List<PuntoGeografico> buscarPuntosPorNombre(String nombre) {
+    public List<PuntoGeograficoEntity> buscarPuntosPorNombre(String nombre) {
         return puntoRepository.findByNombreContaining(nombre);
     }
 
     // Actualizar punto geográfico
     @Transactional
-    public PuntoGeografico actualizarPunto(String id, PuntoGeografico puntoActualizado) {
-        Optional<PuntoGeografico> puntoExistente = puntoRepository.findById(id);
+    public PuntoGeograficoEntity actualizarPunto(String id, PuntoGeograficoEntity puntoActualizado) {
+        Optional<PuntoGeograficoEntity> puntoExistente = puntoRepository.findById(id);
         if (puntoExistente.isPresent()) {
-            PuntoGeografico punto = puntoExistente.get();
+            PuntoGeograficoEntity punto = puntoExistente.get();
             punto.setNombre(puntoActualizado.getNombre());
             punto.setLatitud(puntoActualizado.getLatitud());
             punto.setLongitud(puntoActualizado.getLongitud());

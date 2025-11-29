@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uniandes.edu.co.proyecto.entities.Vehiculo;
+import uniandes.edu.co.proyecto.entities.VehiculoEntity;
 import uniandes.edu.co.proyecto.repositories.MongoVehiculoRepository;
 
 import java.util.ArrayList;
@@ -19,41 +19,41 @@ public class MongoVehiculoService {
 
     // Crear vehículo
     @Transactional
-    public Vehiculo crearVehiculo(Vehiculo vehiculo) {
+    public VehiculoEntity crearVehiculo(VehiculoEntity vehiculo) {
         return vehiculoRepository.save(vehiculo);
     }
 
     // Obtener todos los vehículos
-    public List<Vehiculo> obtenerTodosLosVehiculos() {
+    public List<VehiculoEntity> obtenerTodosLosVehiculos() {
         return vehiculoRepository.findAll();
     }
 
     // Obtener vehículo por ID
-    public Optional<Vehiculo> obtenerVehiculoPorId(String id) {
+    public Optional<VehiculoEntity> obtenerVehiculoPorId(String id) {
         return vehiculoRepository.findById(id);
     }
 
     // Buscar vehículos por conductor
-    public List<Vehiculo> buscarVehiculosPorConductor(String idConductor) {
+    public List<VehiculoEntity> buscarVehiculosPorConductor(String idConductor) {
         return vehiculoRepository.findByIdConductor(idConductor);
     }
 
     // Buscar vehículos disponibles
-    public List<Vehiculo> buscarVehiculosDisponibles() {
+    public List<VehiculoEntity> buscarVehiculosDisponibles() {
         return vehiculoRepository.findVehiculosDisponibles();
     }
 
     // Buscar vehículo por placa
-    public Optional<Vehiculo> buscarVehiculoPorPlaca(String placa) {
+    public Optional<VehiculoEntity> buscarVehiculoPorPlaca(String placa) {
         return vehiculoRepository.findByPlaca(placa);
     }
 
     // Actualizar vehículo
     @Transactional
-    public Vehiculo actualizarVehiculo(String id, Vehiculo vehiculoActualizado) {
-        Optional<Vehiculo> vehiculoExistente = vehiculoRepository.findById(id);
+    public VehiculoEntity actualizarVehiculo(String id, VehiculoEntity vehiculoActualizado) {
+        Optional<VehiculoEntity> vehiculoExistente = vehiculoRepository.findById(id);
         if (vehiculoExistente.isPresent()) {
-            Vehiculo vehiculo = vehiculoExistente.get();
+            VehiculoEntity vehiculo = vehiculoExistente.get();
             vehiculo.setIdConductor(vehiculoActualizado.getIdConductor());
             vehiculo.setNivelVehiculo(vehiculoActualizado.getNivelVehiculo());
             vehiculo.setTipo(vehiculoActualizado.getTipo());
@@ -70,10 +70,10 @@ public class MongoVehiculoService {
 
     // Actualizar disponibilidad
     @Transactional
-    public Vehiculo actualizarDisponibilidad(String id, Vehiculo.Disponibilidad disponibilidad) {
-        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(id);
+    public VehiculoEntity actualizarDisponibilidad(String id, VehiculoEntity.Disponibilidad disponibilidad) {
+        Optional<VehiculoEntity> vehiculoOpt = vehiculoRepository.findById(id);
         if (vehiculoOpt.isPresent()) {
-            Vehiculo vehiculo = vehiculoOpt.get();
+            VehiculoEntity vehiculo = vehiculoOpt.get();
             vehiculo.setDisponibilidad(disponibilidad);
             return vehiculoRepository.save(vehiculo);
         }
@@ -82,10 +82,10 @@ public class MongoVehiculoService {
 
     // Agregar franja horaria
     @Transactional
-    public Vehiculo agregarFranjaHoraria(String vehiculoId, Vehiculo.FranjaHoraria franja) {
-        Optional<Vehiculo> vehiculoOpt = vehiculoRepository.findById(vehiculoId);
+    public VehiculoEntity agregarFranjaHoraria(String vehiculoId, VehiculoEntity.FranjaHoraria franja) {
+        Optional<VehiculoEntity> vehiculoOpt = vehiculoRepository.findById(vehiculoId);
         if (vehiculoOpt.isPresent()) {
-            Vehiculo vehiculo = vehiculoOpt.get();
+            VehiculoEntity vehiculo = vehiculoOpt.get();
             if (vehiculo.getFranjasHorarias() == null) {
                 vehiculo.setFranjasHorarias(new ArrayList<>());
             }

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uniandes.edu.co.proyecto.entities.Usuario;
+import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.repositories.MongoUsuarioRepository;
 
 import java.util.ArrayList;
@@ -19,15 +19,15 @@ public class MongoUsuarioService {
 
     // Crear un usuario simple
     @Transactional
-    public Usuario insertarUsuario(String nombre, String numeroCelular, String numeroCedula,
+    public UsuarioEntity insertarUsuario(String nombre, String numeroCelular, String numeroCedula,
                                    String correoElectronico, String tipoUsuario) {
-        Usuario usuario = new Usuario(nombre, numeroCelular, numeroCedula, correoElectronico, tipoUsuario);
+        UsuarioEntity usuario = new UsuarioEntity(nombre, numeroCelular, numeroCedula, correoElectronico, tipoUsuario);
         return usuarioRepository.save(usuario);
     }
 
     // RF2 - Crear cliente con tarjeta de crédito
     @Transactional
-    public Usuario crearCliente(Usuario usuario, Usuario.TarjetaCredito tarjeta) {
+    public UsuarioEntity crearCliente(UsuarioEntity usuario, UsuarioEntity.TarjetaCredito tarjeta) {
         // Establecer tipo de usuario como Cliente
         usuario.setTipoUsuario("Cliente");
 
@@ -42,7 +42,7 @@ public class MongoUsuarioService {
 
             if (!titularVacio && !numeroVacio && !fechaVacia && !codigoVacio) {
                 // Agregar la tarjeta al array de tarjetas del usuario
-                List<Usuario.TarjetaCredito> tarjetas = new ArrayList<>();
+                List<UsuarioEntity.TarjetaCredito> tarjetas = new ArrayList<>();
                 tarjetas.add(tarjeta);
                 usuario.setTarjetasCredito(tarjetas);
             } else if (titularVacio || numeroVacio || fechaVacia || codigoVacio) {
@@ -56,32 +56,32 @@ public class MongoUsuarioService {
 
     // RF3 - Registrar conductor
     @Transactional
-    public Usuario registrarConductor(Usuario usuario) {
+    public UsuarioEntity registrarConductor(UsuarioEntity usuario) {
         usuario.setTipoUsuario("Conductor");
         return usuarioRepository.save(usuario);
     }
 
     // Obtener todos los usuarios
-    public List<Usuario> obtenerTodosLosUsuarios() {
+    public List<UsuarioEntity> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
     }
 
     // Obtener usuario por ID
-    public Optional<Usuario> obtenerUsuarioPorId(String id) {
+    public Optional<UsuarioEntity> obtenerUsuarioPorId(String id) {
         return usuarioRepository.findById(id);
     }
 
     // Buscar usuarios por nombre
-    public List<Usuario> buscarUsuariosPorNombre(String nombre) {
+    public List<UsuarioEntity> buscarUsuariosPorNombre(String nombre) {
         return usuarioRepository.findByNombreContaining(nombre);
     }
 
     // Actualizar usuario
     @Transactional
-    public Usuario actualizarUsuario(String id, Usuario usuarioActualizado) {
-        Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
+    public UsuarioEntity actualizarUsuario(String id, UsuarioEntity usuarioActualizado) {
+        Optional<UsuarioEntity> usuarioExistente = usuarioRepository.findById(id);
         if (usuarioExistente.isPresent()) {
-            Usuario usuario = usuarioExistente.get();
+            UsuarioEntity usuario = usuarioExistente.get();
             usuario.setNombre(usuarioActualizado.getNombre());
             usuario.setNumeroCelular(usuarioActualizado.getNumeroCelular());
             usuario.setNumeroCedula(usuarioActualizado.getNumeroCedula());
@@ -89,7 +89,7 @@ public class MongoUsuarioService {
             usuario.setTipoUsuario(usuarioActualizado.getTipoUsuario());
             return usuarioRepository.save(usuario);
         }
-        throw new RuntimeException("Usuario no encontrado con ID: " + id);
+        throw new RuntimeException("UsuarioEntity no encontrado con ID: " + id);
     }
 
     // Eliminar usuario
@@ -100,61 +100,61 @@ public class MongoUsuarioService {
 
     // Agregar tarjeta de crédito a un usuario existente
     @Transactional
-    public Usuario agregarTarjetaCredito(String usuarioId, Usuario.TarjetaCredito tarjeta) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+    public UsuarioEntity agregarTarjetaCredito(String usuarioId, UsuarioEntity.TarjetaCredito tarjeta) {
+        Optional<UsuarioEntity> usuarioOpt = usuarioRepository.findById(usuarioId);
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
+            UsuarioEntity usuario = usuarioOpt.get();
             if (usuario.getTarjetasCredito() == null) {
                 usuario.setTarjetasCredito(new ArrayList<>());
             }
             usuario.getTarjetasCredito().add(tarjeta);
             return usuarioRepository.save(usuario);
         }
-        throw new RuntimeException("Usuario no encontrado con ID: " + usuarioId);
+        throw new RuntimeException("UsuarioEntity no encontrado con ID: " + usuarioId);
     }
 
     // Agregar servicio a un usuario
     @Transactional
-    public Usuario agregarServicio(String usuarioId, Usuario.Servicio servicio) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+    public UsuarioEntity agregarServicio(String usuarioId, UsuarioEntity.Servicio servicio) {
+        Optional<UsuarioEntity> usuarioOpt = usuarioRepository.findById(usuarioId);
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
+            UsuarioEntity usuario = usuarioOpt.get();
             if (usuario.getServicios() == null) {
                 usuario.setServicios(new ArrayList<>());
             }
             usuario.getServicios().add(servicio);
             return usuarioRepository.save(usuario);
         }
-        throw new RuntimeException("Usuario no encontrado con ID: " + usuarioId);
+        throw new RuntimeException("UsuarioEntity no encontrado con ID: " + usuarioId);
     }
 
     // Agregar viaje a un usuario
     @Transactional
-    public Usuario agregarViaje(String usuarioId, Usuario.Viaje viaje) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+    public UsuarioEntity agregarViaje(String usuarioId, UsuarioEntity.Viaje viaje) {
+        Optional<UsuarioEntity> usuarioOpt = usuarioRepository.findById(usuarioId);
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
+            UsuarioEntity usuario = usuarioOpt.get();
             if (usuario.getViajes() == null) {
                 usuario.setViajes(new ArrayList<>());
             }
             usuario.getViajes().add(viaje);
             return usuarioRepository.save(usuario);
         }
-        throw new RuntimeException("Usuario no encontrado con ID: " + usuarioId);
+        throw new RuntimeException("UsuarioEntity no encontrado con ID: " + usuarioId);
     }
 
     // Agregar review a un usuario
     @Transactional
-    public Usuario agregarReview(String usuarioId, Usuario.Review review) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+    public UsuarioEntity agregarReview(String usuarioId, UsuarioEntity.Review review) {
+        Optional<UsuarioEntity> usuarioOpt = usuarioRepository.findById(usuarioId);
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
+            UsuarioEntity usuario = usuarioOpt.get();
             if (usuario.getReviews() == null) {
                 usuario.setReviews(new ArrayList<>());
             }
             usuario.getReviews().add(review);
             return usuarioRepository.save(usuario);
         }
-        throw new RuntimeException("Usuario no encontrado con ID: " + usuarioId);
+        throw new RuntimeException("UsuarioEntity no encontrado con ID: " + usuarioId);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import uniandes.edu.co.proyecto.entities.Usuario;
+import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.services.MongoUsuarioService;
 
 @RestController
@@ -20,22 +20,22 @@ public class MongoUsuarioController {
 
     // DTO para crear cliente con tarjeta
     public static class ClienteDTO {
-        private Usuario usuario;
-        private Usuario.TarjetaCredito tarjeta;
+        private UsuarioEntity usuario;
+        private UsuarioEntity.TarjetaCredito tarjeta;
 
-        public Usuario getUsuario() { return usuario; }
-        public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+        public UsuarioEntity getUsuario() { return usuario; }
+        public void setUsuario(UsuarioEntity usuario) { this.usuario = usuario; }
 
-        public Usuario.TarjetaCredito getTarjeta() { return tarjeta; }
-        public void setTarjeta(Usuario.TarjetaCredito tarjeta) { this.tarjeta = tarjeta; }
+        public UsuarioEntity.TarjetaCredito getTarjeta() { return tarjeta; }
+        public void setTarjeta(UsuarioEntity.TarjetaCredito tarjeta) { this.tarjeta = tarjeta; }
     }
 
     // Clase de respuesta
     public static class UsuarioResponse {
         private String mensaje;
-        private Usuario usuario;
+        private UsuarioEntity usuario;
 
-        public UsuarioResponse(String mensaje, Usuario usuario) {
+        public UsuarioResponse(String mensaje, UsuarioEntity usuario) {
             this.mensaje = mensaje;
             this.usuario = usuario;
         }
@@ -43,15 +43,15 @@ public class MongoUsuarioController {
         public String getMensaje() { return mensaje; }
         public void setMensaje(String mensaje) { this.mensaje = mensaje; }
 
-        public Usuario getUsuario() { return usuario; }
-        public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+        public UsuarioEntity getUsuario() { return usuario; }
+        public void setUsuario(UsuarioEntity usuario) { this.usuario = usuario; }
     }
 
     // Listar todos los usuarios
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarUsuarios() {
+    public ResponseEntity<List<UsuarioEntity>> listarUsuarios() {
         try {
-            List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
+            List<UsuarioEntity> usuarios = usuarioService.obtenerTodosLosUsuarios();
             return ResponseEntity.ok(usuarios);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -60,9 +60,9 @@ public class MongoUsuarioController {
 
     // Obtener un usuario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> obtenerUsuario(@PathVariable String id) {
+    public ResponseEntity<UsuarioEntity> obtenerUsuario(@PathVariable String id) {
         try {
-            Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorId(id);
+            Optional<UsuarioEntity> usuario = usuarioService.obtenerUsuarioPorId(id);
             return usuario.map(ResponseEntity::ok)
                          .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
@@ -72,9 +72,9 @@ public class MongoUsuarioController {
 
     // Buscar usuarios por nombre
     @GetMapping("/buscar")
-    public ResponseEntity<List<Usuario>> buscarUsuariosPorNombre(@RequestParam("nombre") String nombre) {
+    public ResponseEntity<List<UsuarioEntity>> buscarUsuariosPorNombre(@RequestParam("nombre") String nombre) {
         try {
-            List<Usuario> usuarios = usuarioService.buscarUsuariosPorNombre(nombre);
+            List<UsuarioEntity> usuarios = usuarioService.buscarUsuariosPorNombre(nombre);
             return ResponseEntity.ok(usuarios);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -83,9 +83,9 @@ public class MongoUsuarioController {
 
     // Crear usuario simple
     @PostMapping
-    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioEntity> crearUsuario(@RequestBody UsuarioEntity usuario) {
         try {
-            Usuario usuarioCreado = usuarioService.insertarUsuario(
+            UsuarioEntity usuarioCreado = usuarioService.insertarUsuario(
                 usuario.getNombre(),
                 usuario.getNumeroCelular(),
                 usuario.getNumeroCedula(),
@@ -102,7 +102,7 @@ public class MongoUsuarioController {
     @PostMapping("/new/cliente")
     public ResponseEntity<UsuarioResponse> crearCliente(@RequestBody ClienteDTO dto) {
         try {
-            Usuario usuarioCreado = usuarioService.crearCliente(dto.getUsuario(), dto.getTarjeta());
+            UsuarioEntity usuarioCreado = usuarioService.crearCliente(dto.getUsuario(), dto.getTarjeta());
             UsuarioResponse respuesta = new UsuarioResponse("Cliente creado exitosamente", usuarioCreado);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (IllegalArgumentException e) {
@@ -117,9 +117,9 @@ public class MongoUsuarioController {
 
     // RF3 - Registrar conductor
     @PostMapping("/new/conductor")
-    public ResponseEntity<UsuarioResponse> registrarConductor(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponse> registrarConductor(@RequestBody UsuarioEntity usuario) {
         try {
-            Usuario usuarioCreado = usuarioService.registrarConductor(usuario);
+            UsuarioEntity usuarioCreado = usuarioService.registrarConductor(usuario);
             UsuarioResponse respuesta = new UsuarioResponse("Conductor creado exitosamente", usuarioCreado);
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (Exception e) {
@@ -131,10 +131,10 @@ public class MongoUsuarioController {
 
     // Actualizar usuario
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> actualizarUsuario(@PathVariable String id, @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponse> actualizarUsuario(@PathVariable String id, @RequestBody UsuarioEntity usuario) {
         try {
-            Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
-            UsuarioResponse respuesta = new UsuarioResponse("Usuario actualizado exitosamente", usuarioActualizado);
+            UsuarioEntity usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
+            UsuarioResponse respuesta = new UsuarioResponse("UsuarioEntity actualizado exitosamente", usuarioActualizado);
             return ResponseEntity.ok(respuesta);
         } catch (RuntimeException e) {
             UsuarioResponse error = new UsuarioResponse(e.getMessage(), null);
@@ -150,7 +150,7 @@ public class MongoUsuarioController {
     public ResponseEntity<String> eliminarUsuario(@PathVariable String id) {
         try {
             usuarioService.eliminarUsuario(id);
-            return ResponseEntity.ok("Usuario eliminado exitosamente");
+            return ResponseEntity.ok("UsuarioEntity eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body("Error al eliminar usuario: " + e.getMessage());
@@ -160,9 +160,9 @@ public class MongoUsuarioController {
     // Agregar tarjeta de crédito a usuario existente
     @PostMapping("/{id}/tarjetas")
     public ResponseEntity<UsuarioResponse> agregarTarjeta(@PathVariable String id,
-                                                          @RequestBody Usuario.TarjetaCredito tarjeta) {
+                                                          @RequestBody UsuarioEntity.TarjetaCredito tarjeta) {
         try {
-            Usuario usuario = usuarioService.agregarTarjetaCredito(id, tarjeta);
+            UsuarioEntity usuario = usuarioService.agregarTarjetaCredito(id, tarjeta);
             UsuarioResponse respuesta = new UsuarioResponse("Tarjeta agregada exitosamente", usuario);
             return ResponseEntity.ok(respuesta);
         } catch (RuntimeException e) {
@@ -177,9 +177,9 @@ public class MongoUsuarioController {
     // Agregar servicio a usuario
     @PostMapping("/{id}/servicios")
     public ResponseEntity<UsuarioResponse> agregarServicio(@PathVariable String id,
-                                                           @RequestBody Usuario.Servicio servicio) {
+                                                           @RequestBody UsuarioEntity.Servicio servicio) {
         try {
-            Usuario usuario = usuarioService.agregarServicio(id, servicio);
+            UsuarioEntity usuario = usuarioService.agregarServicio(id, servicio);
             UsuarioResponse respuesta = new UsuarioResponse("Servicio agregado exitosamente", usuario);
             return ResponseEntity.ok(respuesta);
         } catch (RuntimeException e) {
@@ -194,9 +194,9 @@ public class MongoUsuarioController {
     // Agregar viaje a usuario
     @PostMapping("/{id}/viajes")
     public ResponseEntity<UsuarioResponse> agregarViaje(@PathVariable String id,
-                                                        @RequestBody Usuario.Viaje viaje) {
+                                                        @RequestBody UsuarioEntity.Viaje viaje) {
         try {
-            Usuario usuario = usuarioService.agregarViaje(id, viaje);
+            UsuarioEntity usuario = usuarioService.agregarViaje(id, viaje);
             UsuarioResponse respuesta = new UsuarioResponse("Viaje agregado exitosamente", usuario);
             return ResponseEntity.ok(respuesta);
         } catch (RuntimeException e) {
@@ -211,9 +211,9 @@ public class MongoUsuarioController {
     // Agregar review a usuario
     @PostMapping("/{id}/reviews")
     public ResponseEntity<UsuarioResponse> agregarReview(@PathVariable String id,
-                                                         @RequestBody Usuario.Review review) {
+                                                         @RequestBody UsuarioEntity.Review review) {
         try {
-            Usuario usuario = usuarioService.agregarReview(id, review);
+            UsuarioEntity usuario = usuarioService.agregarReview(id, review);
             UsuarioResponse respuesta = new UsuarioResponse("Review agregado exitosamente", usuario);
             return ResponseEntity.ok(respuesta);
         } catch (RuntimeException e) {
