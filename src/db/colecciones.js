@@ -1,6 +1,6 @@
 use("ISIS2304A01202520");
 
-// Usuarios de la aplicación (clientes y conductores)
+//usuarios
 db.USUARIOS.drop();
 
 db.createCollection("USUARIOS", {
@@ -13,7 +13,6 @@ db.createCollection("USUARIOS", {
         "numeroCedula",
         "correoElectronico",
         "tipoUsuario"
-        // tarjetasCredito NO es obligatoria
       ],
       properties: {
         _id: {
@@ -32,9 +31,8 @@ db.createCollection("USUARIOS", {
           bsonType: "string"
         },
         tipoUsuario: {
-          bsonType: "string", // "Cliente" o "Conductor"
+          bsonType: "string" // "Cliente" o "Conductor"
         },
-        // arreglo opcional, puede no existir o ser []
         tarjetasCredito: {
           bsonType: "array",
           items: {
@@ -73,7 +71,7 @@ db.createCollection("USUARIOS", {
 });
 
 
-// Vehículos registrados por los conductores
+//vehiculos
 db.VEHICULOS.drop();
 
 db.createCollection("VEHICULOS", {
@@ -96,7 +94,7 @@ db.createCollection("VEHICULOS", {
           bsonType: ["int", "long", "objectId"]
         },
         idConductor: {
-          bsonType: ["int", "long"] // referencia a USUARIOS
+          bsonType: ["int", "long"]
         },
         tipo: {
           bsonType: "string"
@@ -120,7 +118,7 @@ db.createCollection("VEHICULOS", {
           bsonType: "int"
         },
         nivel: {
-          bsonType: "string" // Estandar, Confort, Large...
+          bsonType: "string"
         }
       }
     }
@@ -130,7 +128,7 @@ db.createCollection("VEHICULOS", {
 });
 
 
-// Disponibilidades de conductor + vehículo
+//disponibilidades
 db.DISPONIBILIDADES.drop();
 
 db.createCollection("DISPONIBILIDADES", {
@@ -140,8 +138,6 @@ db.createCollection("DISPONIBILIDADES", {
       required: [
         "idConductor",
         "idVehiculo",
-        "ciudad",
-        "tiposServicio",
         "franjasHorarias"
       ],
       properties: {
@@ -149,19 +145,10 @@ db.createCollection("DISPONIBILIDADES", {
           bsonType: ["int", "long", "objectId"]
         },
         idConductor: {
-          bsonType: ["int", "long"] // referencia a USUARIOS
+          bsonType: ["int", "long"]
         },
         idVehiculo: {
-          bsonType: ["int", "long"] // referencia a VEHICULOS
-        },
-        ciudad: {
-          bsonType: "string"
-        },
-        tiposServicio: {
-          bsonType: "array",
-          items: {
-            bsonType: "string"
-          }
+          bsonType: ["int", "long"]
         },
         franjasHorarias: {
           bsonType: "array",
@@ -205,7 +192,7 @@ db.createCollection("DISPONIBILIDADES", {
 });
 
 
-// Catálogo de tarifas por tipo de servicio y nivel
+//tarifas
 db.TARIFAS.drop();
 
 db.createCollection("TARIFAS", {
@@ -245,7 +232,7 @@ db.createCollection("TARIFAS", {
 });
 
 
-// Viajes (servicio solicitado + viaje ejecutado)
+//viajes
 db.VIAJES.drop();
 
 db.createCollection("VIAJES", {
@@ -274,24 +261,22 @@ db.createCollection("VIAJES", {
           bsonType: ["int", "long", "objectId"]
         },
 
-        // referencias principales
         idServicio: {
           bsonType: ["int", "long"]
         },
         idCliente: {
-          bsonType: ["int", "long"] // USUARIOS
+          bsonType: ["int", "long"]
         },
         idConductor: {
-          bsonType: ["int", "long"] // USUARIOS
+          bsonType: ["int", "long"]
         },
         idVehiculo: {
-          bsonType: ["int", "long"] // VEHICULOS
+          bsonType: ["int", "long"]
         },
         idTarifa: {
-          bsonType: ["int", "long"] // TARIFAS
+          bsonType: ["int", "long"]
         },
 
-        // parte de la solicitud (Servicio)
         fechaHora: {
           bsonType: "date"
         },
@@ -302,7 +287,7 @@ db.createCollection("VIAJES", {
           bsonType: "string"
         },
         estado: {
-          bsonType: "string" // Pendiente, Asignado, Cancelado, Finalizado...
+          bsonType: "string"
         },
         orden: {
           bsonType: ["int", "null"]
@@ -310,12 +295,10 @@ db.createCollection("VIAJES", {
         restaurante: {
           bsonType: ["string", "null"]
         },
-
-        // punto de origen embebido
         puntoOrigen: {
           bsonType: "object",
           required: [
-            "idPuntoPartida",
+            "idPunto",
             "nombre",
             "latitud",
             "longitud",
@@ -323,7 +306,7 @@ db.createCollection("VIAJES", {
             "ciudad"
           ],
           properties: {
-            idPuntoPartida: {
+            idPunto: {
               bsonType: ["int", "long"]
             },
             nombre: {
@@ -343,56 +326,41 @@ db.createCollection("VIAJES", {
             }
           }
         },
-
-        // destinos embebidos (ServicioDestino + PuntoGeografico)
         destinos: {
           bsonType: "array",
           items: {
             bsonType: "object",
             required: [
-              "idDestino",
-              "idPuntoLlegada",
-              "puntoGeografico"
+              "idPunto",
+              "nombre",
+              "latitud",
+              "longitud",
+              "direccionAproximada",
+              "ciudad"
             ],
             properties: {
-              idDestino: {
+              idPunto: {
                 bsonType: ["int", "long"]
               },
-              idPuntoLlegada: {
-                bsonType: ["int", "long"]
+              nombre: {
+                bsonType: "string"
               },
-              puntoGeografico: {
-                bsonType: "object",
-                required: [
-                  "nombre",
-                  "latitud",
-                  "longitud",
-                  "direccionAproximada",
-                  "ciudad"
-                ],
-                properties: {
-                  nombre: {
-                    bsonType: "string"
-                  },
-                  latitud: {
-                    bsonType: ["double", "decimal"]
-                  },
-                  longitud: {
-                    bsonType: ["double", "decimal"]
-                  },
-                  direccionAproximada: {
-                    bsonType: "string"
-                  },
-                  ciudad: {
-                    bsonType: "string"
-                  }
-                }
+              latitud: {
+                bsonType: ["double", "decimal"]
+              },
+              longitud: {
+                bsonType: ["double", "decimal"]
+              },
+              direccionAproximada: {
+                bsonType: "string"
+              },
+              ciudad: {
+                bsonType: "string"
               }
             }
           }
         },
 
-        // parte del viaje ejecutado
         fechaHoraInicio: {
           bsonType: "date"
         },
@@ -406,7 +374,6 @@ db.createCollection("VIAJES", {
           bsonType: ["double", "decimal", "int"]
         },
 
-        // reviews embebidas (opcional)
         reviews: {
           bsonType: "array",
           items: {

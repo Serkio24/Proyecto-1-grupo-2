@@ -11,7 +11,11 @@ function choice(arr) {
 }
 
 function randomPhone() {
-  return "3" + randInt(0, 9) + randInt(100000000, 999999999).toString().slice(1);
+  return (
+    "3" +
+    randInt(0, 9) +
+    randInt(100000000, 999999999).toString().slice(1)
+  );
 }
 
 function randomCedula() {
@@ -23,7 +27,11 @@ function randomEmail(prefix, id) {
 }
 
 var ciudades = ["Bogotá", "Medellín", "Cali", "Barranquilla"];
-var tiposServicio = ["Transporte Pasajeros", "Domicilio Comida", "Transporte Mercancías"];
+var tiposServicio = [
+  "Transporte Pasajeros",
+  "Domicilio Comida",
+  "Transporte Mercancías",
+];
 var niveles = ["Estandar", "Confort", "Large"];
 
 // ---------- 1. Poblar USUARIOS (clientes + conductores) ----------
@@ -48,18 +56,20 @@ for (var i = 0; i < N_CLIENTES; i++) {
     numeroCelular: randomPhone(),
     numeroCedula: randomCedula(),
     correoElectronico: randomEmail("cliente", id),
-    tipoUsuario: "Cliente"
+    tipoUsuario: "Cliente",
   };
 
   // ~70% de clientes con al menos una tarjeta
   if (Math.random() < 0.7) {
-    usuario.tarjetasCredito = [{
-      idTarjetaCredito: id * 10,
-      titularDeLaTarjeta: "Cliente " + id,
-      numeroTarjeta: "**** **** **** " + randInt(1000, 9999),
-      fechaExpiracion: "2027-0" + randInt(1, 9),
-      codigoSeguridad: randInt(100, 999)
-    }];
+    usuario.tarjetasCredito = [
+      {
+        idTarjetaCredito: id * 10,
+        titularDeLaTarjeta: "Cliente " + id,
+        numeroTarjeta: "**** **** **** " + randInt(1000, 9999),
+        fechaExpiracion: "2027-0" + randInt(1, 9),
+        codigoSeguridad: randInt(100, 999),
+      },
+    ];
   }
 
   usuarios.push(usuario);
@@ -77,15 +87,13 @@ for (var j = 0; j < N_CONDUCTORES; j++) {
     numeroCedula: randomCedula(),
     correoElectronico: randomEmail("conductor", idc),
     tipoUsuario: "Conductor",
-    // la mayoría de conductores sin tarjeta
-    tarjetasCredito: []
+    tarjetasCredito: [],
   };
 
   usuarios.push(conductor);
 }
 
 db.USUARIOS.insertMany(usuarios);
-
 
 // ---------- 2. Poblar TARIFAS ----------
 
@@ -98,9 +106,9 @@ for (var t = 0; t < tiposServicio.length; t++) {
       _id: nextTarifaId,
       tipoServicio: tiposServicio[t],
       nivel: niveles[n],
-      precioPorKm: 1500 + 500 * n + 200 * t,  // algo creciente
+      precioPorKm: 1500 + 500 * n + 200 * t, // algo creciente
       vigenciaDesde: new Date("2025-01-01T00:00:00Z"),
-      vigenciaHasta: null
+      vigenciaHasta: null,
     });
     nextTarifaId++;
   }
@@ -113,7 +121,6 @@ var tarifasIndex = {};
 tarifas.forEach(function (tar) {
   tarifasIndex[tar.tipoServicio + "|" + tar.nivel] = tar._id;
 });
-
 
 // ---------- 3. Poblar VEHICULOS ----------
 
@@ -142,7 +149,7 @@ conductoresIds.forEach(function (idCond) {
       placa: "ABC" + ("00" + vId).slice(-3),
       ciudadExpedicion: ciudad,
       capacidadPasajeros: choice([4, 4, 4, 6]),
-      nivel: nivel
+      nivel: nivel,
     };
 
     vehiculos.push(veh);
@@ -151,7 +158,6 @@ conductoresIds.forEach(function (idCond) {
 });
 
 db.VEHICULOS.insertMany(vehiculos);
-
 
 // ---------- 4. Poblar DISPONIBILIDADES ----------
 
@@ -164,25 +170,27 @@ vehiculos.forEach(function (veh) {
     _id: nextDispId++,
     idConductor: veh.idConductor,
     idVehiculo: veh._id,
-    ciudad: veh.ciudadExpedicion,
-    tiposServicio: tiposServicio.slice(0, randInt(1, tiposServicio.length)),
-    franjasHorarias: []
+    franjasHorarias: [],
   };
 
   // 2 o 3 franjas semanales
   var numFranjas = randInt(2, 3);
   for (var f = 0; f < numFranjas; f++) {
     var dia = choice(dias);
-    var horaInicio = randInt(6, 20);  // entre 6:00 y 20:00
+    var horaInicio = randInt(6, 20); // entre 6:00 y 20:00
     var duracion = choice([2, 3, 4]); // horas
 
     disp.franjasHorarias.push({
       idFranja: f + 1,
       diaSemana: dia,
-      horaInicio: (horaInicio < 10 ? "0" : "") + horaInicio + ":00",
-      horaFin: (horaInicio + duracion < 10 ? "0" : "") + (horaInicio + duracion) + ":00",
-      tipoServicio: choice(disp.tiposServicio),
-      disponible: true
+      horaInicio:
+        (horaInicio < 10 ? "0" : "") + horaInicio + ":00",
+      horaFin:
+        (horaInicio + duracion < 10 ? "0" : "") +
+        (horaInicio + duracion) +
+        ":00",
+      tipoServicio: choice(tiposServicio),
+      disponible: true,
     });
   }
 
@@ -191,14 +199,12 @@ vehiculos.forEach(function (veh) {
 
 db.DISPONIBILIDADES.insertMany(disponibilidades);
 
-
 // ---------- 5. Poblar VIAJES ----------
 
 var viajes = [];
 var nextViajeId = 1;
 var nextServicioId = 10000;
 var nextPuntoId = 8000;
-var nextDestinoId = 9000;
 var nextReviewId = 10000;
 
 var baseFecha = new Date("2025-09-20T06:00:00Z");
@@ -223,58 +229,55 @@ for (var v = 0; v < N_VIAJES; v++) {
   var idTarifa = tarifasIndex[tipoServ + "|" + nivelVeh];
 
   // fecha de solicitud en los últimos 5 días
-  var fechaSolicitud = new Date(baseFecha.getTime() +
-    randInt(0, 5) * 24 * 3600 * 1000 +
-    randInt(0, 23) * 3600 * 1000 +
-    randInt(0, 59) * 60 * 1000
-  );
+  var fechaSolicitud =
+    new Date(
+      baseFecha.getTime() +
+        randInt(0, 5) * 24 * 3600 * 1000 +
+        randInt(0, 23) * 3600 * 1000 +
+        randInt(0, 59) * 60 * 1000
+    );
 
   var duracionMin = randInt(10, 45);
-  var fechaInicio = new Date(fechaSolicitud.getTime() + randInt(1, 10) * 60 * 1000);
-  var fechaFin = new Date(fechaInicio.getTime() + duracionMin * 60 * 1000);
+  var fechaInicio = new Date(
+    fechaSolicitud.getTime() + randInt(1, 10) * 60 * 1000
+  );
+  var fechaFin = new Date(
+    fechaInicio.getTime() + duracionMin * 60 * 1000
+  );
 
   var longitudKm = randInt(3, 18) + Math.random();
-  var precioKm = tarifas.find(t => t._id === idTarifa).precioPorKm;
+  var precioKm = tarifas.find((t) => t._id === idTarifa).precioPorKm;
   var costo = Math.round(longitudKm * precioKm);
 
-  // punto de origen
-  var idPuntoPartida = nextPuntoId++;
+  // punto de origen (PUNTO GEOGRAFICO con idPunto)
+  var idPunto = nextPuntoId++;
   var ciudad = vehiculo.ciudadExpedicion;
   var puntoOrigen = {
-    idPuntoPartida: idPuntoPartida,
-    nombre: "Origen " + idPuntoPartida,
+    idPunto: idPunto,
+    nombre: "Origen " + idPunto,
     latitud: 4.5 + Math.random() * 0.5,
     longitud: -74.2 + Math.random() * 0.4,
-    direccionAproximada: "Dir " + idPuntoPartida,
-    ciudad: ciudad
+    direccionAproximada: "Dir " + idPunto,
+    ciudad: ciudad,
   };
 
-  // destinos (1 o 2)
+  // destinos: array de PUNTO GEOGRAFICO
   var numDestinos = Math.random() < 0.3 ? 2 : 1;
   var destinos = [];
   for (var d = 0; d < numDestinos; d++) {
     var idPuntoDest = nextPuntoId++;
-    var idDest = nextDestinoId++;
     destinos.push({
-      idDestino: idDest,
-      idPuntoLlegada: idPuntoDest,
-      puntoGeografico: {
-        nombre: "Destino " + idPuntoDest,
-        latitud: 4.5 + Math.random() * 0.5,
-        longitud: -74.2 + Math.random() * 0.4,
-        direccionAproximada: "Dir " + idPuntoDest,
-        ciudad: ciudad
-      }
+      idPunto: idPuntoDest,
+      nombre: "Destino " + idPuntoDest,
+      latitud: 4.5 + Math.random() * 0.5,
+      longitud: -74.2 + Math.random() * 0.4,
+      direccionAproximada: "Dir " + idPuntoDest,
+      ciudad: ciudad,
     });
   }
 
   // estado: mayoría finalizados, algunos cancelados
-  var estado;
-  if (Math.random() < 0.1) {
-    estado = "Cancelado";
-  } else {
-    estado = "Finalizado";
-  }
+  var estado = Math.random() < 0.1 ? "Cancelado" : "Finalizado";
 
   var viaje = {
     _id: idViaje,
@@ -297,7 +300,7 @@ for (var v = 0; v < N_VIAJES; v++) {
     fechaHoraInicio: fechaInicio,
     fechaHoraFin: fechaFin,
     longitudTrayecto: longitudKm,
-    costoTotal: costo
+    costoTotal: costo,
   };
 
   // ~40% de los viajes con al menos una review
@@ -311,8 +314,11 @@ for (var v = 0; v < N_VIAJES; v++) {
         idUsuarioCalificador: idCliente,
         idUsuarioCalificado: idCond,
         puntuacion: randInt(3, 5),
-        comentario: "Comentario cliente→conductor " + idViaje,
-        fecha: new Date(fechaFin.getTime() + 5 * 60 * 1000)
+        comentario:
+          "Comentario cliente→conductor " + idViaje,
+        fecha: new Date(
+          fechaFin.getTime() + 5 * 60 * 1000
+        ),
       });
     }
 
@@ -323,8 +329,11 @@ for (var v = 0; v < N_VIAJES; v++) {
         idUsuarioCalificador: idCond,
         idUsuarioCalificado: idCliente,
         puntuacion: randInt(3, 5),
-        comentario: "Comentario conductor→cliente " + idViaje,
-        fecha: new Date(fechaFin.getTime() + 10 * 60 * 1000)
+        comentario:
+          "Comentario conductor→cliente " + idViaje,
+        fecha: new Date(
+          fechaFin.getTime() + 10 * 60 * 1000
+        ),
       });
     }
   }
