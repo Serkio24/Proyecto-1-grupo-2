@@ -1,24 +1,19 @@
 package uniandes.edu.co.proyecto.entities;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "puntos_geograficos")
 public class PuntoGeograficoEntity {
 
-    @Id
-    private String id;
-
+    private Long idPunto;
     private String nombre;
     private Double latitud;
     private Double longitud;
     private String direccionAproximada;
-    private String ciudad;
+    private String ciudad;   // ahora es String, no CiudadEntity
 
-    public PuntoGeograficoEntity() {}
+    public PuntoGeograficoEntity() {
+    }
 
-    public PuntoGeograficoEntity(String nombre, Double latitud, Double longitud,
-                          String direccionAproximada, String ciudad) {
+    public PuntoGeograficoEntity(Long idPunto, String nombre, Double latitud, Double longitud, String direccionAproximada, String ciudad) {
+        this.idPunto = idPunto;
         this.nombre = nombre;
         this.latitud = latitud;
         this.longitud = longitud;
@@ -26,21 +21,51 @@ public class PuntoGeograficoEntity {
         this.ciudad = ciudad;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Long getIdPunto() {
+        return idPunto;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setIdPunto(Long idPunto) {
+        this.idPunto = idPunto;
+    }
 
-    public Double getLatitud() { return latitud; }
-    public void setLatitud(Double latitud) { this.latitud = latitud; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public Double getLongitud() { return longitud; }
-    public void setLongitud(Double longitud) { this.longitud = longitud; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getDireccionAproximada() { return direccionAproximada; }
-    public void setDireccionAproximada(String direccionAproximada) { this.direccionAproximada = direccionAproximada; }
+    public Double getLatitud() {
+        return latitud;
+    }
 
-    public String getCiudad() { return ciudad; }
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public String getDireccionAproximada() {
+        return direccionAproximada;
+    }
+
+    public void setDireccionAproximada(String direccionAproximada) {
+        this.direccionAproximada = direccionAproximada;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
 }

@@ -1,0 +1,120 @@
+package uniandes.edu.co.proyecto.repositories;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
+import uniandes.edu.co.proyecto.entities.DisponibilidadPK;
+
+public interface DisponibilidadRepository extends JpaRepository<DisponibilidadEntity, DisponibilidadPK> {
+
+    // Create
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO disponibilidades (idVehiculo, idFranja, disponible) VALUES (:idVehiculo, :idFranja, true)", nativeQuery = true)
+    void insertarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+
+    // Read: Get all
+    @Query(value = "SELECT * FROM disponibilidades", nativeQuery = true)
+    Collection<DisponibilidadEntity> darDisponibilidades();
+
+    // Obtener franjas de un vehículo
+    @Query(value = "SELECT * FROM disponibilidades WHERE idVehiculo = :idVehiculo", nativeQuery = true)
+    Collection<DisponibilidadEntity> darDisponibilidadesVehiculo(@Param("idVehiculo") Long idVehiculo);
+
+    // Read: Get one
+    @Query(value = "SELECT * FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
+    DisponibilidadEntity darDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+
+    @Modifying
+     @Transactional
+     @Query(value = "UPDATE disponibilidades SET disponible = :disponible WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
+     void actualizarDisponibilidadFranja(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja, @Param("disponible") String disponible);
+
+    // Update
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE disponibilidades SET idVehiculo = :idVehiculo, idFranja = :idFranja WHERE idVehiculo = :idVehiculoAnt AND idFranja = :idFranjaAnt", nativeQuery = true)
+    void actualizarDisponibilidad(@Param("idVehiculoAnt") Long idVehiculoAnt, @Param("idFranjaAnt") Long idFranjaAnt, @Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+
+    // Delete
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM disponibilidades WHERE idVehiculo = :idVehiculo AND idFranja = :idFranja", nativeQuery = true)
+    void eliminarDisponibilidad(@Param("idVehiculo") Long idVehiculo, @Param("idFranja") Long idFranja);
+
+    
+     @Query(value = """
+          SELECT CASE WHEN EXISTS (
+               SELECT 1
+               FROM disponibilidades d
+               INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
+               INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
+               INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
+               WHERE cv.idConductor = :idConductor
+                    AND f.diaSemana = :diaSemana
+                    AND (:horaInicio < f.horaFin AND :horaFin > f.horaInicio)
+          ) THEN 1 ELSE 0 END
+          FROM dual
+          """, nativeQuery = true)
+          int validarTraslape(
+               @Param("idConductor") Long idConductor,
+               @Param("diaSemana") String diaSemana,
+               @Param("horaInicio") String horaInicio,
+               @Param("horaFin") String horaFin
+          );
+
+
+     @Query(value = """
+          SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+          FROM disponibilidades d
+          INNER JOIN franjas_horarias f ON d.idFranja = f.idFranja
+          INNER JOIN vehiculos v ON d.idVehiculo = v.idVehiculo
+          INNER JOIN conductor_vehiculos cv ON cv.idVehiculo = v.idVehiculo
+          WHERE cv.idConductor = :idConductor
+               AND f.diaSemana = :diaSemana
+               AND (TO_DATE(:horaInicio, 'HH24:MI:SS') < TO_DATE(f.horaFin, 'HH24:MI:SS')
+                    AND TO_DATE(:horaFin, 'HH24:MI:SS') > TO_DATE(f.horaInicio, 'HH24:MI:SS'))
+               AND NOT (d.idVehiculo = :idVehiculoAnt AND d.idFranja = :idFranjaAnt)
+          """, nativeQuery = true)
+          int validarTraslapeExcluyendoActual(
+          @Param("idConductor") Long idConductor,
+          @Param("diaSemana") String diaSemana,
+          @Param("horaInicio") String horaInicio,
+          @Param("horaFin") String horaFin,
+          @Param("idVehiculoAnt") Long idVehiculoAnt,
+          @Param("idFranjaAnt") Long idFranjaAnt
+          );
+
+
+     @Transactional(readOnly = true)
+     @Query(value = """
+          SELECT d.*
+          FROM disponibilidades d
+          JOIN franjas_horarias f ON d.idFranja = f.idFranja
+          WHERE f.tipoServicio = :tipoServicio
+               AND f.diaSemana = :diaSemana
+               AND TO_NUMBER(SUBSTR(f.horaInicio, 1, 2)) <= :horaActual
+               AND d.disponible = 'Y'
+          """, nativeQuery = true)
+     List<DisponibilidadEntity> findDisponibilidadesActivas(
+          @Param("tipoServicio") String tipoServicio,
+          @Param("diaSemana") String diaSemana,
+          @Param("horaActual") int horaActual
+     );
+     @Transactional(readOnly = true)
+     @Query(value = """
+          SELECT d.*
+          FROM disponibilidades d
+          JOIN franjas_horarias f ON d.idFranja = f.idFranja
+          WHERE f.tipoServicio = :tipoServicio
+          """, nativeQuery = true)
+     List<DisponibilidadEntity> findDisponibilidadesTipo(
+          @Param("tipoServicio") String tipoServicio
+     );
+}

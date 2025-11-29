@@ -3,17 +3,16 @@ package uniandes.edu.co.proyecto.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Document(collection = "vehiculos")
+@Document(collection = "VEHICULOS")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class VehiculoEntity {
 
     @Id
-    private String id;
-
-    private String idConductor;
-    private String nivelVehiculo;
+    private Long idVehiculo;          // mapea al _id de Mongo
+    // id del conductor dueño/asignado a este vehículo
+    private Long idConductor;
     private String tipo;
     private String marca;
     private String modelo;
@@ -21,17 +20,13 @@ public class VehiculoEntity {
     private String placa;
     private String ciudadExpedicion;
     private Integer capacidadPasajeros;
+    private String nivel;
 
-    private Disponibilidad disponibilidad;
-    private List<FranjaHoraria> franjasHorarias = new ArrayList<>();
+    public VehiculoEntity() {
+    }
 
-    public VehiculoEntity() {}
-
-    public VehiculoEntity(String idConductor, String nivelVehiculo, String tipo, String marca,
-                   String modelo, String color, String placa, String ciudadExpedicion,
-                   Integer capacidadPasajeros) {
+    public VehiculoEntity(Long idConductor, String tipo, String marca, String modelo, String color, String placa, String ciudadExpedicion, Integer capacidadPasajeros, String nivel) {
         this.idConductor = idConductor;
-        this.nivelVehiculo = nivelVehiculo;
         this.tipo = tipo;
         this.marca = marca;
         this.modelo = modelo;
@@ -39,88 +34,86 @@ public class VehiculoEntity {
         this.placa = placa;
         this.ciudadExpedicion = ciudadExpedicion;
         this.capacidadPasajeros = capacidadPasajeros;
+        this.nivel = nivel;
     }
 
-    public static class Disponibilidad {
-        private String disponible;
-
-        public Disponibilidad() {
-            this.disponible = "Y";
-        }
-
-        public Disponibilidad(String disponible) {
-            this.disponible = disponible;
-        }
-
-        public String getDisponible() { return disponible; }
-        public void setDisponible(String disponible) { this.disponible = disponible; }
-
-        public boolean isDisponible() {
-            return "Y".equals(disponible);
-        }
+    public Long getIdVehiculo() {
+        return idVehiculo;
     }
 
-    public static class FranjaHoraria {
-        private Integer diaSemana;
-        private String horaInicio;
-        private String horaFin;
-        private String tipoServicio;
-
-        public FranjaHoraria() {}
-
-        public FranjaHoraria(Integer diaSemana, String horaInicio, String horaFin, String tipoServicio) {
-            this.diaSemana = diaSemana;
-            this.horaInicio = horaInicio;
-            this.horaFin = horaFin;
-            this.tipoServicio = tipoServicio;
-        }
-
-        public Integer getDiaSemana() { return diaSemana; }
-        public void setDiaSemana(Integer diaSemana) { this.diaSemana = diaSemana; }
-
-        public String getHoraInicio() { return horaInicio; }
-        public void setHoraInicio(String horaInicio) { this.horaInicio = horaInicio; }
-
-        public String getHoraFin() { return horaFin; }
-        public void setHoraFin(String horaFin) { this.horaFin = horaFin; }
-
-        public String getTipoServicio() { return tipoServicio; }
-        public void setTipoServicio(String tipoServicio) { this.tipoServicio = tipoServicio; }
+    public void setIdVehiculo(Long idVehiculo) {
+        this.idVehiculo = idVehiculo;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Long getIdConductor() {
+        return idConductor;
+    }
 
-    public String getIdConductor() { return idConductor; }
-    public void setIdConductor(String idConductor) { this.idConductor = idConductor; }
+    public void setIdConductor(Long idConductor) {
+        this.idConductor = idConductor;
+    }
 
-    public String getNivelVehiculo() { return nivelVehiculo; }
-    public void setNivelVehiculo(String nivelVehiculo) { this.nivelVehiculo = nivelVehiculo; }
+    public String getTipo() {
+        return tipo;
+    }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 
-    public String getMarca() { return marca; }
-    public void setMarca(String marca) { this.marca = marca; }
+    public String getMarca() {
+        return marca;
+    }
 
-    public String getModelo() { return modelo; }
-    public void setModelo(String modelo) { this.modelo = modelo; }
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public String getModelo() {
+        return modelo;
+    }
 
-    public String getPlaca() { return placa; }
-    public void setPlaca(String placa) { this.placa = placa; }
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
 
-    public String getCiudadExpedicion() { return ciudadExpedicion; }
-    public void setCiudadExpedicion(String ciudadExpedicion) { this.ciudadExpedicion = ciudadExpedicion; }
+    public String getColor() {
+        return color;
+    }
 
-    public Integer getCapacidadPasajeros() { return capacidadPasajeros; }
-    public void setCapacidadPasajeros(Integer capacidadPasajeros) { this.capacidadPasajeros = capacidadPasajeros; }
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-    public Disponibilidad getDisponibilidad() { return disponibilidad; }
-    public void setDisponibilidad(Disponibilidad disponibilidad) { this.disponibilidad = disponibilidad; }
+    public String getPlaca() {
+        return placa;
+    }
 
-    public List<FranjaHoraria> getFranjasHorarias() { return franjasHorarias; }
-    public void setFranjasHorarias(List<FranjaHoraria> franjasHorarias) { this.franjasHorarias = franjasHorarias; }
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public String getCiudadExpedicion() {
+        return ciudadExpedicion;
+    }
+
+    public void setCiudadExpedicion(String ciudadExpedicion) {
+        this.ciudadExpedicion = ciudadExpedicion;
+    }
+
+    public Integer getCapacidadPasajeros() {
+        return capacidadPasajeros;
+    }
+
+    public void setCapacidadPasajeros(Integer capacidadPasajeros) {
+        this.capacidadPasajeros = capacidadPasajeros;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
+    }
 }
