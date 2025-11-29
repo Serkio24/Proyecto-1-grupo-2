@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "c7ce46f9-842b-48dc-aa12-ef75d4383f5e",
+		"name": "Proyecto 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47322746",
+		"_collection_link": "https://serkio24-4473882.postman.co/workspace/Personal-Workspace~811673f4-2ff7-47f1-95e0-6a9f9941dfbc/collection/47322746-c7ce46f9-842b-48dc-aa12-ef75d4383f5e?action=share&source=collection_link&creator=47322746"
+	},
+	"item": [
+		{
+			"name": "RF1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"Carlos López\",\r\n  \"numeroCelular\": \"3001112233\",\r\n  \"numeroCedula\": \"1012345678\",\r\n  \"correoElectronico\": \"carlos.lopez@correo.com\",\r\n  \"tipoUsuario\": \"Cliente\",\r\n  \"tarjetasCredito\": [\r\n    {\r\n      \"idTarjetaCredito\": 1,\r\n      \"titularDeLaTarjeta\": \"Carlos López\",\r\n      \"numeroTarjeta\": \"4111111111111111\",\r\n      \"fechaExpiracion\": \"2027-04\",\r\n      \"codigoSeguridad\": 377\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/usuarios/new/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"new",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let id = pm.response.json().usuario.idUsuario;\r",
+							"pm.environment.set(\"idConductor\", id);\r",
+							"console.log(\"ID guardado:\", id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"Conductor Uno\",\r\n  \"numeroCelular\": \"3002223344\",\r\n  \"numeroCedula\": \"1023456789\",\r\n  \"correoElectronico\": \"conductor.uno@correo.com\",\r\n  \"tipoUsuario\": \"Conductor\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/usuarios/new/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"new",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"idConductor\": {{idConductor}},\r\n  \"tipo\": \"Automovil\",\r\n  \"marca\": \"Toyota\",\r\n  \"modelo\": \"Corolla\",\r\n  \"color\": \"Rojo\",\r\n  \"placa\": \"ABC123\",\r\n  \"ciudadExpedicion\": \"Bogotá\",\r\n  \"capacidadPasajeros\": 4,\r\n  \"nivel\": \"Estandar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/vehiculos/new/save",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"vehiculos",
+						"new",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC1 historico de viajes",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "RFC 2 Top 20 Conductores",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/top20Conductores",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"top20Conductores"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC 3 uso servicio",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

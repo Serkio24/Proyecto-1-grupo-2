@@ -8,14 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.bson.Document;
+import uniandes.edu.co.proyecto.repositories.Top20ConductoresRepository;
 import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private Top20ConductoresRepository top20ConductoresRepository;
 
     // create
     @PostMapping("/usuarios/new/save")
@@ -64,6 +71,20 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/usuarios/top20Conductores")
+    public ResponseEntity<List<Document>> obtenerTop20Conductores(){
+        try{
+            List<Document> resultado = top20ConductoresRepository.obtenerTop20Conductores();
+            return ResponseEntity.ok(resultado);
+        }
+
+        catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    
+
     // update
     @PutMapping("/usuarios/{id}")
     public ResponseEntity<UsuarioResponse> actualizarUsuario(@PathVariable("id") Long id, @RequestBody UsuarioEntity usuario) {
@@ -90,6 +111,7 @@ public class UsuarioController {
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public static class UsuarioResponse {
         private String mensaje;
