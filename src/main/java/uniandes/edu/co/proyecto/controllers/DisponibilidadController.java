@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.entities.DisponibilidadEntity;
+import uniandes.edu.co.proyecto.entities.FranjaHorariaEntity;
 import uniandes.edu.co.proyecto.repositories.DisponibilidadRepository;
 
 @RestController
@@ -18,28 +19,55 @@ public class DisponibilidadController {
     private DisponibilidadRepository disponibilidadRepository;
 
     @PostMapping("/disponibilidades/new/save")
-    public ResponseEntity<DisponibilidadResponse> crearDisponibilidad(@RequestBody DisponibilidadEntity disponibilidad) {
-        try {
-            DisponibilidadEntity ultima = disponibilidadRepository.findTopByOrderByIdDesc();
+    public ResponseEntity<DisponibilidadResponse> crearDisponibilidad(
+            @RequestBody DisponibilidadEntity disponibilidad) {
 
-            Long nuevoId;
-            if (ultima == null || ultima.getId() == null) {
-                nuevoId = 1L;
-            } else {
-                nuevoId = ultima.getId() + 1;
+        try {
+            
+            Long idConductor = disponibilidad.getIdConductor();
+
+            for (FranjaHorariaEntity franja : disponibilidad.getFranjasHorarias()) {
+
+                List<DisponibilidadEntity> conflictos =
+                        disponibilidadRepository.validarTraslapeConductor(
+                                idConductor,
+                                franja.getDiaSemana(),
+                                franja.getHoraInicio(),
+                                franja.getHoraFin()
+                        );
+
+                if (!conflictos.isEmpty()) {
+                    DisponibilidadResponse error = new DisponibilidadResponse(
+                            "Traslape detectado para el día " + franja.getDiaSemana()
+                            + " entre " + franja.getHoraInicio()
+                            + " y " + franja.getHoraFin(),
+                            null
+                    );
+                    return new ResponseEntity<>(error, HttpStatus.CONFLICT); // 409
+                }
             }
 
+            
+            DisponibilidadEntity ultima = disponibilidadRepository.findTopByOrderByIdDesc();
+            Long nuevoId = (ultima == null || ultima.getId() == null) ? 1L : ultima.getId() + 1;
             disponibilidad.setId(nuevoId);
 
             DisponibilidadEntity guardada = disponibilidadRepository.save(disponibilidad);
-            DisponibilidadResponse respuesta = new DisponibilidadResponse("Disponibilidad creada exitosamente", guardada);
+
+            DisponibilidadResponse respuesta =
+                    new DisponibilidadResponse("Disponibilidad creada exitosamente", guardada);
+
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            DisponibilidadResponse error = new DisponibilidadResponse("Error al crear la disponibilidad: " + e.getMessage(), null);
+
+            DisponibilidadResponse error =
+                    new DisponibilidadResponse("Error al crear la disponibilidad: " + e.getMessage(), null);
+
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+}
+
 
     // read
     @GetMapping("/disponibilidades")

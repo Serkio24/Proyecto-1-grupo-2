@@ -43,4 +43,12 @@ public interface DisponibilidadRepository extends MongoRepository<Disponibilidad
      // devuelve la disponibilidad con el id más alto
      DisponibilidadEntity findTopByOrderByIdDesc();
 
+     @Query(value = "{ 'idConductor': ?0, 'franjasHorarias': { $elemMatch: { 'diaSemana': ?1, 'horaInicio': { $lt: ?3 }, 'horaFin': { $gt: ?2 }, 'disponible': true } } }")
+     List<DisponibilidadEntity> validarTraslapeConductor(Long idConductor,
+                                                       String diaSemana,
+                                                       String horaInicioNueva,
+                                                       String horaFinNueva
+                                                       );
+
+
 }
