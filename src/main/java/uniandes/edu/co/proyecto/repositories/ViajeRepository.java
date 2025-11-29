@@ -36,4 +36,7 @@ public interface ViajeRepository extends MongoRepository<ViajeEntity, Long> {
     // delete
     @Query(value = "{ _id: ?0 }", delete = true)
     void eliminarViaje(Long id);
+
+    //ultimo id
+    ViajeEntity findTopByOrderByIdViajeDesc();
 }

@@ -36,4 +36,7 @@ public interface TarifaRepository extends MongoRepository<TarifaEntity, Long> {
     // delete
     @Query(value = "{ _id: ?0 }", delete = true)
     void eliminarTarifa(Long id);
+
+    //ultimo
+    TarifaEntity findTopByOrderByIdTarifaDesc();
 }

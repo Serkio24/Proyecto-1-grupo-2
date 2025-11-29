@@ -17,13 +17,24 @@ public class DisponibilidadController {
     @Autowired
     private DisponibilidadRepository disponibilidadRepository;
 
-    // create
     @PostMapping("/disponibilidades/new/save")
     public ResponseEntity<DisponibilidadResponse> crearDisponibilidad(@RequestBody DisponibilidadEntity disponibilidad) {
         try {
+            DisponibilidadEntity ultima = disponibilidadRepository.findTopByOrderByIdDesc();
+
+            Long nuevoId;
+            if (ultima == null || ultima.getId() == null) {
+                nuevoId = 1L;
+            } else {
+                nuevoId = ultima.getId() + 1;
+            }
+
+            disponibilidad.setId(nuevoId);
+
             DisponibilidadEntity guardada = disponibilidadRepository.save(disponibilidad);
             DisponibilidadResponse respuesta = new DisponibilidadResponse("Disponibilidad creada exitosamente", guardada);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
+
         } catch (Exception e) {
             DisponibilidadResponse error = new DisponibilidadResponse("Error al crear la disponibilidad: " + e.getMessage(), null);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

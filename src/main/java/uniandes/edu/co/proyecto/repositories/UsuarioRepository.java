@@ -34,4 +34,7 @@ public interface UsuarioRepository extends MongoRepository<UsuarioEntity, Long> 
     // delete
     @Query(value = "{ _id: ?0 }", delete = true)
     void eliminarUsuarioPorId(Long id);
+
+    // ultimo id
+    UsuarioEntity findTopByOrderByIdUsuarioDesc();
 }

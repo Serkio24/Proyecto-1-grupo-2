@@ -34,4 +34,7 @@ public interface VehiculoRepository extends MongoRepository<VehiculoEntity, Long
     // delete
     @Query(value = "{ _id: ?0 }", delete = true)
     void eliminarVehiculo(Long id);
+
+    //ultimo id
+    VehiculoEntity findTopByOrderByIdVehiculoDesc();
 }

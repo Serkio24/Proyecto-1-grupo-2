@@ -21,6 +21,17 @@ public class ViajeController {
     @PostMapping("/viajes/new/save")
     public ResponseEntity<ViajeResponse> crearViaje(@RequestBody ViajeEntity viaje) {
         try {
+            ViajeEntity ultimo = viajeRepository.findTopByOrderByIdViajeDesc();
+
+            Long nuevoId;
+            if (ultimo == null || ultimo.getIdViaje() == null) {
+                nuevoId = 1L;
+            } else {
+                nuevoId = ultimo.getIdViaje() + 1;
+            }
+
+            viaje.setIdViaje(nuevoId);
+
             ViajeEntity guardado = viajeRepository.save(viaje);
             ViajeResponse respuesta = new ViajeResponse("Viaje creado exitosamente", guardado);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);

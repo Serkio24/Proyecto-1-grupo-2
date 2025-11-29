@@ -21,6 +21,17 @@ public class VehiculoController {
     @PostMapping("/vehiculos/new/save")
     public ResponseEntity<VehiculoResponse> crearVehiculo(@RequestBody VehiculoEntity vehiculo) {
         try {
+            VehiculoEntity ultimo = vehiculoRepository.findTopByOrderByIdVehiculoDesc();
+
+            Long nuevoId;
+            if (ultimo == null || ultimo.getIdVehiculo() == null) {
+                nuevoId = 1L;
+            } else {
+                nuevoId = ultimo.getIdVehiculo() + 1;
+            }
+
+            vehiculo.setIdVehiculo(nuevoId);
+
             VehiculoEntity guardado = vehiculoRepository.save(vehiculo);
             VehiculoResponse respuesta = new VehiculoResponse("Vehículo creado exitosamente", guardado);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);

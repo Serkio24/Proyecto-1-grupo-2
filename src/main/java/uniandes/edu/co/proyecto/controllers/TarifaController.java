@@ -21,6 +21,17 @@ public class TarifaController {
     @PostMapping("/tarifas/new/save")
     public ResponseEntity<TarifaResponse> crearTarifa(@RequestBody TarifaEntity tarifa) {
         try {
+            TarifaEntity ultima = tarifaRepository.findTopByOrderByIdTarifaDesc();
+
+            Long nuevoId;
+            if (ultima == null || ultima.getIdTarifa() == null) {
+                nuevoId = 1L;
+            } else {
+                nuevoId = ultima.getIdTarifa() + 1;
+            }
+
+            tarifa.setIdTarifa(nuevoId);
+
             TarifaEntity guardada = tarifaRepository.save(tarifa);
             TarifaResponse respuesta = new TarifaResponse("Tarifa creada exitosamente", guardada);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
@@ -29,6 +40,7 @@ public class TarifaController {
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // read
     @GetMapping("/tarifas")

@@ -21,6 +21,14 @@ public class UsuarioController {
     @PostMapping("/usuarios/new/save")
     public ResponseEntity<UsuarioResponse> guardarUsuario(@RequestBody UsuarioEntity usuario) {
         try {
+            UsuarioEntity ultimo = usuarioRepository.findTopByOrderByIdUsuarioDesc();
+            Long nuevoId;
+            if (ultimo == null || ultimo.getIdUsuario() == null) {
+                nuevoId = 1L;
+            } else {
+                nuevoId = ultimo.getIdUsuario() + 1;
+            }
+            usuario.setIdUsuario(nuevoId);
             UsuarioEntity guardado = usuarioRepository.save(usuario);
             UsuarioResponse respuesta = new UsuarioResponse("Usuario creado exitosamente", guardado);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
