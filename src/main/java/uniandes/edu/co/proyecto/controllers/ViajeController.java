@@ -164,6 +164,7 @@ public class ViajeController {
             viaje.setCostoTotal(costo);
             ViajeEntity actualizado = viajeRepository.save(viaje);
 
+            
             List<DisponibilidadEntity> disponibilidades =
                 disponibilidadRepository.buscarPorIdConductor(viaje.getIdConductor());
 
