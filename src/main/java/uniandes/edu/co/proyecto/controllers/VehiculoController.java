@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import uniandes.edu.co.proyecto.entities.UsuarioEntity;
 import uniandes.edu.co.proyecto.entities.VehiculoEntity;
+import uniandes.edu.co.proyecto.repositories.UsuarioRepository;
 import uniandes.edu.co.proyecto.repositories.VehiculoRepository;
 
 @RestController
@@ -16,6 +18,9 @@ public class VehiculoController {
 
     @Autowired
     private VehiculoRepository vehiculoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // create
     @PostMapping("/vehiculos/new/save")
@@ -31,7 +36,11 @@ public class VehiculoController {
             }
 
             vehiculo.setIdVehiculo(nuevoId);
-
+            UsuarioEntity propietario = usuarioRepository.buscarPorId(vehiculo.getIdConductor());
+            if (propietario == null) {
+                VehiculoResponse error = new VehiculoResponse("Error: El propietario con ID " + vehiculo.getIdConductor() + " no existe.", null);
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+            }
             VehiculoEntity guardado = vehiculoRepository.save(vehiculo);
             VehiculoResponse respuesta = new VehiculoResponse("Vehículo creado exitosamente", guardado);
             return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
