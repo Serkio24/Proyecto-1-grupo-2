@@ -50,5 +50,6 @@ public interface DisponibilidadRepository extends MongoRepository<Disponibilidad
                                                        String horaFinNueva
                                                        );
 
-
+     @Query( value="{ 'franjasHorarias': { $elemMatch: { 'diaSemana': ?0, 'horaInicio': { $lt: ?1 }, 'horaFin': { $gt: ?1 }, 'disponible': true } } }")
+     DisponibilidadEntity buscarConductorDisponible(String diaSemana, String horaActual);
 }
