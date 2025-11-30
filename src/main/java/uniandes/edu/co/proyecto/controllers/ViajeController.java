@@ -2,6 +2,10 @@ package uniandes.edu.co.proyecto.controllers;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,12 +14,16 @@ import org.springframework.web.bind.annotation.*;
 
 import uniandes.edu.co.proyecto.entities.ViajeEntity;
 import uniandes.edu.co.proyecto.repositories.ViajeRepository;
+import uniandes.edu.co.proyecto.repositories.UsoServiciosRepository;
 
 @RestController
 public class ViajeController {
 
     @Autowired
     private ViajeRepository viajeRepository;
+
+    @Autowired
+    private UsoServiciosRepository usoServiciosRepository;
 
     // create
     @PostMapping("/viajes/new/save")
@@ -91,6 +99,42 @@ public class ViajeController {
         } catch (Exception e) {
             ViajeResponse error = new ViajeResponse("Error al eliminar el viaje: " + e.getMessage(), null);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // RFC1, historico de viajes por usuario
+    @GetMapping("/usuarios/{id}/viajes")
+    public ResponseEntity<Collection<ViajeEntity>> obtenerViajesPorUsuario(@PathVariable("id") Long idUsuario) {
+        try {
+            List<ViajeEntity> viajes = viajeRepository.buscarPorIdCliente(idUsuario);
+            return ResponseEntity.ok(viajes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // RFC3: uso de servicios por ciudad y rango de fechas (yyyy-MM-dd)
+    @GetMapping("/servicios/uso")
+    public ResponseEntity<List<Map<String,Object>>> obtenerUsoServicios(
+            @RequestParam("ciudad") String ciudad,
+            @RequestParam("desde") String desdeStr,
+            @RequestParam("hasta") String hastaStr) {
+        try {
+            LocalDate desdeLD = LocalDate.parse(desdeStr);
+            LocalDate hastaLD = LocalDate.parse(hastaStr);
+            Date desde = Date.from(desdeLD.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date hasta = Date.from(hastaLD.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            List<org.bson.Document> docs = usoServiciosRepository.obtenerUsoPorCiudadYFechas(ciudad, desde, hasta);
+            List<Map<String,Object>> resultado = docs.stream().map(d -> Map.of(
+                    "tipoServicio", d.get("tipoServicio"),
+                    "nivel", d.get("nivel"),
+                    "cantidad", d.get("cantidad"),
+                    "porcentaje", d.get("porcentaje")
+            )).toList();
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
