@@ -164,6 +164,16 @@ public class ViajeController {
             viaje.setCostoTotal(costo);
             ViajeEntity actualizado = viajeRepository.save(viaje);
 
+            List<DisponibilidadEntity> disponibilidades =
+                disponibilidadRepository.buscarPorIdConductor(viaje.getIdConductor());
+
+            for (DisponibilidadEntity disponibilidad : disponibilidades) {
+                for (FranjaHorariaEntity franja : disponibilidad.getFranjasHorarias()) {
+                    franja.setDisponible(true);   
+                }
+                disponibilidadRepository.save(disponibilidad);
+            }
+
             ViajeResponse respuesta = new ViajeResponse(
                     "Viaje finalizado exitosamente",
                     actualizado
