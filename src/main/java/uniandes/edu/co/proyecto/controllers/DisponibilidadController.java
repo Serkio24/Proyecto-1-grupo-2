@@ -95,20 +95,56 @@ public class DisponibilidadController {
         }
     }
 
-    // update
     @PutMapping("/disponibilidades/{id}")
-    public ResponseEntity<DisponibilidadResponse> actualizarDisponibilidad(@PathVariable("id") Long id, @RequestBody DisponibilidadEntity disponibilidad) {
+    public ResponseEntity<DisponibilidadResponse> actualizarDisponibilidad(
+            @PathVariable("id") Long id,
+            @RequestBody DisponibilidadEntity disponibilidad) {
+
         try {
-            // asegúrate de que DisponibilidadEntity tenga este setter con el nombre correcto
             disponibilidad.setId(id);
+            Long idConductor = disponibilidad.getIdConductor();
+
+            for (FranjaHorariaEntity franja : disponibilidad.getFranjasHorarias()) {
+
+                List<DisponibilidadEntity> conflictos =
+                        disponibilidadRepository.validarTraslapeConductor(
+                                idConductor,
+                                franja.getDiaSemana(),
+                                franja.getHoraInicio(),
+                                franja.getHoraFin()
+                        );
+
+                boolean hayConflictoReal = conflictos.stream()
+                        .anyMatch(d -> !d.getId().equals(id));
+
+                if (hayConflictoReal) {
+                    DisponibilidadResponse error = new DisponibilidadResponse(
+                            "Traslape detectado al modificar para el día "
+                                    + franja.getDiaSemana()
+                                    + " entre " + franja.getHoraInicio()
+                                    + " y " + franja.getHoraFin(),
+                            null
+                    );
+                    return new ResponseEntity<>(error, HttpStatus.CONFLICT); // 409
+                }
+            }
+
             DisponibilidadEntity actualizada = disponibilidadRepository.save(disponibilidad);
-            DisponibilidadResponse respuesta = new DisponibilidadResponse("Disponibilidad actualizada exitosamente", actualizada);
+
+            DisponibilidadResponse respuesta =
+                    new DisponibilidadResponse("Disponibilidad actualizada exitosamente", actualizada);
+
             return new ResponseEntity<>(respuesta, HttpStatus.OK);
+
         } catch (Exception e) {
-            DisponibilidadResponse error = new DisponibilidadResponse("Error al actualizar la disponibilidad: " + e.getMessage(), null);
+
+            DisponibilidadResponse error =
+                    new DisponibilidadResponse("Error al actualizar la disponibilidad: " + e.getMessage(), null);
+
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // delete
     @DeleteMapping("/disponibilidades/{id}/delete")
